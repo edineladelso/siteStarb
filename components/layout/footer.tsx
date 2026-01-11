@@ -6,18 +6,18 @@ export default function Footer() {
     <footer
       className="bg-black text-white
     flex justify-between max-w-full w-full
-    py-4 m-auto px-30
+    py-4 m-auto px-30 font-spectral items-center
     "
     >
       <div className="max-w-sm">
         <Image
           src="/img/starbdarkFinal.webp"
           alt="Logo da Star B"
-          width={150}
+          width={130}
           height={50}
           className="rounded-xl bg-amber-50 p-1.5"
         />
-        <p className="mt-2 font-extralight text-lg">
+        <p className="mt-2 font-spectral text-base">
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Esse
           voluptatibus ea vitae debitis eius reprehenderit dolor adipisci
         </p>

@@ -8,7 +8,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function Header() {
   return (
-    <div className="flex py-4 px3 gap-5 items-center w-full">
+    <div className="flex py-3 px3 gap-5 items-center w-full z-50 sticky top-0 bg-white/99 border-b">
       <SidebarTrigger />
       <header className="flex w-full items-center justify-between rounded-lg px-5">
         <Link href={"/"} className="mr-4">

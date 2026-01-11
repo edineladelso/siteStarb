@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
@@ -12,155 +12,148 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
+import { ServiceSwitcher } from "@/components/services-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Star B",
+    email: "uccstarB@gmail.com",
+    avatar: "/img/star.webp",
   },
-  teams: [
+  services: [
     {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
+      name: "Star B Avançado",
       logo: Command,
+      plan: "Enterprise", 
+      href:"#",
+    },
+    {
+      name: "Star B IA",
+      logo: AudioWaveform,
+      plan: "Pro",
+      href:"#",
+    },
+    {
+      name: "Star B Normal",
+      logo: GalleryVerticalEnd,
       plan: "Free",
+      href:"#",
     },
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Programação",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Básico",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "POO",
           url: "#",
         },
         {
-          title: "Settings",
+          title: "MicroControladore",
+          url: "#",
+        },
+        {
+          title: "Frontend",
+          url: "#",
+        },
+        {
+          title: "Backend",
+          url: "#",
+        },
+                {
+          title: "Dados",
           url: "#",
         },
       ],
     },
     {
-      title: "Models",
+      title: "IA Modelos",
       url: "#",
       icon: Bot,
       items: [
         {
-          title: "Genesis",
+          title: "Modelos",
           url: "#",
         },
         {
-          title: "Explorer",
+          title: "Engenharia de Prompt",
           url: "#",
         },
         {
-          title: "Quantum",
+          title: "Ideias e Projetos",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Documentação",
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
+          title: "Engenharia",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Como começar?",
           url: "#",
         },
         {
-          title: "Tutorials",
+          title: "Tutoriais",
           url: "#",
         },
         {
-          title: "Changelog",
+          title: "Carreira",
           url: "#",
         },
       ],
     },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
+    
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Design de Engenharia",
       url: "#",
       icon: Frame,
     },
     {
-      name: "Sales & Marketing",
+      name: "Ideias & Marketing",
       url: "#",
       icon: PieChart,
     },
     {
-      name: "Travel",
+      name: "TCC && Dissertação",
       url: "#",
       icon: Map,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <ServiceSwitcher services={data.services} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
@@ -171,5 +164,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

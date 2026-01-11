@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400..900&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -78,7 +77,11 @@
 @theme inline {
   --font-sans: "Geist", "Geist Fallback";
   --font-mono: "Geist Mono", "Geist Mono Fallback";
-  --font-display: "Maven Pro", cursive, sans-serif;
+  --font-display: var(--font-montserrat), cursive, sans-serif;
+  --font-body: var(--font-neuton), sans-serif;
+  --font-heading: var(--font-maven-pro), cursive, sans-serif;
+  --font-code: var(--font-fira-mono), monospace;
+  --font-text: var(--font-spectral), sans-serif;  
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
