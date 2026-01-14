@@ -38,9 +38,9 @@ const spectral = Spectral({
 });
 
 export const metadata: Metadata = {
-  title: "StarB Vagas",
+  title: "StarB Site",
   description:
-    "Criado no processo de aprendizagem do next js para cadastrar usuarios e fornecer funcionalidades ilustrativas para busca e gerenciamento de vagas",
+    "Site official da Star B criado pelo fundador da Star B (Edinel Mário Adelso). Este é um site de tecnologia.",
 };
 
 export default function RootLayout({
