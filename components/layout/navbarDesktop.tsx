@@ -26,7 +26,7 @@ export function NavbarDesktop() {
         <NavigationMenuItem>
           <NavigationMenuTrigger className="text-xs sm:text-sm md:text-sm">Home</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-2 md:w-100 lg:w-125 lg:grid-cols-[.75fr_1fr] p-2 md:p-4">
+            <ul className="grid gap-2 md:w-100 lg:w-125 lg:grid-cols-[.75fr_1fr] p-2 md:p-3">
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
                   <Link
@@ -115,7 +115,7 @@ export function NavbarDesktop() {
         <NavigationMenuItem className="hidden md:block">
           <NavigationMenuTrigger className="text-xs sm:text-sm md:text-sm">Menu</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-45 md:w-50 gap-3 md:gap-4 p-2 md:p-4">
+            <ul className="grid w-45 md:w-50 gap-3 md:gap-4 p-2 md:p-2">
               <li>
                 {quickMenuItems.map((item) => (
                   <NavigationMenuLink asChild key={item.href}>
@@ -132,7 +132,7 @@ export function NavbarDesktop() {
         <NavigationMenuItem className="hidden md:block">
           <NavigationMenuTrigger className="text-xs sm:text-sm md:text-sm">Tema</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-45 md:w-50 gap-3 md:gap-4 p-2 md:p-4">
+            <ul className="grid w-45 md:w-50 gap-2 md:gap-4 p-1 md:p-1">
               <li>
                 {themeOptions.map((option) => (
                   <NavigationMenuLink asChild key={option.name}>
