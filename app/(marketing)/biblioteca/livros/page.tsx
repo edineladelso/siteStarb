@@ -49,7 +49,7 @@ export type Livro = {
   autor: string
   descricao: string
   capa: string
-  categoria: "IA" | "Programação" | "Eletrônica" | "Mecatrônica" | "Engenharia"
+  categoria: "IA" | "Programação" | "Eletrônica" | "Mecatrônica" | "Engenharia" | "Mecânica" | "matematica";
   popular: boolean
   novo: boolean
 }
@@ -62,7 +62,7 @@ const livros: Livro[] = [
     autor: "Star B",
     descricao:
       "Livro técnico aprofundado sobre fundamentos, modelos modernos de IA e aplicações reais em engenharia e sistemas inteligentes.",
-    capa: "/images/books/ia.jpg",
+    capa: "",
     categoria: "IA",
     popular: true,
     novo: true,
@@ -73,7 +73,7 @@ const livros: Livro[] = [
     autor: "Star B",
     descricao:
       "Arquitetura profissional de sistemas, padrões de projeto, escalabilidade e boas práticas reais de mercado.",
-    capa: "/images/books/software.jpg",
+    capa: "",
     categoria: "Programação",
     popular: true,
     novo: false,
@@ -84,7 +84,7 @@ const livros: Livro[] = [
     autor: "Star B",
     descricao:
       "Integração entre mecânica, eletrônica e programação aplicada a sistemas físicos inteligentes.",
-    capa: "/images/books/mecatronica.jpg",
+    capa: "",
     categoria: "Mecatrônica",
     popular: false,
     novo: true,
@@ -172,12 +172,12 @@ function LivroCard({ livro }: { livro: Livro }) {
     <Card className="overflow-hidden group">
       <CardHeader className="p-0">
         <div className="relative h-60 w-full">
-          <Image
+{/* {          <Image
             src={livro.capa}
             alt={livro.titulo}
             fill
             className="object-cover group-hover:scale-105 transition"
-          />
+          />} */}
         </div>
       </CardHeader>
 
