@@ -50,6 +50,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-pt" className={`${mavenPro.variable} ${poppins.variable} ${muktaMalar.variable} ${montserrat.variable} ${neuton.variable} ${spectral.variable}`}>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <body>
         <SidebarProvider>
           <AppSidebar />

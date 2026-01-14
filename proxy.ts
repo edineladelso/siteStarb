@@ -6,8 +6,6 @@ export default function proxy(request: NextRequest) {
 
   if (maintenanceMode && request.nextUrl.pathname !== "/manutencao") {
     const redirectUrl = new URL("/manutencao", request.url).toString();
-    console.log("estamos em manutencao", redirectUrl);
-
     return NextResponse.redirect( redirectUrl)
   }
 

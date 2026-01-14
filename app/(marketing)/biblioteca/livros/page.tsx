@@ -96,19 +96,19 @@ export default function LivrosPage() {
   const novos = livros.filter((l) => l.novo)
 
   return (
-    <div className="container mx-auto px-4 py-10 space-y-16">
+    <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10 space-y-10 sm:space-y-12 md:space-y-16">
       {/* HERO */}
-      <section className="space-y-4 text-center">
-        <h1 className="text-4xl font-bold">Biblioteca Técnica Star B</h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
+      <section className="space-y-2 sm:space-y-3 md:space-y-4 text-center">
+        <h1 className="text-3xl sm:text-3xl font-bold">Biblioteca Técnica Star B</h1>
+        <p className="text-muted-foreground text-base sm:text-sm max-w-2xl mx-auto">
           Livros profissionais de engenharia, tecnologia e inteligência artificial
           desenvolvidos para quem quer dominar conhecimento real.
         </p>
       </section>
 
       {/* CAROUSEL DE CATEGORIAS */}
-      <section className="space-y-6">
-        <h2 className="text-2xl font-semibold">Explorar por área</h2>
+      <section className="space-y-4 sm:space-y-6">
+        <h2 className="text-xl sm:text-2xl font-semibold">Explorar por área</h2>
 
         <Carousel className="w-full">
           <CarouselContent>
@@ -119,23 +119,23 @@ export default function LivrosPage() {
               "Mecatrônica",
               "Engenharia",
             ].map((categoria, i) => (
-              <CarouselItem key={i} className="basis-1/2 md:basis-1/4">
-                <Card className="p-6 text-center hover:shadow-lg transition">
-                  <p className="font-medium">{categoria}</p>
+              <CarouselItem key={i} className="basis-full sm:basis-1/2 md:basis-1/4">
+                <Card className="p-4 sm:p-6 text-center hover:shadow-lg transition">
+                  <p className="font-medium text-base sm:text-sm">{categoria}</p>
                 </Card>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          <CarouselPrevious className="hidden sm:flex" />
+          <CarouselNext className="hidden sm:flex" />
         </Carousel>
       </section>
 
       {/* POPULARES */}
-      <section className="space-y-6">
-        <h2 className="text-2xl font-semibold">Mais populares</h2>
+      <section className="space-y-4 sm:space-y-6">
+        <h2 className="text-xl sm:text-2xl font-semibold">Mais populares</h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
           {populares.map((livro) => (
             <LivroCard key={livro.id} livro={livro} />
           ))}
@@ -143,10 +143,10 @@ export default function LivrosPage() {
       </section>
 
       {/* NOVOS */}
-      <section className="space-y-6">
-        <h2 className="text-2xl font-semibold">Novidades</h2>
+      <section className="space-y-4 sm:space-y-6">
+        <h2 className="text-xl sm:text-2xl font-semibold">Novidades</h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
           {novos.map((livro) => (
             <LivroCard key={livro.id} livro={livro} />
           ))}
@@ -154,10 +154,10 @@ export default function LivrosPage() {
       </section>
 
       {/* RECOMENDAÇÕES */}
-      <section className="space-y-6">
-        <h2 className="text-2xl font-semibold">Recomendados para você</h2>
+      <section className="space-y-4 sm:space-y-6">
+        <h2 className="text-xl sm:text-2xl font-semibold">Recomendados para você</h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
           {livros.map((livro) => (
             <LivroCard key={livro.id} livro={livro} />
           ))}
@@ -171,7 +171,7 @@ function LivroCard({ livro }: { livro: Livro }) {
   return (
     <Card className="overflow-hidden group">
       <CardHeader className="p-0">
-        <div className="relative h-60 w-full">
+        <div className="relative h-40 sm:h-50 md:h-60 w-full">
 {/* {          <Image
             src={livro.capa}
             alt={livro.titulo}
@@ -181,28 +181,28 @@ function LivroCard({ livro }: { livro: Livro }) {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-2 pt-4">
-        <CardTitle className="text-lg">{livro.titulo}</CardTitle>
-        <p className="text-sm text-muted-foreground">{livro.autor}</p>
+      <CardContent className="space-y-2 pt-3 sm:pt-4">
+        <CardTitle className="text-base sm:text-lg">{livro.titulo}</CardTitle>
+        <p className="text-xs sm:text-sm text-muted-foreground">{livro.autor}</p>
 
         <div className="flex gap-2">
-          {livro.novo && <Badge>Novo</Badge>}
-          {livro.popular && <Badge variant="secondary">Popular</Badge>}
+          {livro.novo && <Badge className="text-xs">Novo</Badge>}
+          {livro.popular && <Badge variant="secondary" className="text-xs">Popular</Badge>}
         </div>
       </CardContent>
 
-      <CardFooter className="flex flex-col gap-3">
+      <CardFooter className="flex flex-col gap-2 sm:gap-3">
         {/* Descrição */}
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full text-xs sm:text-sm">
               Descrição
             </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent>
+          <AlertDialogContent className="max-w-sm sm:max-w-md">
             <AlertDialogHeader>
-              <AlertDialogTitle>{livro.titulo}</AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogTitle className="text-base sm:text-lg">{livro.titulo}</AlertDialogTitle>
+              <AlertDialogDescription className="text-xs sm:text-sm">
                 {livro.descricao}
               </AlertDialogDescription>
             </AlertDialogHeader>
@@ -213,19 +213,19 @@ function LivroCard({ livro }: { livro: Livro }) {
         </AlertDialog>
 
         {/* Ver livro */}
-        <Button className="w-full">Ver Livro</Button>
+        <Button className="w-full text-xs sm:text-sm">Ver Livro</Button>
 
         {/* Download dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="secondary" className="w-full">
+            <Button variant="secondary" className="w-full text-xs sm:text-sm">
               Download
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-48">
-            <DropdownMenuItem>PDF</DropdownMenuItem>
-            <DropdownMenuItem>EPUB</DropdownMenuItem>
-            <DropdownMenuItem>Resumo</DropdownMenuItem>
+          <DropdownMenuContent className="w-40 sm:w-48">
+            <DropdownMenuItem className="text-xs sm:text-sm">PDF</DropdownMenuItem>
+            <DropdownMenuItem className="text-xs sm:text-sm">EPUB</DropdownMenuItem>
+            <DropdownMenuItem className="text-xs sm:text-sm">Resumo</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardFooter>
