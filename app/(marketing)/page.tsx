@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import imglivros from "@/public/img/imglivros.webp";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -26,28 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import imgAi from "@/public/img/IA.webp";
-import imgMecatronica from "@/public/img/mecatronica.webp";
-import iaMobile from "@/public/img/iaMobile.webp";
-
-const imgCarousel = [
-  {
-    src: imgAi,
-    alt: "IA e modelos de inteligencia Artificial",
-  },
-  {
-    src: imgMecatronica,
-    alt: "Imagem de mecat",
-  },
-  {
-    src: imglivros,
-    alt: "Imagem de Livros",
-  },
-  {
-    src: iaMobile,
-    alt: "Imagem de ia Mobile",
-  },
-];
+import imgCarousel from "@/components/property/carouselProperty";
 
 interface Feature {
   title: string;
@@ -111,7 +89,7 @@ export default function HomePage() {
       {/* HERO */}
       <section className="grid items-center gap-10 md:grid-cols-2">
         <div className="space-y-6">
-          <h1 className="text-5xl font-bold tracking-tight ">
+          <h1 className="text-5xl font-bold tracking-tight">
             Conhecimento técnico sério.
             <br />
             Engenharia explicada como deve ser.
@@ -140,17 +118,17 @@ export default function HomePage() {
             loop: true, // Esta opção ativa o scroll infinito
             align: "start",
           }}
-          className="w-full z-0"
+          className="z-0 w-full rounded-2xl"
         >
           <CarouselContent>
             {imgCarousel.map((item, index) => (
               <CarouselItem key={index}>
-                <div className="text-muted-foreground relative flex h-100 w-115 items-center justify-center overflow-hidden rounded-2xl text-lg z-0">
+                <div className="text-muted-foreground relative z-0 flex h-100 w-115 items-center justify-center overflow-hidden rounded-2xl text-lg">
                   <Image
                     src={item.src}
                     alt={item.alt}
                     fill
-                    className="object-cover z-0"
+                    className="z-0 object-cover"
                   />
                 </div>
               </CarouselItem>
