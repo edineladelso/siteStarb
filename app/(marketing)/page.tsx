@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/tooltip";
 
 import imgCarousel from "@/components/property/carouselProperty";
-import { homeFeatures, premiumItems } from "@/lib/data";
+import { recursosHome, itenssPremium } from "@/lib/dados";
 
 export default function HomePage() {
   return (
@@ -97,7 +97,7 @@ export default function HomePage() {
         </header>
 
         <div className="grid gap-4 sm:gap-5 md:gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {homeFeatures.map((f) => (
+          {recursosHome.map((f) => (
             <Tooltip key={f.href}>
               <TooltipTrigger asChild>
                 <Link
@@ -109,13 +109,13 @@ export default function HomePage() {
                       {f.badge}
                     </span>
                   )}
-                  <h3 className="font-semibold text-base sm:text-sm">{f.title}</h3>
+                  <h3 className="font-semibold text-base sm:text-sm">{f.titulo}</h3>
                   <p className="text-muted-foreground mt-2 text-xs sm:text-sm">
-                    {f.description}
+                    {f.descricao}
                   </p>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent>Acessar {f.title}</TooltipContent>
+              <TooltipContent>Acessar {f.titulo}</TooltipContent>
             </Tooltip>
           ))}
         </div>
@@ -135,20 +135,20 @@ export default function HomePage() {
         </header>
 
         <div className="grid gap-4 sm:gap-5 md:gap-6 sm:grid-cols-2">
-          {premiumItems.map((item) => (
+          {itenssPremium.map((item) => (
             <Sheet key={item.href}>
               <SheetTrigger asChild>
                 <div className="cursor-pointer rounded-lg sm:rounded-xl md:rounded-2xl border p-4 sm:p-5 md:p-6 transition hover:shadow-md">
-                  <h3 className="font-semibold text-base sm:text-sm">{item.title}</h3>
+                  <h3 className="font-semibold text-base sm:text-sm">{item.titulo}</h3>
                   <p className="text-muted-foreground mt-2 text-xs sm:text-sm">
-                    {item.description}
+                    {item.descricao}
                   </p>
                 </div>
               </SheetTrigger>
 
               <SheetContent>
                 <SheetHeader>
-                  <SheetTitle>{item.title}</SheetTitle>
+                  <SheetTitle>{item.titulo}</SheetTitle>
                   <SheetDescription>
                     Este conteúdo faz parte da área premium da plataforma.
                   </SheetDescription>

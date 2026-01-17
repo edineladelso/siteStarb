@@ -1,6 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from 'next/server'
+import { updateSession } from '@/lib/supabase/proxy'
 
-export default function proxy(request: NextRequest) {
+
+
+export default async function proxy(request: NextRequest) {
   const maintenanceMode =
     process.env.MAINTENANCE_MODE === "true" ? true : false;
 
@@ -8,8 +11,9 @@ export default function proxy(request: NextRequest) {
     const redirectUrl = new URL("/manutencao", request.url).toString();
     return NextResponse.redirect( redirectUrl)
   }
-
-  return NextResponse.next();
+  else {return NextResponse.next();}
+  
+  return await updateSession(request)
 }
 
 export const config = {
