@@ -15,6 +15,20 @@
       "when": 1768657025747,
       "tag": "0001_productive_giant_man",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768749357271,
+      "tag": "0002_overjoyed_blue_blade",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1768757184835,
+      "tag": "0003_overjoyed_overlord",
+      "breakpoints": true
     }
   ]
 }
