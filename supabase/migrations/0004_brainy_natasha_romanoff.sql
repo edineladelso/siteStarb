@@ -1,0 +1,1 @@
+ALTER TABLE "profiles" ALTER COLUMN "idade" DROP NOT NULL;

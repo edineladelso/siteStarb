@@ -84,7 +84,7 @@ export async function fazerLoginComEmail(formData: FormData) {
       throw new Error('Email ou senha incorretos');
     }
 
-    redirect('/dashboard');
+    redirect('/');
     
   } catch (error) {
     if (error instanceof z.ZodError) {
