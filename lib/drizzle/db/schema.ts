@@ -23,7 +23,7 @@ export const postsTable = pgTable("posts_table", {
 export const profilesTable = pgTable("profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
   nome: text("nome").notNull(),
-  idade: integer("idade").notNull(),
+  idade: integer("idade"),
   avatar_url: text("avatar_url"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updateAt: timestamp("updated_at").notNull().defaultNow()

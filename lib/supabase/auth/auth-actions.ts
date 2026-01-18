@@ -1,11 +1,10 @@
 "use server";
-
 import { createClient } from "../server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "@/lib/drizzle/db/index";
 import { profilesTable } from "@/lib/drizzle/db/schema";
-
+import { eq } from "drizzle-orm";
 
 const registroSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -19,7 +18,7 @@ const loginSchema = z.object({
   senha: z.string().min(1, 'Senha é obrigatória'),
 });
 
-//GISTRO com Email/Senha
+// 📝 REGISTRO com Email/Senha
 export async function registrarComEmail(formData: FormData) {
   try {
     const rawData = {
@@ -32,7 +31,6 @@ export async function registrarComEmail(formData: FormData) {
     const validatedData = registroSchema.parse(rawData);
     const supabase = await createClient();
 
-    // Criar usuário no Supabase Auth
     const { data, error } = await supabase.auth.signUp({
       email: validatedData.email,
       password: validatedData.senha,
@@ -44,10 +42,9 @@ export async function registrarComEmail(formData: FormData) {
     });
 
     if (error) {
-      return { success: false, error: error.message };
+      throw new Error(error.message);
     }
 
-    // Criar perfil no banco
     if (data.user) {
       await db.insert(profilesTable).values({
         id: data.user.id,
@@ -56,12 +53,14 @@ export async function registrarComEmail(formData: FormData) {
       });
     }
 
-    return { success: true, message: 'Verifique seu email para confirmar!' };
+    // Redirecionar para página de confirmação
+    redirect('/registro/confirmacao');
+    
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.issues[0].message };
+      throw new Error(error.issues[0].message);
     }
-    return { success: false, error: 'Erro ao registrar' };
+    throw error;
   }
 }
 
@@ -82,20 +81,21 @@ export async function fazerLoginComEmail(formData: FormData) {
     });
 
     if (error) {
-      return { success: false, error: 'Email ou senha incorretos' };
+      throw new Error('Email ou senha incorretos');
     }
 
     redirect('/dashboard');
+    
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.issues[0].message };
+      throw new Error(error.issues[0].message);
     }
-    return { success: false, error: 'Erro ao fazer login' };
+    throw error;
   }
 }
 
 // 🔗 LOGIN com Google
-export async function loginComGoogle() {
+export async function loginComGoogle(formData: FormData) {
   const supabase = await createClient();
   
   const { data, error } = await supabase.auth.signInWithOAuth({
@@ -106,7 +106,7 @@ export async function loginComGoogle() {
   });
 
   if (error) {
-    return { success: false, error: error.message };
+    throw new Error(error.message);
   }
 
   if (data.url) {
@@ -115,7 +115,7 @@ export async function loginComGoogle() {
 }
 
 // 🔗 LOGIN com GitHub
-export async function loginComGithub() {
+export async function loginComGithub(formData: FormData) {
   const supabase = await createClient();
   
   const { data, error } = await supabase.auth.signInWithOAuth({
@@ -126,7 +126,7 @@ export async function loginComGithub() {
   });
 
   if (error) {
-    return { success: false, error: error.message };
+    throw new Error(error.message);
   }
 
   if (data.url) {
@@ -149,7 +149,6 @@ export async function obterUsuarioLogado() {
   
   if (!user) return null;
 
-  // Buscar perfil completo
   const [perfil] = await db
     .select()
     .from(profilesTable)

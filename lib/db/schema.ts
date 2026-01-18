@@ -87,19 +87,29 @@ export const usuarios = pgTable(
   })
 );
 
-export const subscricoes = pgTable('subscricoes', {
-  id: serial('id').primaryKey(),
-  usuarioId: integer('usuario_id').notNull(),
-  planoId: integer('plano_id').notNull(),
-  dataInicio: timestamp('data_inicio').defaultNow().notNull(),
-  dataExpiracao: timestamp('data_expiracao'),
-  ativa: boolean('ativa').default(true),
-  metodoPagamento: varchar('metodo_pagamento', { length: 50 }),
-  ultimoPagamento: timestamp('ultimo_pagamento'),
-  foreignKey(() => [subscricoes.usuarioId, usuarios.id]),
-  foreignKey(() => [subscricoes.planoId, planosSubscricao.id]),
-});
-
+export const subscricoes = pgTable(
+  'subscricoes',
+  {
+    id: serial('id').primaryKey(),
+    usuarioId: integer('usuario_id').notNull(),
+    planoId: integer('plano_id').notNull(),
+    dataInicio: timestamp('data_inicio').defaultNow().notNull(),
+    dataExpiracao: timestamp('data_expiracao'),
+    ativa: boolean('ativa').default(true),
+    metodoPagamento: varchar('metodo_pagamento', { length: 50 }),
+    ultimoPagamento: timestamp('ultimo_pagamento'),
+  },
+  (table) => ({
+    usuarioFk: foreignKey({
+      columns: [table.usuarioId],
+      foreignColumns: [usuarios.id],
+    }),
+    planoFk: foreignKey({
+      columns: [table.planoId],
+      foreignColumns: [planosSubscricao.id],
+    }),
+  })
+);
 // ============================================
 // TABELA DE LIVROS
 // ============================================
@@ -383,7 +393,7 @@ export const actividadesUsuario = pgTable(
       length: 20,
       enum: ['livro', 'software', 'projeto'],
     }).notNull(),
-    valor?: integer('valor'),
+    valor: integer('valor'),
     data: timestamp('data').defaultNow(),
   },
   (table) => ({
