@@ -10,10 +10,10 @@ export function BtnHome() {
       href="/"
       className={cn(
         buttonVariants({ variant: "outline" }),
-        "border-gray-600 p-3 text-xs max-sm:text-base md:py-5 md:text-lg",
+        "border-gray-600 border p-3 text-xs max-sm:text-base md:py-5 md:text-lg",
       )}
     >
-      <span className="hidden sm:block sm:px-7">Voltar à Home</span>{" "}
+      <span className="hidden sm:block sm:px-7 font-bold">Voltar à Home</span>{" "}
       <Home className="sm:hidden" />
     </a>
   );

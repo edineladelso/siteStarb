@@ -1,3 +1,3 @@
 export default function ErrorPage() {
-    return <p>Desculpa, alguma coisa nao esta boa</p>
+  return <p>Desculpa, alguma coisa nao esta boa</p>;
 }
