@@ -1,10 +1,17 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { Maven_Pro, Poppins, Mukta_Malar, Montserrat, Neuton, Spectral } from "next/font/google";
+import Footer from "@/components/layout/footer";
+import Header from "@/components/layout/header";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import type { Metadata } from "next";
+import {
+  Maven_Pro,
+  Montserrat,
+  Mukta_Malar,
+  Neuton,
+  Poppins,
+  Spectral,
+} from "next/font/google";
+import "./globals.css";
 
 const mavenPro = Maven_Pro({
   weight: "variable",
@@ -49,7 +56,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-pt" className={`${mavenPro.variable} ${poppins.variable} ${muktaMalar.variable} ${montserrat.variable} ${neuton.variable} ${spectral.variable}`}>
+    <html
+      lang="pt-pt"
+      className={`${mavenPro.variable} ${poppins.variable} ${muktaMalar.variable} ${montserrat.variable} ${neuton.variable} ${spectral.variable}`}
+    >
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <body>
         <SidebarProvider>

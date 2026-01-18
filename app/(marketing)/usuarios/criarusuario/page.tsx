@@ -1,6 +1,6 @@
-import { criarUsuario } from "@/lib/drizzle/db/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { criarUsuario } from "@/lib/drizzle/db/actions";
 import { redirect } from "next/navigation";
 
 export default function criarUsuarioPage() {
@@ -21,15 +21,10 @@ export default function criarUsuarioPage() {
           <label htmlFor="nome" className="mb-1 block text-sm font-medium">
             Nome
           </label>
-          <Input
-            id="nome"
-            name="nome"
-            placeholder="Digite o nome"
-            required
-          />
+          <Input id="nome" name="nome" placeholder="Digite o nome" required />
         </div>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium mb-1">
+          <label htmlFor="email" className="mb-1 block text-sm font-medium">
             Email
           </label>
           <Input
@@ -41,7 +36,7 @@ export default function criarUsuarioPage() {
           />
         </div>
         <div>
-          <label htmlFor="idade" className="block text-sm font-medium mb-1">
+          <label htmlFor="idade" className="mb-1 block text-sm font-medium">
             Idade
           </label>
           <Input
@@ -52,7 +47,7 @@ export default function criarUsuarioPage() {
             required
           />
         </div>
-        <Button type="submit" >Criar Usuário</Button>
+        <Button type="submit">Criar Usuário</Button>
       </form>
     </div>
   );

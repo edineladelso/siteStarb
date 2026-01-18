@@ -1,27 +1,28 @@
-import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import Image from "next/image"
+import { BtnHome } from "@/components/layout/customComonents";
+import Image from "next/image";
 
-export default function NotFound(){
-
-
+export default function NotFound() {
   return (
-    <main className="flex flex-col min-h-screen max-w-5xl m-auto items-center 
-     gap-8 text-2xl mt-10 mb-0 ">
-      <div className="flex flex-row items-center justify-center gap-3 font-sans font-bold">
+    <main className="font m-auto mt-10 mb-0 flex min-h-screen max-w-5xl flex-col items-center gap-8 text-base max-sm:text-sm md:text-2xl">
+      <div className="flex flex-row items-center justify-center space-x-2 font-sans font-bold md:gap-3">
         <p>Ops!</p>
-        <p  className="border-r-2 border-r-[#4e433ad3] py-3 px-4 font-heading text-blue-700" >Erro 404</p>
-        <p  className="border-r-2 border-r-[#4e433ad3] py-3 px-4" >Nada encontrado!</p>
-        <a href="/" className={cn( buttonVariants({ variant: "default"}), "text-lg py-6 px-5",)}>Voltar à Home</a>
+        <p className="font-heading text-blue-700 md:py-3">Erro 404</p>
+        <p className="border-r-2 border-l-2 border-[#4e433ad3] px-3 py-2 sm:px-10 md:py-3">
+          Nada encontrado!
+        </p>
+        <BtnHome />
       </div>
       <div>
-        <Image 
-        src='/img/astronaut404.png' 
-        alt="Not Found"
-        width={350}
-        height={350} />
+        <Image
+          src="/img/astronaut404.png"
+          alt="Not Found"
+          width={350}
+          height={350}
+        />
       </div>
-      <p className="text-2xl font-light text-gray-600">Nao foi possivel encontrar a pagina solicitada</p>
+      <p className="text-sm font-light text-gray-600 md:text-2xl">
+        Nao foi possivel encontrar a pagina solicitada
+      </p>
     </main>
-  )
+  );
 }

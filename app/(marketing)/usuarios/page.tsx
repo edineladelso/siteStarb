@@ -14,7 +14,8 @@ export default async function UsuariosPage() {
             </h2>
             <p className="text-gray-600">Email: {usuario.email}</p>
             <p>
-              <span className="font-semibold">Idade:</span> {usuario.idade} anos
+              <span className="font-semibold">Idade: </span>
+              {usuario.idade} anos
             </p>
           </div>
         ))}

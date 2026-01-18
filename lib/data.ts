@@ -134,6 +134,10 @@ export const homeMenuItems: NavItem[] = [
 
 export const quickMenuItems: NavItem[] = [
   {
+    title: "Home",
+    href: "/",
+  },
+  {
     title: "Livros",
     href: "/biblioteca/livros",
   },
@@ -143,11 +147,15 @@ export const quickMenuItems: NavItem[] = [
   },
   {
     title: "Artigos",
-    href: "/livros/artigos",
+    href: "/biblioteca/artigos",
   },
   {
     title: "Cursos",
-    href: "/livros/artigos/cursos",
+    href: "/academico/cursos",
+  },
+  {
+    title: "Documentação",
+    href: "/academico/documentacao",
   },
 ];
 
@@ -161,8 +169,7 @@ export const documentationLinks: DocLink[] = [
   {
     title: "Python",
     href: "https://docs.python.org/pt-br/3/",
-    description:
-      "Documentação oficial do Python em portugues do brazil.",
+    description: "Documentação oficial do Python em portugues do brazil.",
   },
   {
     title: "C++",

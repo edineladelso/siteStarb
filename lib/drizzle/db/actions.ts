@@ -1,10 +1,9 @@
 "use server";
 
-import { title } from "process";
-import { db } from "./index";
-import { usersTable, postsTable } from "./schema";
 import { revalidatePath } from "next/cache";
-import { success, z } from "zod";
+import { z } from "zod";
+import { db } from "./index";
+import { postsTable, usersTable } from "./schema";
 
 const userSchema = z.object({
   nome: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
@@ -49,9 +48,9 @@ export async function criarUsuario(formData: FormData) {
 export async function createPostAction(formData: FormData) {
   try {
     const rawData = {
-      title: formData.get('title') as string,
-      content: formData.get('content') as string,
-      userId: Number(formData.get('userId')),
+      title: formData.get("title") as string,
+      content: formData.get("content") as string,
+      userId: Number(formData.get("userId")),
     };
 
     const validatedData = postSchema.parse(rawData);
@@ -61,13 +60,13 @@ export async function createPostAction(formData: FormData) {
       .values(validatedData)
       .returning();
 
-    revalidatePath('/posts');
+    revalidatePath("/posts");
 
     return { success: true, data: newPost };
   } catch (error) {
     if (error instanceof z.ZodError) {
       return { success: false, error: error.issues[0].message };
     }
-    return { success: false, error: 'Erro ao criar post' };
+    return { success: false, error: "Erro ao criar post" };
   }
 }

@@ -1,10 +1,10 @@
-import imgAi from "@/public/img/IA.webp";
-import imgMecatronica from "@/public/img/mecatronica.webp";
-import engenharia from "@/public/image/Engenharia.webp";
-import projetos from "@/public/image/projetos.webp";
 import edinelRobotics from "@/public/image/edinelrobot.png";
+import engenharia from "@/public/image/Engenharia.webp";
 import edinelLateral from "@/public/image/img0113.webp";
+import projetos from "@/public/image/projetos.webp";
+import imgAi from "@/public/img/IA.webp";
 import imglivros from "@/public/img/imglivros.webp";
+import imgMecatronica from "@/public/img/mecatronica.webp";
 
 const imgCarousel = [
   {
@@ -37,4 +37,4 @@ const imgCarousel = [
   },
 ];
 
-export default imgCarousel
+export default imgCarousel;

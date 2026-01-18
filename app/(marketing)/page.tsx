@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -24,17 +22,19 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import Image from "next/image";
+import Link from "next/link";
 
 import imgCarousel from "@/components/property/carouselProperty";
-import { recursosHome, itenssPremium } from "@/lib/dados";
+import { itenssPremium, recursosHome } from "@/lib/dados";
 
 export default function HomePage() {
   return (
-    <main className="mx-auto max-w-6xl space-y-10 sm:space-y-16 md:space-y-20 px-4 sm:px-6 py-6 sm:py-12">
+    <main className="mx-auto max-w-6xl space-y-10 px-4 py-6 sm:space-y-16 sm:px-6 sm:py-12 md:space-y-20">
       {/* HERO */}
-      <section className="grid items-center gap-6 sm:gap-8 md:gap-10 md:grid-cols-2">
+      <section className="grid items-center gap-6 sm:gap-8 md:grid-cols-2 md:gap-10">
         <div className="space-y-6">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
             Conhecimento técnico sério.
             <br />
             Engenharia explicada como deve ser.
@@ -51,7 +51,12 @@ export default function HomePage() {
               <Link href="/biblioteca/livros">Explorar Biblioteca</Link>
             </Button>
 
-            <Button variant="outline" size="lg" asChild className="text-base sm:text-sm">
+            <Button
+              variant="outline"
+              size="lg"
+              asChild
+              className="text-base sm:text-sm"
+            >
               <Link href="/softwares">Ver Softwares de Engenharia</Link>
             </Button>
           </div>
@@ -68,12 +73,12 @@ export default function HomePage() {
           <CarouselContent>
             {imgCarousel.map((item, index) => (
               <CarouselItem key={index}>
-                <div className="text-muted-foreground relative z-0 flex h-60 sm:h-80 md:h-100 w-full sm:w-115 items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl text-lg">
+                <div className="text-muted-foreground relative z-0 flex h-60 w-full items-center justify-center rounded-xl bg-transparent text-lg shadow sm:h-80 sm:w-115 sm:rounded-2xl md:h-100">
                   <Image
                     src={item.src}
                     alt={item.alt}
                     fill
-                    className="z-0 object-cover"
+                    className="absolute -top-10 z-0 object-cover"
                   />
                 </div>
               </CarouselItem>
@@ -88,28 +93,32 @@ export default function HomePage() {
 
       {/* CORE FEATURES */}
       <section className="space-y-6 sm:space-y-8 md:space-y-10">
-        <header className="space-y-2 sm:space-y-3 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold">O que você encontra na Star B</h2>
-          <p className="text-muted-foreground text-base sm:text-sm mx-auto max-w-2xl">
+        <header className="space-y-2 text-center sm:space-y-3">
+          <h2 className="text-2xl font-bold sm:text-3xl">
+            O que você encontra na Star B
+          </h2>
+          <p className="text-muted-foreground mx-auto max-w-2xl text-base sm:text-sm">
             Aqui o foco é domínio intelectual: entender conceitos, ferramentas e
             tecnologias de forma estruturada para aplicação profissional real.
           </p>
         </header>
 
-        <div className="grid gap-4 sm:gap-5 md:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 md:gap-6 lg:grid-cols-4">
           {recursosHome.map((f) => (
             <Tooltip key={f.href}>
               <TooltipTrigger asChild>
                 <Link
                   href={f.href}
-                  className="relative block rounded-lg sm:rounded-xl md:rounded-2xl border p-4 sm:p-5 md:p-6 transition hover:shadow-md"
+                  className="relative block rounded-lg border p-4 transition hover:shadow-md sm:rounded-xl sm:p-5 md:rounded-2xl md:p-6"
                 >
                   {f.badge && (
-                    <span className="absolute top-2 sm:top-3 right-2 sm:right-3 rounded-full border px-2 py-0.5 text-xs">
+                    <span className="absolute top-2 right-2 rounded-full border px-2 py-0.5 text-xs sm:top-3 sm:right-3">
                       {f.badge}
                     </span>
                   )}
-                  <h3 className="font-semibold text-base sm:text-sm">{f.titulo}</h3>
+                  <h3 className="text-base font-semibold sm:text-sm">
+                    {f.titulo}
+                  </h3>
                   <p className="text-muted-foreground mt-2 text-xs sm:text-sm">
                     {f.descricao}
                   </p>
@@ -125,21 +134,25 @@ export default function HomePage() {
 
       {/* PREMIUM CONTENT */}
       <section className="space-y-6 sm:space-y-8 md:space-y-10">
-        <header className="space-y-2 sm:space-y-3 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold">Conteúdo Avançado (Premium)</h2>
-          <p className="text-muted-foreground text-base sm:text-sm mx-auto max-w-2xl">
+        <header className="space-y-2 text-center sm:space-y-3">
+          <h2 className="text-2xl font-bold sm:text-3xl">
+            Conteúdo Avançado (Premium)
+          </h2>
+          <p className="text-muted-foreground mx-auto max-w-2xl text-base sm:text-sm">
             Para quem deseja ir além do estudo teórico e entrar em domínio
             profissional avançado, a Star B disponibiliza uma área premium com
             acesso a materiais de alto nível.
           </p>
         </header>
 
-        <div className="grid gap-4 sm:gap-5 md:gap-6 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 md:gap-6">
           {itenssPremium.map((item) => (
             <Sheet key={item.href}>
               <SheetTrigger asChild>
-                <div className="cursor-pointer rounded-lg sm:rounded-xl md:rounded-2xl border p-4 sm:p-5 md:p-6 transition hover:shadow-md">
-                  <h3 className="font-semibold text-base sm:text-sm">{item.titulo}</h3>
+                <div className="cursor-pointer rounded-lg border p-4 transition hover:shadow-md sm:rounded-xl sm:p-5 md:rounded-2xl md:p-6">
+                  <h3 className="text-base font-semibold sm:text-sm">
+                    {item.titulo}
+                  </h3>
                   <p className="text-muted-foreground mt-2 text-xs sm:text-sm">
                     {item.descricao}
                   </p>
@@ -174,11 +187,11 @@ export default function HomePage() {
       <Separator />
 
       {/* FINAL CTA */}
-      <section className="space-y-4 sm:space-y-6 text-center">
-        <h2 className="text-2xl sm:text-3xl font-bold">
+      <section className="space-y-4 text-center sm:space-y-6">
+        <h2 className="text-2xl font-bold sm:text-3xl">
           Aqui você não aprende por curiosidade. Você estuda para dominar.
         </h2>
-        <p className="text-muted-foreground text-base sm:text-sm mx-auto max-w-2xl">
+        <p className="text-muted-foreground mx-auto max-w-2xl text-base sm:text-sm">
           A Star B foi construída para quem leva conhecimento técnico a sério:
           estudantes exigentes, engenheiros em formação e profissionais que
           querem elevar seu nível intelectual.

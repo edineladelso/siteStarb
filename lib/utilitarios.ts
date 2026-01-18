@@ -4,18 +4,18 @@
  */
 
 import {
-  Livro,
-  Software,
-  Projeto,
-  Usuario,
-  FiltrosPesquisa,
-  ResultadoPesquisa,
-  TipoConteudo,
-  NivelAcesso,
   EstatisticasLivro,
-  EstatisticasSoftware,
   EstatisticasProjeto,
-} from './tipos';
+  EstatisticasSoftware,
+  FiltrosPesquisa,
+  Livro,
+  NivelAcesso,
+  Projeto,
+  ResultadoPesquisa,
+  Software,
+  TipoConteudo,
+  Usuario,
+} from "./tipos";
 
 // ============================================
 // FUNÇÕES DE FILTRO
@@ -23,23 +23,23 @@ import {
 
 export function filtrarLivrosPorCategoria(
   livros: Livro[],
-  categoria: string
+  categoria: string,
 ): Livro[] {
-  return livros.filter((livro) =>
-    livro.categoria.toLowerCase() === categoria.toLowerCase()
+  return livros.filter(
+    (livro) => livro.categoria.toLowerCase() === categoria.toLowerCase(),
   );
 }
 
 export function filtrarPorTipo(
   recurso: Livro | Software | Projeto,
-  tipo: TipoConteudo
+  tipo: TipoConteudo,
 ): boolean {
   return recurso.tipo === tipo;
 }
 
 export function filtrarPorNivel(
   usuario: Usuario,
-  nivelMinimo: NivelAcesso
+  nivelMinimo: NivelAcesso,
 ): boolean {
   const niveis = [
     NivelAcesso.VISITANTE,
@@ -55,7 +55,9 @@ export function filtrarPorNivel(
   return indexUsuario >= indexMinimo;
 }
 
-export function filtrarNovos(recursos: (Livro | Software | Projeto)[]): (Livro | Software | Projeto)[] {
+export function filtrarNovos(
+  recursos: (Livro | Software | Projeto)[],
+): (Livro | Software | Projeto)[] {
   return recursos.filter((r) => r.eNovo);
 }
 
@@ -63,7 +65,7 @@ export function aplicarFiltrosPesquisa(
   livros: Livro[],
   softwares: Software[],
   projetos: Projeto[],
-  filtros: FiltrosPesquisa
+  filtros: FiltrosPesquisa,
 ): ResultadoPesquisa[] {
   const resultados: ResultadoPesquisa[] = [];
 
@@ -74,7 +76,7 @@ export function aplicarFiltrosPesquisa(
   }
   if (filtros.tipo) {
     livrosFiltrados = livrosFiltrados.filter((l) =>
-      filtrarPorTipo(l, filtros.tipo!)
+      filtrarPorTipo(l, filtros.tipo!),
     );
   }
   if (filtros.apenasNovos) {
@@ -86,23 +88,23 @@ export function aplicarFiltrosPesquisa(
       id: livro.id,
       titulo: livro.titulo,
       descricao: livro.descricao,
-      tipo: 'livro' as const,
+      tipo: "livro" as const,
       capa: livro.urls.capa?.url,
       popularidade: livro.popularidade,
       href: `/biblioteca/livros/${livro.id}`,
-    }))
+    })),
   );
 
   // Filtrar softwares
   let softwaresFiltrados = softwares;
   if (filtros.categoria) {
     softwaresFiltrados = softwares.filter(
-      (s) => s.categoria.toLowerCase() === filtros.categoria!.toLowerCase()
+      (s) => s.categoria.toLowerCase() === filtros.categoria!.toLowerCase(),
     );
   }
   if (filtros.tipo) {
     softwaresFiltrados = softwaresFiltrados.filter((s) =>
-      filtrarPorTipo(s, filtros.tipo!)
+      filtrarPorTipo(s, filtros.tipo!),
     );
   }
   if (filtros.apenasNovos) {
@@ -114,18 +116,18 @@ export function aplicarFiltrosPesquisa(
       id: software.id,
       titulo: software.nome,
       descricao: software.descricao,
-      tipo: 'software' as const,
+      tipo: "software" as const,
       capa: software.urls.capa?.url,
       popularidade: software.popularidade,
       href: `/softwares/${software.id}`,
-    }))
+    })),
   );
 
   // Filtrar projetos
   let projetosFiltrados = projetos;
   if (filtros.tipo) {
     projetosFiltrados = projetosFiltrados.filter((p) =>
-      filtrarPorTipo(p, filtros.tipo!)
+      filtrarPorTipo(p, filtros.tipo!),
     );
   }
   if (filtros.apenasNovos) {
@@ -137,22 +139,22 @@ export function aplicarFiltrosPesquisa(
       id: projeto.id,
       titulo: projeto.titulo,
       descricao: projeto.descricao,
-      tipo: 'projeto' as const,
+      tipo: "projeto" as const,
       capa: projeto.urls.capa?.url,
       popularidade: projeto.popularidade,
       href: `/projetos/${projeto.id}`,
-    }))
+    })),
   );
 
   // Aplicar ordenação
   if (filtros.ordenacao) {
     resultados.sort((a, b) => {
       switch (filtros.ordenacao) {
-        case 'recente':
+        case "recente":
           return 0;
-        case 'populares':
+        case "populares":
           return b.popularidade - a.popularidade;
-        case 'avaliacao':
+        case "avaliacao":
           return 0;
         default:
           return 0;
@@ -167,42 +169,36 @@ export function aplicarFiltrosPesquisa(
 // FUNÇÕES DE BUSCA
 // ============================================
 
-export function buscarLivros(
-  livros: Livro[],
-  termo: string
-): Livro[] {
+export function buscarLivros(livros: Livro[], termo: string): Livro[] {
   const termoLower = termo.toLowerCase();
   return livros.filter(
     (livro) =>
       livro.titulo.toLowerCase().includes(termoLower) ||
       livro.descricao.toLowerCase().includes(termoLower) ||
-      livro.tags.some((tag) => tag.toLowerCase().includes(termoLower))
+      livro.tags.some((tag) => tag.toLowerCase().includes(termoLower)),
   );
 }
 
 export function buscarSoftwares(
   softwares: Software[],
-  termo: string
+  termo: string,
 ): Software[] {
   const termoLower = termo.toLowerCase();
   return softwares.filter(
     (software) =>
       software.nome.toLowerCase().includes(termoLower) ||
       software.descricao.toLowerCase().includes(termoLower) ||
-      software.tags.some((tag) => tag.toLowerCase().includes(termoLower))
+      software.tags.some((tag) => tag.toLowerCase().includes(termoLower)),
   );
 }
 
-export function buscarProjetos(
-  projetos: Projeto[],
-  termo: string
-): Projeto[] {
+export function buscarProjetos(projetos: Projeto[], termo: string): Projeto[] {
   const termoLower = termo.toLowerCase();
   return projetos.filter(
     (projeto) =>
       projeto.titulo.toLowerCase().includes(termoLower) ||
       projeto.descricao.toLowerCase().includes(termoLower) ||
-      projeto.tags.some((tag) => tag.toLowerCase().includes(termoLower))
+      projeto.tags.some((tag) => tag.toLowerCase().includes(termoLower)),
   );
 }
 
@@ -211,36 +207,36 @@ export function buscarProjetos(
 // ============================================
 
 export function formatarData(data: Date): string {
-  return new Intl.DateTimeFormat('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
   }).format(data);
 }
 
 export function formatarDataCompleta(data: Date): string {
-  return new Intl.DateTimeFormat('pt-BR', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   }).format(data);
 }
 
-export function formatarPreco(preco: number, moeda: string = 'BRL'): string {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
+export function formatarPreco(preco: number, moeda: string = "BRL"): string {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
     currency: moeda,
   }).format(preco);
 }
 
 export function formatarNumeros(numero: number): string {
   if (numero >= 1_000_000) {
-    return (numero / 1_000_000).toFixed(1) + 'M';
+    return (numero / 1_000_000).toFixed(1) + "M";
   }
   if (numero >= 1_000) {
-    return (numero / 1_000).toFixed(1) + 'K';
+    return (numero / 1_000).toFixed(1) + "K";
   }
   return numero.toString();
 }
@@ -251,7 +247,7 @@ export function formatarNumeros(numero: number): string {
 
 export function usuarioPodeAcessar(
   usuario: Usuario,
-  recurso: Livro | Software | Projeto
+  recurso: Livro | Software | Projeto,
 ): boolean {
   // Recursos gratuitos são acessíveis para todos
   if (recurso.tipo === TipoConteudo.LIVRE) {
@@ -282,26 +278,26 @@ export function usuarioPodeAcessarIA(usuario: Usuario): boolean {
 
 export function verificarPermissaoDownload(
   livro: Livro,
-  usuario: Usuario
+  usuario: Usuario,
 ): { permitido: boolean; motivo?: string } {
   if (!livro.permissaoDownload.permitido) {
     return {
       permitido: false,
-      motivo: 'O publicador não permite downloads deste livro',
+      motivo: "O publicador não permite downloads deste livro",
     };
   }
 
   if (!usuarioPodeAcessar(usuario, livro)) {
     return {
       permitido: false,
-      motivo: 'Você não tem acesso a este recurso',
+      motivo: "Você não tem acesso a este recurso",
     };
   }
 
   if (!usuarioPodeDownload(usuario)) {
     return {
       permitido: false,
-      motivo: 'Seu plano não permite downloads',
+      motivo: "Seu plano não permite downloads",
     };
   }
 
@@ -314,25 +310,32 @@ export function verificarPermissaoDownload(
 
 export function calcularTaxaCrescimento(
   estatisticasAntigas: number,
-  estatisticasNovas: number
+  estatisticasNovas: number,
 ): number {
   if (estatisticasAntigas === 0) return 0;
-  return ((estatisticasNovas - estatisticasAntigas) / estatisticasAntigas) * 100;
+  return (
+    ((estatisticasNovas - estatisticasAntigas) / estatisticasAntigas) * 100
+  );
 }
 
-export function obterTendencia(recurso: Livro | Software | Projeto): 'em_alta' | 'estavel' | 'em_baixa' {
-  const { views, downloads } = recurso.estatisticas as EstatisticasLivro | EstatisticasSoftware | EstatisticasProjeto;
-  
+export function obterTendencia(
+  recurso: Livro | Software | Projeto,
+): "em_alta" | "estavel" | "em_baixa" {
+  const { views, downloads } = recurso.estatisticas as
+    | EstatisticasLivro
+    | EstatisticasSoftware
+    | EstatisticasProjeto;
+
   const proporacao = downloads / (views || 1);
-  
-  if (proporacao > 0.3) return 'em_alta';
-  if (proporacao > 0.1) return 'estavel';
-  return 'em_baixa';
+
+  if (proporacao > 0.3) return "em_alta";
+  if (proporacao > 0.1) return "estavel";
+  return "em_baixa";
 }
 
 export function obterRecursosPopulares(
   recursosy: (Livro | Software | Projeto)[],
-  limite: number = 10
+  limite: number = 10,
 ): (Livro | Software | Projeto)[] {
   return recursosy
     .sort((a, b) => b.popularidade - a.popularidade)
@@ -341,12 +344,22 @@ export function obterRecursosPopulares(
 
 export function obterRecursosMaisVisualizados(
   recursos: (Livro | Software | Projeto)[],
-  limite: number = 10
+  limite: number = 10,
 ): (Livro | Software | Projeto)[] {
   return recursos
     .sort((a, b) => {
-      const viewsA = (a.estatisticas as EstatisticasLivro | EstatisticasSoftware | EstatisticasProjeto).views;
-      const viewsB = (b.estatisticas as EstatisticasLivro | EstatisticasSoftware | EstatisticasProjeto).views;
+      const viewsA = (
+        a.estatisticas as
+          | EstatisticasLivro
+          | EstatisticasSoftware
+          | EstatisticasProjeto
+      ).views;
+      const viewsB = (
+        b.estatisticas as
+          | EstatisticasLivro
+          | EstatisticasSoftware
+          | EstatisticasProjeto
+      ).views;
       return viewsB - viewsA;
     })
     .slice(0, limite);
@@ -357,7 +370,7 @@ export function obterRecursosMaisVisualizados(
 // ============================================
 
 export function extrairTagsUnicas(
-  recursos: (Livro | Software | Projeto)[]
+  recursos: (Livro | Software | Projeto)[],
 ): string[] {
   const tags = new Set<string>();
   recursos.forEach((recurso) => {
@@ -366,9 +379,7 @@ export function extrairTagsUnicas(
   return Array.from(tags).sort();
 }
 
-export function agruparPorCategoria(
-  livros: Livro[]
-): Record<string, Livro[]> {
+export function agruparPorCategoria(livros: Livro[]): Record<string, Livro[]> {
   return livros.reduce(
     (acc, livro) => {
       if (!acc[livro.categoria]) {
@@ -377,15 +388,15 @@ export function agruparPorCategoria(
       acc[livro.categoria].push(livro);
       return acc;
     },
-    {} as Record<string, Livro[]>
+    {} as Record<string, Livro[]>,
   );
 }
 
 export function obterAutorPrincipal(
-  recurso: Livro | Software | Projeto
+  recurso: Livro | Software | Projeto,
 ): string {
-  const autorPrincipal = recurso.autores.find((c) => c.tipo === 'autor');
-  return autorPrincipal?.autor.nome || 'Desconhecido';
+  const autorPrincipal = recurso.autores.find((c) => c.tipo === "autor");
+  return autorPrincipal?.autor.nome || "Desconhecido";
 }
 
 // ============================================
@@ -397,11 +408,11 @@ export function gerarURLCloudinary(
   opcoes?: {
     largura?: number;
     altura?: number;
-    qualidade?: 'auto' | 'low' | 'medium' | 'high';
-    formato?: 'auto' | 'webp' | 'jpg' | 'png';
-  }
+    qualidade?: "auto" | "low" | "medium" | "high";
+    formato?: "auto" | "webp" | "jpg" | "png";
+  },
 ): string {
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_NAME || 'starb';
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_NAME || "starb";
   let url = `https://res.cloudinary.com/${cloudName}/image/upload`;
 
   const transformacoes: string[] = [];
@@ -423,9 +434,9 @@ export function gerarURLCloudinary(
   }
 
   if (transformacoes.length > 0) {
-    url += `/${transformacoes.join(',')}/`;
+    url += `/${transformacoes.join(",")}/`;
   } else {
-    url += '/';
+    url += "/";
   }
 
   return url + publicId;
@@ -434,12 +445,12 @@ export function gerarURLCloudinary(
 export function obterURLCapaOtimizada(
   publicId: string,
   largura: number = 400,
-  altura: number = 600
+  altura: number = 600,
 ): string {
   return gerarURLCloudinary(publicId, {
     largura,
     altura,
-    qualidade: 'high',
-    formato: 'auto',
+    qualidade: "high",
+    formato: "auto",
   });
 }

@@ -7,28 +7,28 @@
 // TIPOS
 // ============================================
 
-export * from './tipos';
+export * from "./tipos";
 
 // ============================================
 // DADOS
 // ============================================
 
-export * from './dados';
+export * from "./dados";
 
 // ============================================
 // UTILITÁRIOS
 // ============================================
 
-export * from './utilitarios';
+export * from "./utilitarios";
 
 // ============================================
 // CONFIGURAÇÃO
 // ============================================
 
-export * from './configuracao';
+export * from "./configuracao";
 
 // ============================================
 // UTILS (CN - CLASSNAME)
 // ============================================
 
-export { cn } from './utils';
+export { cn } from "./utils";

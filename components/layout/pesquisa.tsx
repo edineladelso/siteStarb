@@ -1,7 +1,5 @@
 "use client";
 
-import * as React from "react";
-import { Search } from "lucide-react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -12,6 +10,8 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command";
+import { Search } from "lucide-react";
+import * as React from "react";
 import { Button } from "../ui/button";
 
 export default function Pesquisa() {
@@ -30,33 +30,33 @@ export default function Pesquisa() {
   }, []);
 
   return (
-    <> 
-    <Button
-     onClick={() => setOpen(true)}
-     size={"sm"}
-     className="flex items-center gap-2 bg- border text-muted-foreground hover:text-foreground transition-colors"
-     >
-      <Search className="w-4 h-5"/>
-      <span className="hidden lg:inline-flex text-sm font-medium">
-        Pesquisar...
-        </span>
-      <kbd 
-      className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded bg-gray-700 p-2 font-mono text-[10px] font-medium text-white opacity-100 lg:inline-flex"
+    <>
+      <Button
+        onClick={() => setOpen(true)}
+        size={"sm"}
+        className="bg- text-muted-foreground hover:text-foreground flex items-center justify-between gap-2 border transition-colors sm:w-60"
       >
-        <span className="text-xs">⌘k</span>
-      </kbd>
-    </Button>
-    <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Comando ou pesquisa..." />
-      <CommandList>
-        <CommandEmpty>Sem resultado encontrado.</CommandEmpty>
-        <CommandGroup heading="Sugestões">
-          <CommandItem>Matematica</CommandItem>
-          <CommandItem>Engenharia</CommandItem>
-          <CommandItem>Software</CommandItem>
-        </CommandGroup>
-        <CommandSeparator />
-        <CommandGroup heading="Definições">
+        <div className="flex items-center gap-2">
+          <Search className="h-5 w-4" />
+          <span className="hidden text-sm font-medium lg:inline-flex">
+            Pesquisar...
+          </span>
+        </div>
+        <kbd className="pointer-events-none hidden h-5 items-center gap-1 rounded bg-gray-700 p-2 font-mono text-[10px] font-medium text-white opacity-100 select-none lg:inline-flex">
+          <span className="text-xs">⌘k</span>
+        </kbd>
+      </Button>
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <CommandInput placeholder="Comando ou pesquisa..." />
+        <CommandList>
+          <CommandEmpty>Sem resultado encontrado.</CommandEmpty>
+          <CommandGroup heading="Sugestões">
+            <CommandItem>Matematica</CommandItem>
+            <CommandItem>Engenharia</CommandItem>
+            <CommandItem>Software</CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Definições">
             <CommandItem>
               Perfil
               <CommandShortcut>⌘P</CommandShortcut>
@@ -69,9 +69,9 @@ export default function Pesquisa() {
               Definições
               <CommandShortcut>⌘S</CommandShortcut>
             </CommandItem>
-        </CommandGroup>
-      </CommandList>
-    </CommandDialog>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
     </>
   );
 }

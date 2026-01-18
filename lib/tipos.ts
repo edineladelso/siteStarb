@@ -33,6 +33,7 @@ export enum TipoMidia {
   VIDEO = 'video',
   AUDIO = 'audio',
   DOCUMENTO = 'documento',
+  SOFTWARE = 'software'
 }
 
 // ============================================
@@ -99,6 +100,7 @@ export interface EstatisticasLivro {
 export interface Livro {
   id: string;
   titulo: string;
+  editora: string,
   descricao: string;
   descricaoCompleta?: string;
   autores: Credito[];
@@ -108,7 +110,6 @@ export interface Livro {
   urls: URLsRecursos;
   issn?: string;
   isbn?: string;
-  editora?: string;
   anoPublicacao: number;
   idioma: string;
   paginas?: number;
@@ -134,21 +135,13 @@ export interface EspecificacoesSistema {
   processador?: string;
 }
 
-export interface RecursosSoftware {
-  suportaPlugins: boolean;
-  scriptable: boolean;
-  api?: string;
-  documentsaoUrl?: string;
-  comunidadeSize: 'pequena' | 'media' | 'grande';
-}
-
 export interface EstatisticasSoftware {
   downloads: number;
   versaoAtual: string;
   views: number;
-  avaliacaoMedia: number;
-  totalAvaliacoes: number;
-  dataUltimaAtualizacao: Date;
+  avaliacaoMedia?: number;
+  totalAvaliacoes?: number;
+  dataUltimaAtualizacao?: Date;
 }
 
 export interface Software {
@@ -166,7 +159,6 @@ export interface Software {
   versao: string;
   licenca: string;
   especificacoes: EspecificacoesSistema;
-  recursos: RecursosSoftware;
   estatisticas: EstatisticasSoftware;
   dataCriacao: Date;
   dataPublicacao: Date;

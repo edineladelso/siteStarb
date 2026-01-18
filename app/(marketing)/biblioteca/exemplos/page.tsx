@@ -3,39 +3,32 @@
  * Demonstra como usar toda a arquitetura centralizada em um componente real
  */
 
-'use client';
+"use client";
 
-import { useState, useMemo } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import Link from "next/link";
+import { useMemo, useState } from "react";
 
 // Importar tudo da lib centralizada
 import {
   // Tipos
   type Livro,
   type Usuario,
+  LIMITES_SISTEMA,
   TipoConteudo,
-  NivelAcesso,
-
-  // Dados
-  livrosExemplo,
-  usuarioExemplo,
+  buscarLivros,
   categoriasLivros,
-
+  extrairTagsUnicas,
   // Funções
   filtrarLivrosPorCategoria,
-  buscarLivros,
   formatarData,
-  obterRecursosPopulares,
+  // Dados
+  livrosExemplo,
   obterAutorPrincipal,
+  obterRecursosPopulares,
+  usuarioExemplo,
   usuarioPodeAcessar,
   verificarPermissaoDownload,
-  extrairTagsUnicas,
-
-  // Configurações
-  CATEGORIAS_LIVROS,
-  LIMITES_SISTEMA,
-} from '@/lib';
+} from "@/lib";
 
 /**
  * Componente de exemplo: Página de Biblioteca
@@ -43,8 +36,8 @@ import {
  */
 export default function BibliotecaPaginaExemplo() {
   // Estado local
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>('');
-  const [termosBusca, setTermosBusca] = useState<string>('');
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>("");
+  const [termosBusca, setTermosBusca] = useState<string>("");
   const [usuarioAtual] = useState<Usuario>(usuarioExemplo);
 
   // Filtrar livros
@@ -65,18 +58,15 @@ export default function BibliotecaPaginaExemplo() {
   }, [categoriaSelecionada, termosBusca]);
 
   // Obter livros populares
-  const populares = useMemo(
-    () => obterRecursosPopulares(livrosExemplo, 3),
-    []
-  );
+  const populares = useMemo(() => obterRecursosPopulares(livrosExemplo, 3), []);
 
   // Extrair todas as tags únicas
   const tags = useMemo(() => extrairTagsUnicas(livrosExemplo), []);
 
   return (
-    <main className="max-w-6xl mx-auto p-6 space-y-8">
+    <main className="mx-auto max-w-6xl space-y-8 p-6">
       {/* ========== SEÇÃO HERO ========== */}
-      <section className="text-center space-y-4">
+      <section className="space-y-4 text-center">
         <h1 className="text-4xl font-bold">Biblioteca Star B</h1>
         <p className="text-gray-600">
           Acervo completo de livros técnicos para engenharia e programação
@@ -84,9 +74,9 @@ export default function BibliotecaPaginaExemplo() {
       </section>
 
       {/* ========== BARRA DE BUSCA ========== */}
-      <section className="bg-gray-50 p-6 rounded-lg space-y-4">
+      <section className="space-y-4 rounded-lg bg-gray-50 p-6">
         <div>
-          <label htmlFor="search" className="block text-sm font-medium mb-2">
+          <label htmlFor="search" className="mb-2 block text-sm font-medium">
             Buscar Livros
           </label>
           <input
@@ -95,19 +85,19 @@ export default function BibliotecaPaginaExemplo() {
             placeholder="Digite título, descrição ou tags..."
             value={termosBusca}
             onChange={(e) => setTermosBusca(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2"
+            className="w-full rounded-lg border px-4 py-2 focus:ring-2 focus:outline-none"
           />
         </div>
 
         <div>
-          <label htmlFor="category" className="block text-sm font-medium mb-2">
+          <label htmlFor="category" className="mb-2 block text-sm font-medium">
             Categoria
           </label>
           <select
             id="category"
             value={categoriaSelecionada}
             onChange={(e) => setCategoriaSelecionada(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2"
+            className="w-full rounded-lg border px-4 py-2 focus:ring-2 focus:outline-none"
           >
             <option value="">Todas as categorias</option>
             {categoriasLivros.map((cat) => (
@@ -126,13 +116,9 @@ export default function BibliotecaPaginaExemplo() {
       {/* ========== LIVROS MAIS POPULARES ========== */}
       <section className="space-y-4">
         <h2 className="text-2xl font-bold">🔥 Em Destaque</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {(populares as Livro[]).map((livro) => (
-            <CartaLivro
-              key={livro.id}
-              livro={livro}
-              usuario={usuarioAtual}
-            />
+            <CartaLivro key={livro.id} livro={livro} usuario={usuarioAtual} />
           ))}
         </div>
       </section>
@@ -142,20 +128,22 @@ export default function BibliotecaPaginaExemplo() {
         <h2 className="text-2xl font-bold">Todos os Livros</h2>
 
         {livrosFiltrados.length === 0 ? (
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
+          <div className="rounded-lg bg-gray-50 py-12 text-center">
             <p className="text-gray-500">
               Nenhum livro encontrado com esses critérios.
             </p>
           </div>
         ) : (
           <div className="space-y-4">
-            {livrosFiltrados.slice(0, LIMITES_SISTEMA.itensPorPagina).map((livro) => (
-              <CartaLivroCompleta
-                key={livro.id}
-                livro={livro}
-                usuario={usuarioAtual}
-              />
-            ))}
+            {livrosFiltrados
+              .slice(0, LIMITES_SISTEMA.itensPorPagina)
+              .map((livro) => (
+                <CartaLivroCompleta
+                  key={livro.id}
+                  livro={livro}
+                  usuario={usuarioAtual}
+                />
+              ))}
           </div>
         )}
       </section>
@@ -168,7 +156,7 @@ export default function BibliotecaPaginaExemplo() {
             <button
               key={tag}
               onClick={() => setTermosBusca(tag)}
-              className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition"
+              className="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800 transition hover:bg-blue-200"
             >
               #{tag}
             </button>
@@ -177,7 +165,7 @@ export default function BibliotecaPaginaExemplo() {
       </section>
 
       {/* ========== INFORMAÇÕES DO USUÁRIO ========== */}
-      <section className="bg-blue-50 p-6 rounded-lg space-y-2">
+      <section className="space-y-2 rounded-lg bg-blue-50 p-6">
         <h3 className="text-lg font-bold">Seu Acesso</h3>
         <p>
           <strong>Usuário:</strong> {usuarioAtual.nomeCompleto}
@@ -189,8 +177,8 @@ export default function BibliotecaPaginaExemplo() {
           <strong>Plano:</strong> {usuarioAtual.subscricao.plano.nome}
         </p>
         <p>
-          <strong>Downloads permitidos:</strong>{' '}
-          {usuarioAtual.subscricao.plano.acessoDownloads ? '✅ Sim' : '❌ Não'}
+          <strong>Downloads permitidos:</strong>{" "}
+          {usuarioAtual.subscricao.plano.acessoDownloads ? "✅ Sim" : "❌ Não"}
         </p>
       </section>
     </main>
@@ -210,18 +198,18 @@ function CartaLivro({ livro, usuario }: CartaLivroProps) {
   const permissao = verificarPermissaoDownload(livro, usuario);
 
   return (
-    <div className="border rounded-lg overflow-hidden hover:shadow-lg transition">
+    <div className="overflow-hidden rounded-lg border transition hover:shadow-lg">
       {/* Imagem */}
       {livro.urls.capa && (
         <div className="relative h-48 bg-gray-200">
-          <Image
+          {/* <Image
             src={livro.urls.capa.url}
             alt={livro.titulo}
             fill
             className="object-cover"
-          />
+          /> */}
           {livro.eNovo && (
-            <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
+            <div className="absolute top-2 right-2 rounded bg-red-500 px-2 py-1 text-xs font-bold text-white">
               NOVO
             </div>
           )}
@@ -229,12 +217,10 @@ function CartaLivro({ livro, usuario }: CartaLivroProps) {
       )}
 
       {/* Conteúdo */}
-      <div className="p-4 space-y-2">
-        <h3 className="font-bold line-clamp-2">{livro.titulo}</h3>
+      <div className="space-y-2 p-4">
+        <h3 className="line-clamp-2 font-bold">{livro.titulo}</h3>
 
-        <p className="text-sm text-gray-600 line-clamp-2">
-          {livro.descricao}
-        </p>
+        <p className="line-clamp-2 text-sm text-gray-600">{livro.descricao}</p>
 
         <div className="flex justify-between text-xs text-gray-500">
           <span>👁️ {livro.estatisticas.views}</span>
@@ -244,17 +230,17 @@ function CartaLivro({ livro, usuario }: CartaLivroProps) {
 
         <div className="flex gap-2 pt-2">
           <span
-            className={`text-xs px-2 py-1 rounded ${
+            className={`rounded px-2 py-1 text-xs ${
               livro.tipo === TipoConteudo.LIVRE
-                ? 'bg-green-100 text-green-800'
-                : 'bg-purple-100 text-purple-800'
+                ? "bg-green-100 text-green-800"
+                : "bg-purple-100 text-purple-800"
             }`}
           >
-            {livro.tipo === TipoConteudo.LIVRE ? '🆓 Grátis' : '💰 Pago'}
+            {livro.tipo === TipoConteudo.LIVRE ? "🆓 Grátis" : "💰 Pago"}
           </span>
 
           {!podeAcessar && (
-            <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded">
+            <span className="rounded bg-yellow-100 px-2 py-1 text-xs text-yellow-800">
               🔒 Restrito
             </span>
           )}
@@ -266,7 +252,7 @@ function CartaLivro({ livro, usuario }: CartaLivroProps) {
 
         <Link
           href={`/biblioteca/livros/${livro.id}`}
-          className="block w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition text-sm font-medium"
+          className="block w-full rounded bg-blue-500 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-600"
         >
           Ver Detalhes
         </Link>
@@ -283,23 +269,23 @@ function CartaLivroCompleta({ livro, usuario }: CartaLivroProps) {
   const podeAcessar = usuarioPodeAcessar(usuario, livro);
 
   return (
-    <div className="border rounded-lg p-4 hover:bg-gray-50 transition">
+    <div className="rounded-lg border p-4 transition hover:bg-gray-50">
       <div className="flex gap-4">
         {/* Imagem */}
         {livro.urls.capa && (
-          <div className="relative w-24 h-32 flex-shrink-0">
-            <Image
+          <div className="relative h-32 w-24 shrink-0">
+            {/* <Image
               src={livro.urls.capa.url}
               alt={livro.titulo}
               fill
               className="object-cover rounded"
-            />
+            /> */}
           </div>
         )}
 
         {/* Info */}
-        <div className="flex-grow space-y-2">
-          <div className="flex justify-between items-start">
+        <div className="grow space-y-2">
+          <div className="flex items-start justify-between">
             <div>
               <h3 className="text-lg font-bold">{livro.titulo}</h3>
               <p className="text-sm text-gray-600">por {autor}</p>
@@ -317,22 +303,22 @@ function CartaLivroCompleta({ livro, usuario }: CartaLivroProps) {
           <p className="text-sm text-gray-700">{livro.descricao}</p>
 
           <div className="flex flex-wrap gap-2">
-            <span className="text-xs bg-gray-200 px-2 py-1 rounded">
+            <span className="rounded bg-gray-200 px-2 py-1 text-xs">
               {livro.categoria}
             </span>
             {livro.isbn && (
-              <span className="text-xs bg-gray-200 px-2 py-1 rounded">
+              <span className="rounded bg-gray-200 px-2 py-1 text-xs">
                 ISBN: {livro.isbn}
               </span>
             )}
             <span
-              className={`text-xs px-2 py-1 rounded ${
+              className={`rounded px-2 py-1 text-xs ${
                 livro.tipo === TipoConteudo.LIVRE
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-purple-100 text-purple-800'
+                  ? "bg-green-100 text-green-800"
+                  : "bg-purple-100 text-purple-800"
               }`}
             >
-              {livro.tipo === TipoConteudo.LIVRE ? 'Grátis' : 'Pago'}
+              {livro.tipo === TipoConteudo.LIVRE ? "Grátis" : "Pago"}
             </span>
           </div>
 
@@ -353,7 +339,7 @@ function CartaLivroCompleta({ livro, usuario }: CartaLivroProps) {
 
           <Link
             href={`/biblioteca/livros/${livro.id}`}
-            className="inline-block text-blue-600 hover:underline text-sm font-medium"
+            className="inline-block text-sm font-medium text-blue-600 hover:underline"
           >
             Abrir Livro →
           </Link>
