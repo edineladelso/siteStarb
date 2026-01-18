@@ -24,11 +24,13 @@ import {
 } from "@/components/ui/tooltip";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 import imgCarousel from "@/components/property/carouselProperty";
 import { itenssPremium, recursosHome } from "@/lib/dados";
 
-export default function HomePage() {
+// Force client-side only rendering to prevent build-time issues
+const HomePage = () => {
   return (
     <main className="mx-auto max-w-6xl space-y-10 px-4 py-6 sm:space-y-16 sm:px-6 sm:py-12 md:space-y-20">
       {/* HERO */}
@@ -65,7 +67,7 @@ export default function HomePage() {
         {/* Visual / Carousel */}
         <Carousel
           opts={{
-            loop: true, // Esta opção ativa o scroll infinito
+            loop: true,
             align: "start",
           }}
           className="z-0 w-full rounded-xl sm:rounded-2xl"
@@ -203,4 +205,9 @@ export default function HomePage() {
       </section>
     </main>
   );
-}
+};
+
+// Export as dynamic component to ensure client-side only rendering
+export default dynamic(() => Promise.resolve(HomePage), {
+  ssr: false,
+});
