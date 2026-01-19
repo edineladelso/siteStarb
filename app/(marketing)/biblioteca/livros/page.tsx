@@ -638,7 +638,7 @@ function LivroCard({
                         : "from-slate-400 via-gray-500 to-zinc-600"
             } flex items-center justify-center transition-transform duration-500 group-hover:scale-110`}
           >
-            <div className="p-4 text-center text-white">
+            <div className="px-4 text-center text-white">
               <svg
                 className={`${compact ? "h-12 w-12" : "h-16 w-16"} mx-auto mb-2 opacity-90`}
                 fill="currentColor"
@@ -653,8 +653,8 @@ function LivroCard({
           </div>
         </div>
       </CardHeader>
-
-      <CardContent className="space-y-2 px-3 pt-3 pb-2">
+{/* estava aqui */}
+      <CardContent className="px-3">
         <CardTitle
           className={`${compact ? "text-sm" : "text-base"} line-clamp-2 transition-colors group-hover:text-blue-700`}
         >
