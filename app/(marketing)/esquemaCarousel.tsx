@@ -115,11 +115,77 @@ const StarBHomePage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Navigation */}
+      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-blue-100 shadow-sm">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between lg:h-20">
+            {/* Logo */}
+            <Link href="/" className="flex items-center space-x-2 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center transform transition-transform group-hover:scale-110">
+                <span className="text-white font-bold text-xl">S</span>
+              </div>
+              <span className="text-2xl font-extrabold bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent">
+                Star B
+              </span>
+            </Link>
 
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center space-x-8">
+              <Link href="/biblioteca" className="text-sm font-medium text-slate-700 hover:text-blue-700 transition-colors">
+                Biblioteca
+              </Link>
+              <Link href="/softwares" className="text-sm font-medium text-slate-700 hover:text-blue-700 transition-colors">
+                Softwares
+              </Link>
+              <Link href="/artigos" className="text-sm font-medium text-slate-700 hover:text-blue-700 transition-colors">
+                Artigos
+              </Link>
+              <Link href="/ia" className="text-sm font-medium text-slate-700 hover:text-blue-700 transition-colors">
+                IA
+              </Link>
+              <Link href="/premium" className="text-sm font-medium text-slate-700 hover:text-blue-700 transition-colors">
+                Premium
+              </Link>
+            </div>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-12 sm:py-12 lg:px-16 lg:py-16 space-y-16 sm:space-y-24 lg:space-y-28">
+            {/* Actions */}
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="sm" className="hidden md:flex">
+                Entrar
+              </Button>
+              <Button size="sm" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+                Começar Grátis
+              </Button>
+              
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="lg:hidden p-2 rounded-lg hover:bg-blue-50"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="lg:hidden border-t border-blue-100 bg-white">
+            <div className="px-4 py-4 space-y-3">
+              <Link href="/biblioteca" className="block py-2 text-sm font-medium text-slate-700">Biblioteca</Link>
+              <Link href="/softwares" className="block py-2 text-sm font-medium text-slate-700">Softwares</Link>
+              <Link href="/artigos" className="block py-2 text-sm font-medium text-slate-700">Artigos</Link>
+              <Link href="/ia" className="block py-2 text-sm font-medium text-slate-700">IA</Link>
+              <Link href="/premium" className="block py-2 text-sm font-medium text-slate-700">Premium</Link>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16 space-y-16 sm:space-y-24 lg:space-y-32">
         {/* HERO SECTION - Magnifico e Moderno */}
         <section className="relative">
           {/* Background decorativo */}
@@ -133,18 +199,18 @@ const StarBHomePage = () => {
             {/* Hero Content */}
             <div className="space-y-6 lg:space-y-8 order-2 lg:order-1">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold shadow-lg shadow-blue-500/50 animate-pulse-slow">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold shadow-lg shadow-blue-500/50 animate-pulse-slow">
                 <span className="w-2 h-2 bg-white rounded-full animate-ping"></span>
                 <span>Plataforma de Engenharia Profissional</span>
               </div>
 
               {/* Heading */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight">
-                <span className="bg-linear-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
                   Conhecimento Técnico
                 </span>
                 <br />
-                <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   Sério & Profundo
                 </span>
               </h1>
@@ -162,15 +228,15 @@ const StarBHomePage = () => {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 pt-4">
                 <div className="text-center p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-blue-100 shadow-sm">
-                  <div className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">500+</div>
+                  <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">500+</div>
                   <div className="text-xs sm:text-sm text-slate-600 mt-1">Livros</div>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-blue-100 shadow-sm">
-                  <div className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">50+</div>
+                  <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">50+</div>
                   <div className="text-xs sm:text-sm text-slate-600 mt-1">Softwares</div>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-blue-100 shadow-sm">
-                  <div className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">1000+</div>
+                  <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">1000+</div>
                   <div className="text-xs sm:text-sm text-slate-600 mt-1">Artigos</div>
                 </div>
               </div>
@@ -180,7 +246,7 @@ const StarBHomePage = () => {
                 <Button 
                   asChild 
                   size="lg" 
-                  className="bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-base font-semibold shadow-xl shadow-blue-500/30 h-14 px-8"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-base font-semibold shadow-xl shadow-blue-500/30 h-14 px-8"
                 >
                   <Link href="/biblioteca/livros">
                     Explorar Biblioteca
@@ -205,7 +271,7 @@ const StarBHomePage = () => {
             <div className="order-1 lg:order-2 relative">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/20">
                 {/* Placeholder para o carousel - substitua com suas imagens reais */}
-                <div className="aspect-[4/3] bg-linear-to-br from-blue-400 via-indigo-500 to-purple-600 flex items-center justify-center">
+                <div className="aspect-[4/3] bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 flex items-center justify-center">
                   <div className="text-center text-white p-8">
                     <BookIcon />
                     <p className="mt-4 text-xl font-bold">Carousel de Imagens</p>
@@ -230,7 +296,7 @@ const StarBHomePage = () => {
             <div className="w-full border-t-2 border-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 px-6 text-sm text-slate-500">
+            <span className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 px-6 text-sm text-slate-500">
               ✦
             </span>
           </div>
@@ -239,7 +305,7 @@ const StarBHomePage = () => {
         {/* RECURSOS PRINCIPAIS */}
         <section className="space-y-10 lg:space-y-12">
           <header className="text-center space-y-4 max-w-3xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-linear-to-r from-slate-900 to-blue-900 bg-clip-text text-transparent">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-900 to-blue-900 bg-clip-text text-transparent">
               O que você encontra na Star B
             </h2>
             <p className="text-lg sm:text-xl text-slate-600 leading-relaxed">
@@ -257,7 +323,7 @@ const StarBHomePage = () => {
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     {recurso.badge && (
-                      <span className="absolute top-4 right-4 rounded-full bg-linear-to-r from-blue-600 to-indigo-600 text-white px-3 py-1 text-xs font-semibold shadow-lg">
+                      <span className="absolute top-4 right-4 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1 text-xs font-semibold shadow-lg">
                         {recurso.badge}
                       </span>
                     )}
@@ -294,7 +360,7 @@ const StarBHomePage = () => {
             <div className="w-full border-t-2 border-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 px-6 text-sm text-slate-500">
+            <span className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 px-6 text-sm text-slate-500">
               ✦
             </span>
           </div>
@@ -303,14 +369,14 @@ const StarBHomePage = () => {
         {/* CONTEÚDO PREMIUM */}
         <section className="space-y-10 lg:space-y-12">
           <header className="text-center space-y-4 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-amber-100 to-yellow-100 border border-amber-300">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-100 to-yellow-100 border border-amber-300">
               <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
               <span className="text-sm font-semibold text-amber-800">Premium</span>
             </div>
             
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-linear-to-r from-slate-900 to-blue-900 bg-clip-text text-transparent">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-900 to-blue-900 bg-clip-text text-transparent">
               Conteúdo Avançado
             </h2>
             <p className="text-lg sm:text-xl text-slate-600 leading-relaxed">
@@ -323,7 +389,7 @@ const StarBHomePage = () => {
               <Sheet key={item.href}>
                 <SheetTrigger asChild>
                   <div 
-                    className="cursor-pointer group rounded-2xl border-2 border-blue-100 bg-linear-to-br from-white to-blue-50/50 backdrop-blur-sm p-6 lg:p-8 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1 hover:border-blue-300"
+                    className="cursor-pointer group rounded-2xl border-2 border-blue-100 bg-gradient-to-br from-white to-blue-50/50 backdrop-blur-sm p-6 lg:p-8 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1 hover:border-blue-300"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <div className="flex items-start justify-between mb-3">
@@ -350,7 +416,7 @@ const StarBHomePage = () => {
 
                 <SheetContent className="sm:max-w-md">
                   <SheetHeader>
-                    <SheetTitle className="text-2xl font-bold bg-linear-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent">
+                    <SheetTitle className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent">
                       {item.titulo}
                     </SheetTitle>
                     <SheetDescription>
@@ -359,7 +425,7 @@ const StarBHomePage = () => {
                   </SheetHeader>
 
                   <div className="mt-6 space-y-6">
-                    <div className="rounded-xl bg-linear-to-br from-blue-50 to-indigo-50 p-6 border border-blue-100">
+                    <div className="rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 p-6 border border-blue-100">
                       <p className="text-slate-700 leading-relaxed">
                         O acesso completo a este tipo de conteúdo exige conta premium ativa. Isso garante <span className="font-semibold text-blue-700">qualidade</span>, <span className="font-semibold text-indigo-700">profundidade</span> e <span className="font-semibold text-purple-700">continuidade</span> na produção dos materiais.
                       </p>
@@ -389,7 +455,7 @@ const StarBHomePage = () => {
                       </ul>
                     </div>
 
-                    <Button asChild className="w-full bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-12">
+                    <Button asChild className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-12">
                       <Link href="/premium">Conhecer Plano Premium</Link>
                     </Button>
                   </div>
@@ -405,14 +471,14 @@ const StarBHomePage = () => {
             <div className="w-full border-t-2 border-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 px-6 text-sm text-slate-500">
+            <span className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 px-6 text-sm text-slate-500">
               ✦
             </span>
           </div>
         </div>
 
         {/* CALL TO ACTION FINAL */}
-        <section className="relative overflow-hidden rounded-3xl bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700 p-8 sm:p-12 lg:p-16 text-center shadow-2xl shadow-blue-500/30">
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 p-8 sm:p-12 lg:p-16 text-center shadow-2xl shadow-blue-500/30">
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute inset-0" style={{
@@ -481,7 +547,57 @@ const StarBHomePage = () => {
       </main>
 
       {/* Footer */}
+      <footer className="mt-24 border-t border-blue-100 bg-white/60 backdrop-blur-sm">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold">S</span>
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent">
+                  Star B
+                </span>
+              </div>
+              <p className="text-sm text-slate-600">
+                Plataforma de aprendizagem técnica para engenheiros e profissionais sérios.
+              </p>
+            </div>
 
+            <div>
+              <h4 className="font-semibold text-slate-900 mb-4">Conteúdo</h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li><Link href="/biblioteca" className="hover:text-blue-700 transition-colors">Biblioteca</Link></li>
+                <li><Link href="/softwares" className="hover:text-blue-700 transition-colors">Softwares</Link></li>
+                <li><Link href="/artigos" className="hover:text-blue-700 transition-colors">Artigos</Link></li>
+                <li><Link href="/ia" className="hover:text-blue-700 transition-colors">IA & ML</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-slate-900 mb-4">Premium</h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li><Link href="/premium" className="hover:text-blue-700 transition-colors">Planos</Link></li>
+                <li><Link href="/premium/cursos" className="hover:text-blue-700 transition-colors">Cursos</Link></li>
+                <li><Link href="/premium/mentoria" className="hover:text-blue-700 transition-colors">Mentoria</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-slate-900 mb-4">Empresa</h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li><Link href="/sobre" className="hover:text-blue-700 transition-colors">Sobre</Link></li>
+                <li><Link href="/contato" className="hover:text-blue-700 transition-colors">Contato</Link></li>
+                <li><Link href="/termos" className="hover:text-blue-700 transition-colors">Termos</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-8 pt-8 border-t border-blue-100 text-center text-sm text-slate-600">
+            <p>&copy; {new Date().getFullYear()} Star B. Todos os direitos reservados.</p>
+          </div>
+        </div>
+      </footer>
 
       <style jsx>{`
         @keyframes blob {
