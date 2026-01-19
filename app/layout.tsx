@@ -61,7 +61,7 @@ export default function RootLayout({
       className={`${mavenPro.variable} ${poppins.variable} ${muktaMalar.variable} ${montserrat.variable} ${neuton.variable} ${spectral.variable}`}
     >
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <body>
+      <body className="bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
         <SidebarProvider>
           <AppSidebar />
           <div className="flex min-h-screen w-full flex-col">
