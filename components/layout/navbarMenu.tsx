@@ -23,7 +23,7 @@ export function HeaderOrder() {
 
   if (isMobile) {
     return (
-      <header className="flex w-full items-center justify-between sm:px-4 md:px-5">
+      <header className="flex w-full items-center bg-linear-to-br justify-between sm:px-4 md:px-5">
         <div className="flex shrink-0 items-center">
           <Link href={"/"} className="mr-2 shrink-0 sm:mr-3 md:mr-4">
             <Image src={logo} alt="Logo" width={120} />
@@ -37,7 +37,7 @@ export function HeaderOrder() {
     );
   }
   return (
-    <header className="flex w-full items-center justify-between rounded-lg px-3 sm:px-4 md:px-5">
+    <header className="flex w-full bg-linear-to-br items-center justify-between rounded-lg px-3 sm:px-4 md:px-5">
       <div className="flex shrink-0 items-center">
         <Link href={"/"} className="mr-2 shrink-0 sm:mr-3 md:mr-4">
           <Image src={logo} alt="Logo" width={140} />

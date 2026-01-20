@@ -32,18 +32,19 @@ export default function Pesquisa() {
   return (
     <>
       <Button
+        variant={"outline"}
         onClick={() => setOpen(true)}
         size={"sm"}
-        className="bg- text-muted-foreground hover:text-foreground flex items-center justify-between gap-2 border transition-colors sm:w-60"
+        className="bg-white border-none text-muted-foreground hover:text-foreground flex items-center justify-between gap-2 shadow shadow-gray-400/55 transition-colors sm:w-70"
       >
         <div className="flex items-center gap-2">
-          <Search className="h-5 w-4" />
+          <Search className="h-6 w-6" />
           <span className="hidden text-sm font-medium lg:inline-flex">
             Pesquisar...
           </span>
         </div>
         <kbd className="pointer-events-none hidden h-5 items-center gap-1 rounded bg-gray-700 p-2 font-mono text-[10px] font-medium text-white opacity-100 select-none lg:inline-flex">
-          <span className="text-xs">⌘k</span>
+          <span className="text-xs">Ctrl+K</span>
         </kbd>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
