@@ -279,7 +279,7 @@ const StarBHomePage = () => {
                   loop: true,
                   align: "start",
                 }}
-                className="w-full overflow-hidden rounded-4xl bg-transparent shadow-2xl shadow-blue-500/20"
+                className="w-full rounded-4xl bg-none "
               >
                 <CarouselContent className="bg-transparent">
                   {imgCarousel.map((item, index) => (
@@ -290,7 +290,7 @@ const StarBHomePage = () => {
                           src={item.src}
                           alt={item.alt}
                           fill
-                          className="object-cover"
+                          className="object-center object-cover"
                           priority={index === 0}
                         />
 

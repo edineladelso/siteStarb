@@ -4,7 +4,6 @@ import engenharia from "@/public/image/Engenharia.webp";
 import imgMeca1 from "@/public/image/meca1.webp";
 import imgMeca2 from "@/public/image/meca2.png";
 import imgMeca3 from "@/public/image/meca3.webp";
-import imgMeca4 from "@/public/image/meca4.png";
 import imgMeca5 from "@/public/image/meca5.webp";
 import imgAi from "@/public/img/IA.webp";
 import imglivros from "@/public/img/imglivros.webp";
@@ -37,11 +36,6 @@ const imgCarousel: ImgType[] = [
     src: imgMeca3,
     alt: "Imagem lateral de Edinel operando robô",
   },
-  {
-    value: "imgMeca4",
-    src: imgMeca4,
-    alt: "Imagem lateral de Edinel operando robô",
-  },
     {
     value: "imgMeca5",
     src: imgMeca5,
@@ -58,11 +52,6 @@ const imgCarousel: ImgType[] = [
     alt: "IA e modelos de inteligencia Artificial",
   },
   {
-    value: "imgMecatronica",
-    src: imgMecatronica,
-    alt: "Imagem de mecatronica",
-  },
-  {
     value: "imglivros",
     src: imglivros,
     alt: "Imagem de Livros",
@@ -75,4 +64,3 @@ const imgCarousel: ImgType[] = [
 ];
 
 export default imgCarousel;
-console.log(imgCarousel);
