@@ -1,5 +1,7 @@
 "use client";
 
+import imgCarousel, { ImgType } from "@/components/property/carouselProperty";
+import Image from "next/image";
 import Link from "next/link";
 
 // Dados mockados (substitua pelos seus dados reais)
@@ -35,6 +37,7 @@ type ResourceLink = {
 };
 
 export default function SobrePage() {
+  const imgSObre =  imgCarousel.find((e) => e.value === "imgMeca2")!
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
       {/* HERO SECTION */}
@@ -212,16 +215,21 @@ export default function SobrePage() {
           <aside className="lg:col-span-1 space-y-6">
             {/* Imagem destacada */}
             <div className="sticky top-24 space-y-6">
-              <div className="bg-white rounded-2xl overflow-hidden shadow-xl border border-slate-100">
-                <div className="aspect-[4/3] bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 flex items-center justify-center">
-                  {/* Placeholder - substitua com sua imagem real */}
+              <div className=" rounded-2xl  shadow-xl border border-slate-100">
+                {/* <div className="aspect-4/3 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 flex items-center justify-center">
+                  {/* Placeholder - substitua com sua imagem real *
                   <div className="text-center text-white p-6">
                     <svg className="w-20 h-20 mx-auto mb-3 opacity-90" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
                     <p className="text-sm font-semibold">Mecatrônica</p>
                   </div>
-                </div>
+                </div> */}
+                <Image
+                  src={imgSObre.src}
+                  alt={imgSObre.alt}
+                  className="transform scale-132 hover:scale-110 transition-all duration-500 rounded-2xl  object-cover w-full h-auto"
+                />
               </div>
 
               {/* Card de contato/CTA */}
