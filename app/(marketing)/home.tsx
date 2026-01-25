@@ -679,7 +679,7 @@ const StarBHomePage = () => {
                       <ul className="space-y-2 text-sm text-slate-600">
                         <li className="flex items-start">
                           <svg
-                            className="mt-0.5 mr-2 h-5 w-5 flex-shrink-0 text-blue-600"
+                            className="mt-0.5 mr-2 h-5 w-5 shrink-0 text-blue-600"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
@@ -693,7 +693,7 @@ const StarBHomePage = () => {
                         </li>
                         <li className="flex items-start">
                           <svg
-                            className="mt-0.5 mr-2 h-5 w-5 flex-shrink-0 text-blue-600"
+                            className="mt-0.5 mr-2 h-5 w-5 shrink-0 text-blue-600"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
@@ -707,7 +707,7 @@ const StarBHomePage = () => {
                         </li>
                         <li className="flex items-start">
                           <svg
-                            className="mt-0.5 mr-2 h-5 w-5 flex-shrink-0 text-blue-600"
+                            className="mt-0.5 mr-2 h-5 w-5 shrink-0 text-blue-600"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >

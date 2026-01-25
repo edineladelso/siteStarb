@@ -653,7 +653,7 @@ function LivroCard({
           </div>
         </div>
       </CardHeader>
-{/* estava aqui */}
+      {/* estava aqui */}
       <CardContent className="px-3">
         <CardTitle
           className={`${compact ? "text-sm" : "text-base"} line-clamp-2 transition-colors group-hover:text-blue-700`}
@@ -663,7 +663,7 @@ function LivroCard({
 
         <p className="flex items-center gap-1 text-xs text-slate-600">
           <svg
-            className="h-3 w-3 flex-shrink-0"
+            className="h-3 w-3 shrink-0"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
