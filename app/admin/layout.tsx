@@ -1,6 +1,6 @@
 export default function LayoutAdmin({children}:Readonly<{children : React.ReactNode}>){
 
   return (
-    <div className="mx-auto flex justify-center">{children}</div>
+    <div className="mx-auto flex justify-center p-5">{children}</div>
   )
 }
