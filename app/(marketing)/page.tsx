@@ -138,7 +138,7 @@ const StarBHomePage = () => {
     },
     {
       titulo: "Webinars & Workshops",
-      descricao: "Sessões ao vivo com especialistas da indústria",
+      descricao: "Sessões ao vivo com especialistas da área de forma detalhada",
       href: "/premium/webinars",
     },
     {
@@ -177,7 +177,7 @@ const StarBHomePage = () => {
               </div>
 
               {/* Heading */}
-              <h1 className="text-4xl leading-tight font-black sm:text-5xl lg:text-6xl xl:text-7xl">
+              <h1 className="text-3xl leading-tight font-black sm:text-4xl lg:text-5xl xl:text-6xl">
                 <span className="bg-linear-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
                   Conhecimento Técnico
                 </span>
@@ -241,7 +241,7 @@ const StarBHomePage = () => {
                 <Button
                   asChild
                   size="lg"
-                  className="h-14 bg-linear-to-r from-blue-600 to-indigo-600 px-8 text-base font-semibold shadow-xl shadow-blue-500/30 hover:from-blue-700 hover:to-indigo-700"
+                  className="h-10 sm:h-14 bg-linear-to-r from-blue-600 to-indigo-600 px-8 text-base font-semibold shadow-xl shadow-blue-500/30 hover:from-blue-700 hover:to-indigo-700"
                 >
                   <Link href="/biblioteca/livros">
                     Explorar Biblioteca
@@ -265,7 +265,7 @@ const StarBHomePage = () => {
                   variant="outline"
                   size="lg"
                   asChild
-                  className="h-14 border-2 border-blue-200 px-8 text-base font-semibold hover:bg-blue-50"
+                  className="h-10 sm:h-14 border-2 border-blue-200 px-8 text-base font-semibold hover:bg-blue-50"
                 >
                   <Link href="/softwares">Ver Softwares</Link>
                 </Button>
@@ -776,7 +776,7 @@ const StarBHomePage = () => {
               <Button
                 size="lg"
                 asChild
-                className="h-14 bg-white px-8 font-semibold text-blue-700 shadow-xl hover:bg-blue-50"
+                className="h-10 sm:h-14 bg-white px-8 font-semibold text-blue-700 shadow-xl hover:bg-white/10  hover:text-white transition-all duration-500 "
               >
                 <Link href="/biblioteca/livros">
                   Começar pela Biblioteca
@@ -800,7 +800,7 @@ const StarBHomePage = () => {
                 size="lg"
                 variant="outline"
                 asChild
-                className="h-14 border-2 border-white px-8 font-semibold text-white hover:bg-white/10"
+                className="h-10 sm:h-14 border-2 border-white px-8 font-semibold text-blue-700 hover:bg-white/10 transition-all duration-500"
               >
                 <Link href="/premium">Ver Planos Premium</Link>
               </Button>
@@ -857,7 +857,6 @@ const StarBHomePage = () => {
         </section>
       </main>
 
-      {/* Footer */}
 
       <style jsx>{`
         @keyframes blob {

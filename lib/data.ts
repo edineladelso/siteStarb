@@ -119,12 +119,8 @@ export const softwareCategories: MenuItem[] = [
 
 export const homeMenuItems: NavItem[] = [
   {
-    title: "Informações",
+    title: "Sobre nós",
     href: "/sobre",
-  },
-  {
-    title: "Tipos de Manuais",
-    href: "/sobre/tiposmanuais",
   },
   {
     title: "Contato",

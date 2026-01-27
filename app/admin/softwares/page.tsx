@@ -1,5 +1,254 @@
-export default function SoftwarePage(){
+// ==================== app/admin/softwares/page.tsx ====================
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/admin/DataTable";
+import { StatusBadge } from "@/components/admin/shared/StatusBadge";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Search, Code } from "lucide-react";
+import type { Software } from "@/lib/types";
+import { getSoftwares, deleteSoftware } from "@/actions/softwares";
+import { ActionMenu } from "@/components/admin/shared/ActionMenu";
+
+export default function SoftwaresPage() {
+  const router = useRouter();
+  const [softwares, setSoftwares] = useState<Software[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    loadSoftwares();
+  }, []);
+
+  const loadSoftwares = async () => {
+    try {
+      const data = await getSoftwares();
+      setSoftwares(data);
+    } catch (error) {
+      console.error("Erro ao carregar softwares:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm("Tem certeza que deseja deletar este software?")) {
+      const result = await deleteSoftware(id);
+      if (result.success) {
+        loadSoftwares();
+      }
+    }
+  };
+
+  const filteredSoftwares = softwares.filter(
+    (software) =>
+      software.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      software.categoria.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   return (
-    <div>Pagina Softwares</div>
-  )
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900">Softwares</h1>
+          <p className="mt-1 text-slate-600">
+            Gerencie os softwares profissionais da plataforma
+          </p>
+        </div>
+        <Link href="/admin/softwares/novo">
+          <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+            <Plus className="mr-2 h-4 w-4" />
+            Adicionar Software
+          </Button>
+        </Link>
+      </div>
+
+      {/* Search */}
+      <div className="rounded-lg border border-slate-200 bg-white p-4">
+        <div className="relative">
+          <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Buscar por nome ou categoria..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full rounded-lg border border-slate-300 py-2 pr-4 pl-10 outline-none focus:border-transparent focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
+              <Code className="h-5 w-5 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-sm text-slate-600">Total</p>
+              <p className="text-2xl font-bold text-slate-900">
+                {softwares.length}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
+              <svg
+                className="h-5 w-5 text-green-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm text-slate-600">Ativos</p>
+              <p className="text-2xl font-bold text-slate-900">
+                {softwares.filter((s) => s.status === "ativo").length}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+              <svg
+                className="h-5 w-5 text-blue-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                <path
+                  fillRule="evenodd"
+                  d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm text-slate-600">Total Views</p>
+              <p className="text-2xl font-bold text-slate-900">
+                {softwares
+                  .reduce((acc, s) => acc + s.views, 0)
+                  .toLocaleString("pt-BR")}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100">
+              <svg
+                className="h-5 w-5 text-orange-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm text-slate-600">Downloads</p>
+              <p className="text-2xl font-bold text-slate-900">
+                {softwares
+                  .reduce((acc, s) => acc + s.downloads, 0)
+                  .toLocaleString("pt-BR")}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <DataTable
+        data={filteredSoftwares}
+        loading={loading}
+        columns={[
+          { key: "titulo", label: "Software" },
+          { key: "categoria", label: "Categoria" },
+          { key: "preco", label: "Preço" },
+          { key: "plataformas", label: "Plataformas" },
+          { key: "status", label: "Status" },
+          { key: "views", label: "Views" },
+          { key: "downloads", label: "Downloads" },
+        ]}
+        renderRow={(software) => (
+          <>
+            <td className="px-6 py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 text-white">
+                  <Code className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="font-semibold text-slate-900">
+                    {software.titulo}
+                  </p>
+                  <a
+                    href={software.siteOficial}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    {software.siteOficial}
+                  </a>
+                </div>
+              </div>
+            </td>
+            <td className="px-6 py-4">
+              <Badge variant="outline">{software.categoria}</Badge>
+            </td>
+            <td className="px-6 py-4 font-semibold text-slate-900">
+              {software.preco}
+            </td>
+            <td className="px-6 py-4">
+              <div className="flex flex-wrap gap-1">
+                {software.plataformas!.slice(0, 2).map((plat, i) => (
+                  <Badge key={i} variant="secondary" className="text-xs">
+                    {plat}
+                  </Badge>
+                ))}
+                {(software.plataformas?.length ?? 0) > 2 && (
+                  <Badge variant="secondary" className="text-xs">
+                    +{(software.plataformas?.length ?? 0) - 2}
+                  </Badge>
+                )}
+              </div>
+            </td>
+            <td className="px-6 py-4">
+              <StatusBadge status={software.status} />
+            </td>
+            <td className="px-6 py-4 text-slate-700">
+              {software.views.toLocaleString("pt-BR")}
+            </td>
+            <td className="px-6 py-4 text-slate-700">
+              {software.downloads.toLocaleString("pt-BR")}
+            </td>
+            <td className="px-6 py-4">
+              <ActionMenu
+                onEdit={() =>
+                  router.push(`/admin/softwares/${software.id}/editar`)
+                }
+                onDelete={() => handleDelete(software.id)}
+              />
+            </td>
+          </>
+        )}
+        emptyMessage="Nenhum software cadastrado"
+        emptyDescription="Clique em 'Adicionar Software' para começar"
+      />
+    </div>
+  );
 }

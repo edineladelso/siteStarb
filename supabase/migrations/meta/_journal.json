@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1768644147929,
-      "tag": "0000_familiar_justice",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1768657025747,
-      "tag": "0001_productive_giant_man",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1768749357271,
-      "tag": "0002_overjoyed_blue_blade",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1768757184835,
-      "tag": "0003_overjoyed_overlord",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1768775927970,
-      "tag": "0004_brainy_natasha_romanoff",
+      "when": 1769496877166,
+      "tag": "0000_tan_mindworm",
       "breakpoints": true
     }
   ]

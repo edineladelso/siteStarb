@@ -72,7 +72,7 @@ export function NavbarMobile() {
               >
                 <div className="text-xs font-medium">{item.title}</div>
                 <div className="text-muted-foreground text-xs">
-                  {item.title === "Informações" &&
+                  {item.title === "Sobre nós" &&
                     "Saiba mais sobre a nossa missao e valores."}
                   {item.title === "Tipos de Manuais" &&
                     "Explore os diversos tipos de manuais disponiveis."}

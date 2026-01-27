@@ -57,8 +57,8 @@ export function NavbarDesktop() {
                 >
                   {item.title === "Informações" &&
                     "Saiba mais sobre a nossa missao e valores."}
-                  {item.title === "Tipos de Manuais" &&
-                    "Explore os diversos tipos de manuais disponiveis."}
+                  {item.title === "Tipos de Conteúdos" &&
+                    "Explore os diversos tipos de conteúdos disponiveis."}
                   {item.title === "Contato" &&
                     "Entre em contato conosco para suporte ou perguntas."}
                 </ListItem>

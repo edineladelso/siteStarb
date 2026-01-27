@@ -2,11 +2,11 @@
 // ANALYTICS SERVICE - Singleton Pattern
 // ============================================================================
 
-import type { AnalyticsDatas, AnalyticsFilters, AnalyticsOverview, CategoryData, ContentTypeMetrics, GrowthMetric, TimeSeriesData, TopContentItem, ViewsDownloadsData } from '@/lib/types';
+import type { AnalyticsData, AnalyticsFilters, AnalyticsOverview, CategoryData, ContentTypeMetrics, GrowthMetric, TimeSeriesData, TopContentItem, ViewsDownloadsData } from '@/lib/types';
 
 class AnalyticsService {
   private static instance: AnalyticsService;
-  private cache: Map<string, { data: AnalyticsDatas; timestamp: number }> = new Map();
+  private cache: Map<string, { data: AnalyticsData; timestamp: number }> = new Map();
   private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutos
 
   private constructor() {}
@@ -22,7 +22,7 @@ class AnalyticsService {
    * Método principal para obter dados de analytics
    * Implementa cache para otimização de performance
    */
-  async getAnalyticsData(filters: AnalyticsFilters = { period: 30 }): Promise<AnalyticsDatas> {
+  async getAnalyticsData(filters: AnalyticsFilters = { period: 30 }): Promise<AnalyticsData> {
     const cacheKey = JSON.stringify(filters);
     const cached = this.cache.get(cacheKey);
 
@@ -49,18 +49,18 @@ class AnalyticsService {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  private generateAnalyticsData(filters: AnalyticsFilters): AnalyticsDatas {
+  private generateAnalyticsData(filters: AnalyticsFilters): AnalyticsData {
     const { period, contentType } = filters;
 
     return {
       overview: this.generateOverview(contentType),
       growth: this.generateGrowthMetrics(),
-      views: this.generateViewsData(period),
-      downloads: this.generateDownloadsData(period),
+      views: this.generateViewsData(period!),
+      downloads: this.generateDownloadsData(period!),
       categories: this.generateCategoriesData(),
       topContent: this.generateTopContent(contentType),
       contentTypeMetrics: this.generateContentTypeMetrics(),
-      timeSeries: this.generateTimeSeriesData(period),
+      timeSeries: this.generateTimeSeriesData(period!),
       lastUpdated: new Date().toISOString()
     };
   }

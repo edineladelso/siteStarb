@@ -3,10 +3,7 @@
 // ============================================================================
 "use client";
 
-import type {
-  AnalyticsDatas,
-  AnalyticsFilters
-} from "@/lib/types";
+import type { AnalyticsData, AnalyticsFilters } from "@/lib/types";
 import {
   BookOpen,
   Calendar,
@@ -19,7 +16,7 @@ import {
   TrendingDown,
   TrendingUp,
   Users,
-  Wrench
+  Wrench,
 } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -35,13 +32,13 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis
+  YAxis,
 } from "recharts";
 import AnalyticsService from "./AnaliticsServices";
 import { ChartCard, MetricCard } from "./charts";
 
 const AnalyticsComponent: React.FC = () => {
-  const [data, setData] = useState<AnalyticsDatas | null>(null);
+  const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<AnalyticsFilters>({

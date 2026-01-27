@@ -27,7 +27,7 @@ export function formatFileSize(bytes: number): string {
  */
 export function formatDate(date: string | Date): string {
   const d = typeof date === "string" ? new Date(date) : date;
-  return new Intl.DateTimeFormat("pt-BR", {
+  return new Intl.DateTimeFormat("pt-pt", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -52,7 +52,7 @@ export function formatDateTime(date: string | Date): string {
  * Gera um ID único
  */
 export function generateId(): string {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
 /**
