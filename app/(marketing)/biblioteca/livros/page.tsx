@@ -479,7 +479,7 @@ export default function LivrosPage() {
                   }}
                   className="w-full"
                 >
-                  <CarouselContent className="-ml-4">
+                  <CarouselContent className="-ml-4 mx-auto max-sm:w-xs sm:w-full">
                     {novos.map((livro) => (
                       <CarouselItem
                         key={livro.id}
@@ -563,13 +563,13 @@ function LivroCard({
   const [favorito, setFavorito] = useState(false);
 
   return (
-    <Card className="group relative overflow-hidden border-2 border-slate-100 bg-white transition-all duration-300 hover:-translate-y-2 hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-500/10">
+    <Card className="group relative overflow-hidden bg-white transition-all duration-300 hover:-translate-y-2 hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-500/10">
       {/* Badges */}
-      <div className="absolute top-2 left-2 z-20 flex flex-wrap gap-1">
+      <div className="absolute top-1 left-1 z-20 flex flex-wrap gap-1">
         {livro.novo && (
           <Badge className="border-0 bg-green-600 text-xs shadow-lg">
             <svg
-              className="mr-1 h-3 w-3"
+              className="h-3 w-3"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -588,7 +588,7 @@ function LivroCard({
             className="border-0 bg-orange-600 text-xs text-white shadow-lg"
           >
             <svg
-              className="mr-1 h-3 w-3"
+              className="h-3 w-3"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -602,10 +602,10 @@ function LivroCard({
       {/* Favorito */}
       <button
         onClick={() => setFavorito(!favorito)}
-        className="absolute top-2 right-2 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-lg transition-all hover:scale-110"
+        className="absolute -top-1 -right-1 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-lg transition-all hover:scale-110"
       >
         <svg
-          className={`h-4 w-4 transition-colors ${favorito ? "fill-current text-red-500" : "text-slate-400"}`}
+          className={`h-4 w-4 mt-1 mr-1 transition-colors ${favorito ? "fill-current text-red-500" : "text-slate-400"}`}
           fill={favorito ? "currentColor" : "none"}
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -735,7 +735,7 @@ function LivroCard({
               </svg>
             </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent className="max-w-lg">
+          <AlertDialogContent className="max-w-lg w-11/12">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-xl font-bold text-slate-900">
                 {livro.titulo}
@@ -833,8 +833,8 @@ function LivroCard({
               </svg>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-32">
-            <DropdownMenuItem className="gap-2 text-xs">
+          <DropdownMenuContent  className="w-32 border py-3 shadow-2xl shadow-stone-700  absolute bottom-12 -right-5">
+            <DropdownMenuItem className="gap-2 text-xs cursor-pointer">
               <svg
                 className="h-3.5 w-3.5"
                 fill="currentColor"
@@ -848,7 +848,7 @@ function LivroCard({
               </svg>
               PDF
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2 text-xs">
+            <DropdownMenuItem className="gap-2 text-xs cursor-pointer">
               <svg
                 className="h-3.5 w-3.5"
                 fill="currentColor"
@@ -858,7 +858,7 @@ function LivroCard({
               </svg>
               EPUB
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2 text-xs">
+            <DropdownMenuItem className="gap-2 text-xs cursor-pointer">
               <svg
                 className="h-3.5 w-3.5"
                 fill="currentColor"
