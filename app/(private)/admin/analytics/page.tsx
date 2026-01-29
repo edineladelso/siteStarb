@@ -13,5 +13,5 @@ export default function AnalyticsPage() {
 const service = AnalyticsService.getInstance();
 const data = await service.getAnalyticsData({
   period: 30,
-  contentType: 'livro'
+  contentType: 'all'
 });

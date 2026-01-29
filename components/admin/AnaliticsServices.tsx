@@ -32,7 +32,7 @@ class AnalyticsService {
     }
 
     // Simular delay de API
-    await this.delay(600);
+    await this.delay(500);
 
     const data = this.generateAnalyticsData(filters);
     

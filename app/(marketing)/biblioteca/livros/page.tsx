@@ -310,7 +310,7 @@ export default function LivrosPage() {
         </div>
       </section>
 
-      <div className="container mx-auto max-w-7xl space-y-10 px-4 py-8 sm:space-y-12 sm:px-6 sm:py-12 lg:space-y-16 lg:px-8 lg:py-16">
+      <div className="container mx-auto max-w-7xl space-y-10 px-4 py-8 sm:space-y-12 sm:px-22 sm:py-12 lg:space-y-16 lg:px-28 lg:py-16">
         {/* CATEGORIAS COM CARDS BRANCOS E SHADOW */}
         <section className="space-y-6">
           <div className="flex items-center justify-between">
@@ -325,7 +325,7 @@ export default function LivrosPage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
             {categorias.map((cat) => (
               <button
                 key={cat.nome}
@@ -334,7 +334,7 @@ export default function LivrosPage() {
                     cat.nome === categoriaAtiva ? null : cat.nome,
                   )
                 }
-                className={`group relative rounded-2xl border-2 bg-white p-5 transition-all duration-300 sm:p-6 ${
+                className={`group relative rounded-2xl shadow-2xl bg-white p-3 transition-all duration-300 sm:p-6 ${
                   categoriaAtiva === cat.nome
                     ? "scale-105 border-blue-500 shadow-xl shadow-blue-500/20"
                     : "border-slate-100 shadow-lg hover:scale-105 hover:border-blue-300 hover:shadow-xl"
@@ -372,10 +372,10 @@ export default function LivrosPage() {
             </span>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap justify-around gap-4 ">
             <button
               onClick={() => setOrdenacao("popular")}
-              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all ${
+              className={`flex items-center gap-2 rounded-xl px-2 sm:px-4 py-2 text-sm font-medium transition-all shadow ${
                 ordenacao === "popular"
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -389,7 +389,7 @@ export default function LivrosPage() {
 
             <button
               onClick={() => setOrdenacao("novo")}
-              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all ${
+              className={`flex items-center gap-2 rounded-xl px-2 sm:px-4 spy-2 text-sm font-medium transition-all ${
                 ordenacao === "novo"
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -407,7 +407,7 @@ export default function LivrosPage() {
 
             <button
               onClick={() => setOrdenacao("avaliacao")}
-              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all ${
+              className={`flex items-center gap-2 rounded-xl px-2 sm:px-4 py-2 text-sm font-medium transition-all ${
                 ordenacao === "avaliacao"
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -440,18 +440,18 @@ export default function LivrosPage() {
               <div className="relative">
                 <Carousel
                   opts={{
-                    align: "start",
+                    align: "center",
                     loop: true,
                   }}
                   className="w-full"
                 >
-                  <CarouselContent className="-ml-4">
+                  <CarouselContent className=" max-sm:w-xs sm:w-full items-center mx-auto ">
                     {populares.map((livro) => (
                       <CarouselItem
                         key={livro.id}
                         className="basis-full pl-4 sm:basis-1/2 lg:basis-1/3"
                       >
-                        <LivroCard livro={livro} />
+                        <LivroCard livro={livro}/>
                       </CarouselItem>
                     ))}
                   </CarouselContent>
@@ -474,10 +474,10 @@ export default function LivrosPage() {
               <div className="relative">
                 <Carousel
                   opts={{
-                    align: "start",
+                    align: "center",
                     loop: true,
                   }}
-                  className="w-full"
+                  className="w-full overflow-hidden"
                 >
                   <CarouselContent className="-ml-4 mx-auto max-sm:w-xs sm:w-full">
                     {novos.map((livro) => (
@@ -630,7 +630,7 @@ function LivroCard({
                 : livro.categoria === "Programação"
                   ? "from-indigo-400 via-purple-500 to-pink-600"
                   : livro.categoria === "Eletrônica"
-                    ? "from-yellow-400 via-orange-500 to-red-600"
+                    ? "from-yellow-400 via-orange-500mx-auto to-red-600"
                     : livro.categoria === "Mecatrônica"
                       ? "from-green-400 via-teal-500 to-cyan-600"
                       : livro.categoria === "Matemática"
@@ -639,6 +639,7 @@ function LivroCard({
             } flex items-center justify-center transition-transform duration-500 group-hover:scale-110`}
           >
             <div className="px-4 text-center text-white">
+              {/* Aqui terei imagem de capa */}
               <svg
                 className={`${compact ? "h-12 w-12" : "h-16 w-16"} mx-auto mb-2 opacity-90`}
                 fill="currentColor"
@@ -712,7 +713,7 @@ function LivroCard({
         </div>
       </CardContent>
 
-      <CardFooter className="flex gap-2 px-3 pt-0 pb-3">
+      <CardFooter className="flex gap-2 px-3 pt-2">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
