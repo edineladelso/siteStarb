@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import BadgesFeatures from "@/components/home/BadgesFeatures";
+import HomeSeparator from "@/components/home/HomeSeparator";
+import imgCarousel from "@/components/property/carouselProperty";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -9,7 +11,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -23,136 +24,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Link from "next/link";
+import { itensPremium } from "@/lib/dadosHome/PremiumHome";
+import { recursosHome } from "@/lib/dadosHome/RecursosHome";
 import Image from "next/image";
-import imgCarousel from "@/components/property/carouselProperty";
-
-// Componente de ícones (substitua pelos seus ícones reais)
-const BookIcon = () => (
-  <svg
-    className="h-8 w-8"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-    />
-  </svg>
-);
-
-const CodeIcon = () => (
-  <svg
-    className="h-8 w-8"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-    />
-  </svg>
-);
-
-const AcademicIcon = () => (
-  <svg
-    className="h-8 w-8"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path d="M12 14l9-5-9-5-9 5 9 5z" />
-    <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
-    />
-  </svg>
-);
-
-const AIIcon = () => (
-  <svg
-    className="h-8 w-8"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-    />
-  </svg>
-);
+import Link from "next/link";
 
 const StarBHomePage = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const recursosHome = [
-    {
-      titulo: "Biblioteca Técnica",
-      descricao:
-        "Livros de engenharia, programação e ciências exatas organizados por área",
-      href: "/biblioteca/livros",
-      icon: <BookIcon />,
-      badge: "500+ Livros",
-    },
-    {
-      titulo: "Softwares Profissionais",
-      descricao:
-        "Tutoriais e documentação de ferramentas como AutoCAD, MATLAB, SolidWorks",
-      href: "/softwares",
-      icon: <CodeIcon />,
-    },
-    {
-      titulo: "Artigos Científicos",
-      descricao:
-        "Papers, pesquisas e estudos técnicos comentados e organizados",
-      href: "/artigos",
-      icon: <AcademicIcon />,
-    },
-    {
-      titulo: "IA & Machine Learning",
-      descricao:
-        "Formação estruturada em inteligência artificial e aprendizado de máquina",
-      href: "/ia",
-      icon: <AIIcon />,
-      badge: "Novo",
-    },
-  ];
-
-  const itensPremium = [
-    {
-      titulo: "Cursos Aprofundados",
-      descricao: "Trilhas completas de estudo guiado em tópicos avançados",
-      href: "/premium/cursos",
-    },
-    {
-      titulo: "Webinars & Workshops",
-      descricao: "Sessões ao vivo com especialistas da área de forma detalhada",
-      href: "/premium/webinars",
-    },
-    {
-      titulo: "Projetos Práticos",
-      descricao: "Casos reais de engenharia com dados e análises completas",
-      href: "/premium/projetos",
-    },
-    {
-      titulo: "Mentoria Individual",
-      descricao: "Suporte direto de engenheiros experientes",
-      href: "/premium/mentoria",
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Navigation */}
@@ -241,7 +118,7 @@ const StarBHomePage = () => {
                 <Button
                   asChild
                   size="lg"
-                  className="h-10 sm:h-14 bg-linear-to-r from-blue-600 to-indigo-600 px-8 text-base font-semibold shadow-xl shadow-blue-500/30 hover:from-blue-700 hover:to-indigo-700"
+                  className="h-10 bg-linear-to-r from-blue-600 to-indigo-600 px-8 text-base font-semibold shadow-xl shadow-blue-500/30 hover:from-blue-700 hover:to-indigo-700 sm:h-14"
                 >
                   <Link href="/biblioteca/livros">
                     Explorar Biblioteca
@@ -265,7 +142,7 @@ const StarBHomePage = () => {
                   variant="outline"
                   size="lg"
                   asChild
-                  className="h-10 sm:h-14 border-2 border-blue-200 px-8 text-base font-semibold hover:bg-blue-50"
+                  className="h-10 border-2 border-blue-200 px-8 text-base font-semibold hover:bg-blue-50 sm:h-14"
                 >
                   <Link href="/softwares">Ver Softwares</Link>
                 </Button>
@@ -329,52 +206,7 @@ const StarBHomePage = () => {
 
               <div className="mt-8 space-y-6">
                 {/* Badges de features */}
-                <div className="flex flex-wrap justify-center gap-3">
-                  <div className="flex items-center gap-2 rounded-full border border-blue-100 bg-white/80 px-4 py-2 shadow-sm backdrop-blur-sm">
-                    <svg
-                      className="h-4 w-4 text-blue-600"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span className="text-sm font-semibold text-slate-700">
-                      Conteúdo Verificado
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 rounded-full border border-indigo-100 bg-white/80 px-4 py-2 shadow-sm backdrop-blur-sm">
-                    <svg
-                      className="h-4 w-4 text-indigo-600"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                    </svg>
-                    <span className="text-sm font-semibold text-slate-700">
-                      5.000+ Estudantes
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 rounded-full border border-purple-100 bg-white/80 px-4 py-2 shadow-sm backdrop-blur-sm">
-                    <svg
-                      className="h-4 w-4 text-purple-600"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span className="text-sm font-semibold text-slate-700">
-                      Atualizado Semanalmente
-                    </span>
-                  </div>
-                </div>
+                <BadgesFeatures />
 
                 {/* Barra de progresso animada */}
                 <div className="space-y-2">
@@ -479,16 +311,7 @@ const StarBHomePage = () => {
         </section>
 
         {/* Separator com estilo */}
-        <div className="relative py-8">
-          <div className="absolute inset-0 flex items-center">
-            <div className="border-gradient-to-r w-full border-t-2 from-transparent via-blue-200 to-transparent"></div>
-          </div>
-          <div className="relative flex justify-center">
-            <span className="bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 px-6 text-sm text-slate-500">
-              ✦
-            </span>
-          </div>
-        </div>
+        <HomeSeparator />
 
         {/* RECURSOS PRINCIPAIS */}
         <section className="space-y-10 lg:space-y-12">
@@ -558,16 +381,7 @@ const StarBHomePage = () => {
         </section>
 
         {/* Separator */}
-        <div className="relative py-8">
-          <div className="absolute inset-0 flex items-center">
-            <div className="border-gradient-to-r w-full border-t-2 from-transparent via-blue-200 to-transparent"></div>
-          </div>
-          <div className="relative flex justify-center">
-            <span className="bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 px-6 text-sm text-slate-500">
-              ✦
-            </span>
-          </div>
-        </div>
+        <HomeSeparator />
 
         {/* CONTEÚDO PREMIUM */}
         <section className="space-y-10 lg:space-y-12">
@@ -736,16 +550,7 @@ const StarBHomePage = () => {
         </section>
 
         {/* Separator */}
-        <div className="relative py-8">
-          <div className="absolute inset-0 flex items-center">
-            <div className="border-gradient-to-r w-full border-t-2 from-transparent via-blue-200 to-transparent"></div>
-          </div>
-          <div className="relative flex justify-center">
-            <span className="bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 px-6 text-sm text-slate-500">
-              ✦
-            </span>
-          </div>
-        </div>
+        <HomeSeparator />
 
         {/* CALL TO ACTION FINAL */}
         <section className="relative overflow-hidden rounded-3xl bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700 p-8 text-center shadow-2xl shadow-blue-500/30 sm:p-12 lg:p-16">
@@ -776,7 +581,7 @@ const StarBHomePage = () => {
               <Button
                 size="lg"
                 asChild
-                className="h-10 sm:h-14 bg-white px-8 font-semibold text-blue-700 shadow-xl hover:bg-white/10  hover:text-white transition-all duration-500 "
+                className="h-10 bg-white px-8 font-semibold text-blue-700 shadow-xl transition-all duration-500 hover:bg-white/10 hover:text-white sm:h-14"
               >
                 <Link href="/biblioteca/livros">
                   Começar pela Biblioteca
@@ -800,7 +605,7 @@ const StarBHomePage = () => {
                 size="lg"
                 variant="outline"
                 asChild
-                className="h-10 sm:h-14 border-2 border-white px-8 font-semibold text-blue-700 hover:bg-white/10 transition-all duration-500"
+                className="h-10 border-2 border-white px-8 font-semibold text-blue-700 transition-all duration-500 hover:bg-white/10 sm:h-14"
               >
                 <Link href="/premium">Ver Planos Premium</Link>
               </Button>
@@ -856,7 +661,6 @@ const StarBHomePage = () => {
           </div>
         </section>
       </main>
-
 
       <style jsx>{`
         @keyframes blob {
