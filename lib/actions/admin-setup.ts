@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { db, profilesTable } from "@/lib/drizzle/db";
+import { db, profiles } from "@/lib/drizzle/db";
 import { createClient } from "@/lib/supabase/server";
 import { eq } from "drizzle-orm";
 
@@ -37,9 +37,9 @@ export async function promoverParaAdmin(
   }
 
   await db
-    .update(profilesTable)
+    .update(profiles)
     .set({ role: "admin" })
-    .where(eq(profilesTable.id, user.id));
+    .where(eq(profiles.id, user.id));
 
   redirect("/admin");
 }

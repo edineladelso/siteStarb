@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/admin/DataTable";
 import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { Plus, Search } from "lucide-react";
-import type { Livro } from "@/lib/types";
+import type { ContentStatus, Livro } from "@/lib/types";
 import { listarLivros } from "@/lib/actions";
 import { ActionMenu } from "@/components/admin/shared/ActionMenu";
 import { ConfirmationDialog } from "@/components/admin/shared/ConfirmationDialog";
@@ -103,7 +103,7 @@ export default function LivrosPage() {
             <td className="px-4 py-4">
               <div className="flex items-center gap-3">
                 <img
-                  src={livro.capaUrl}
+                  src={livro.midia.capa}
                   alt={livro.titulo}
                   className="h-16 w-12 rounded object-cover"
                 />
@@ -116,7 +116,7 @@ export default function LivrosPage() {
             <td className="px-4 py-4 text-slate-700">{livro.autor}</td>
             <td className="px-4 py-4 text-slate-700">{livro.categoria}</td>
             <td className="px-4 py-4">
-              <StatusBadge status={livro.status} />
+              <StatusBadge status={livro.status as ContentStatus} />
             </td>
             <td className="px-4 py-4 text-slate-700">
               {livro.views.toLocaleString("pt-BR")}

@@ -1,58 +1,87 @@
-// ==================== app/admin/artigos/[id]/editar/page.tsx ====================
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { ArtigoForm } from "@/components/admin/forms/ArtigoForm";
-import { getArtigoById } from "@/lib/actions";
+import { ArtigoForm } from "@/components/admin/forms/ArtigoForm"; // Ajuste o path se necessário
+import { getArtigoById } from "@/lib/actions/artigos.actions"; // Importação direta da action
 import type { Artigo } from "@/lib/types";
 
 export default function EditarArtigoPage() {
   const router = useRouter();
   const params = useParams();
+  
   const [artigo, setArtigo] = useState<Artigo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    loadArtigo();
-  }, [params.id]);
-
-  const loadArtigo = async () => {
-    const id = Number(params.id);
-    if (Number.isNaN(id)) {
-      setArtigo(null);
-      setLoading(false);
-      return;
+    // Garantimos que o ID existe antes de chamar
+    if (params?.id) {
+      loadArtigo(Number(params.id));
     }
-    const data = await getArtigoById(id);
-    setArtigo(data);
-    setLoading(false);
+  }, [params?.id]);
+
+  const loadArtigo = async (id: number) => {
+    try {
+      if (isNaN(id)) throw new Error("ID inválido");
+
+      const data = await getArtigoById(id);
+      
+      if (!data) {
+        setError(true);
+      } else {
+        setArtigo(data);
+      }
+    } catch (err) {
+      console.error("Falha ao carregar artigo:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
-
+  // State: Loading
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-[50vh] items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-orange-600 border-t-transparent"></div>
-          <p className="text-slate-600">Carregando...</p>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+          <p className="animate-pulse text-sm font-medium text-slate-500">Carregando dados do artigo...</p>
         </div>
       </div>
     );
   }
 
-  if (!artigo) {
+  // State: Error / Not Found
+  if (error || !artigo) {
     return (
-      <div className="py-12 text-center">
-        <p className="text-slate-600">Artigo não encontrado</p>
+      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center">
+        <div className="rounded-full bg-red-100 p-4">
+          <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-slate-900">Artigo não encontrado</h2>
+          <p className="text-slate-500">O artigo que você tenta editar não existe ou foi removido.</p>
+        </div>
+        <button 
+          onClick={() => router.push("/admin/artigos")}
+          className="text-sm font-medium text-blue-600 hover:underline"
+        >
+          Voltar para a lista
+        </button>
       </div>
     );
   }
 
+  // State: Success
   return (
-    <ArtigoForm
-      initialData={artigo}
-      onCancel={() => router.push("/admin/artigos")}
-    />
+    <div className="container mx-auto px-4">
+      <ArtigoForm
+        initialData={artigo}
+        onCancel={() => router.push("/admin/artigos")}
+      />
+    </div>
   );
 }

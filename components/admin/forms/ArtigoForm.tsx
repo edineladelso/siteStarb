@@ -1,154 +1,123 @@
 "use client";
 
-// ==================== ARTIGO FORM ====================
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input"; // Assumindo que usa shadcn/ui
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import CloudinaryUpload from "../CloudinaryUpload";
-import { criarArtigo, atualizarArtigo } from "@/lib/actions";
+import { criarArtigo, atualizarArtigo } from "@/lib/actions/artigos.actions";
+import { CATEGORIAS, type Artigo } from "@/lib/types";
+import { areaLivroValues } from "@/lib/domain/areas";
 
-const categorias = [
-  "IA",
-  "Programação",
-  "Eletrônica",
-  "Mecatrônica",
-  "Engenharia",
-  "Matemática",
-];
-
-export function ArtigoForm({
-  initialData,
-  onCancel,
-}: {
-  initialData?: any;
+interface ArtigoFormProps {
+  initialData?: Artigo;
   onCancel?: () => void;
-}) {
+}
+
+export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
-  const [formData, setFormData] = useState({
-    titulo: initialData?.titulo || "",
-    autores: initialData?.autores || "",
-    categoria: initialData?.categoria || "",
-    resumo: initialData?.resumo || "",
-    palavrasChave: initialData?.palavrasChave || "",
-    anoPublicacao: initialData?.anoPublicacao || "",
-    instituicao: initialData?.instituicao || "",
-    pdfUrl: initialData?.pdfUrl || "",
-  });
+  
+  // Estado para campos que precisam de manipulação antes do envio
+  const [pdfUrl, setPdfUrl] = useState(
+    initialData?.midia.tipo === "pdf" ? initialData.midia.pdfUrl : ""
+  );
+  const [selectedAreas, setSelectedAreas] = useState<string[]>(
+    initialData?.areas || []
+  );
 
-  async function handleAction(payload: FormData) {
+  async function handleSubmit(formData: FormData) {
+    setIsPending(true);
     try {
-      setIsPending(true);
+      // Adicionamos manualmente os campos complexos ao FormData
+      formData.set("midia_tipo", "pdf");
+      formData.set("pdf_url", pdfUrl);
+      formData.set("areas", selectedAreas.join(","));
+      
+      // Se não houver status no form, definimos como rascunho por padrão
+      if (!formData.has("status")) formData.set("status", "rascunho");
+      
+      // A descrição no seu schema é obrigatória (ContentBase)
+      formData.set("descricao", formData.get("resumo") as string);
+
+      let result;
       if (initialData?.id) {
-        payload.set("id", String(initialData.id));
-        //await updateArtigo(payload);
+        result = await atualizarArtigo(Number(initialData.id), formData);
       } else {
-        await criarArtigo(payload);
-        (document.getElementById("artigo-form") as HTMLFormElement)?.reset();
-        setFormData({
-          titulo: "",
-          autores: "",
-          categoria: "",
-          resumo: "",
-          palavrasChave: "",
-          anoPublicacao: "",
-          instituicao: "",
-          pdfUrl: "",
-        });
+        result = await criarArtigo(formData);
       }
-      router.push("/admin/artigos");
+
+      if (result.success) {
+        router.push("/admin/artigos");
+        router.refresh();
+      } else {
+        alert(result.error || "Erro ao salvar artigo");
+      }
     } catch (error) {
-      console.error("Erro ao submeter artigo:", error);
+      console.error("Erro fatal:", error);
     } finally {
       setIsPending(false);
     }
   }
 
   return (
-    <form
-      id="artigo-form"
-      action={handleAction}
-      className="mx-auto max-w-4xl space-y-8 py-8"
-    >
+    <form action={handleSubmit} className="mx-auto max-w-4xl space-y-8 py-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">
-            {initialData ? "Editar" : "Adicionar"} Artigo
+            {initialData ? "Editar" : "Novo"} Artigo
           </h1>
-          <p className="mt-1 text-slate-600">Artigo científico ou técnico</p>
+          <p className="mt-1 text-slate-600">Gestão de publicações científicas e técnicas</p>
         </div>
-        {onCancel && (
-          <Button variant="outline" onClick={onCancel} type="button">
-            Voltar
-          </Button>
-        )}
+        <Button variant="outline" onClick={onCancel} type="button">
+          Voltar
+        </Button>
       </div>
 
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Informações do Artigo</CardTitle>
+            <CardTitle>Dados Principais</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">
-                Título do Artigo *
-              </label>
-              <input
+              <Label htmlFor="titulo">Título do Artigo *</Label>
+              <Input
+                id="titulo"
                 name="titulo"
-                type="text"
                 required
-                value={formData.titulo}
-                onChange={(e) =>
-                  setFormData({ ...formData, titulo: e.target.value })
-                }
-                placeholder="Ex: Análise de Redes Neurais Convolucionais"
-                className="w-full rounded-xl border-2 border-slate-200 px-4 py-3 outline-none focus:border-blue-500"
+                defaultValue={initialData?.titulo}
+                placeholder="Ex: Impacto da IA na Engenharia Civil"
               />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">
-                  Autor(es) *
-                </label>
-                <input
+                <Label htmlFor="autores">Autores *</Label>
+                <Input
+                  id="autores"
                   name="autores"
-                  type="text"
                   required
-                  value={formData.autores}
-                  onChange={(e) =>
-                    setFormData({ ...formData, autores: e.target.value })
-                  }
-                  placeholder="João Silva, Maria Santos"
-                  className="w-full rounded-xl border-2 border-slate-200 px-4 py-3 outline-none focus:border-blue-500"
+                  defaultValue={initialData?.autores}
+                  placeholder="Nome dos autores separados por vírgula"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">
-                  Categoria *
-                </label>
+                <Label htmlFor="categoria">Categoria *</Label>
                 <select
+                  id="categoria"
                   name="categoria"
                   required
-                  value={formData.categoria}
-                  onChange={(e) =>
-                    setFormData({ ...formData, categoria: e.target.value })
-                  }
-                  className="w-full rounded-xl border-2 border-slate-200 px-4 py-3 outline-none focus:border-blue-500"
+                  defaultValue={initialData?.categoria}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <option value="">Selecione</option>
-                  {categorias.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
+                  <option value="">Selecione...</option>
+                  {CATEGORIAS.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
                   ))}
                 </select>
               </div>
@@ -156,109 +125,102 @@ export function ArtigoForm({
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">
-                  Instituição
-                </label>
-                <input
+                <Label htmlFor="instituicao">Instituição</Label>
+                <Input
+                  id="instituicao"
                   name="instituicao"
-                  type="text"
-                  value={formData.instituicao}
-                  onChange={(e) =>
-                    setFormData({ ...formData, instituicao: e.target.value })
-                  }
-                  placeholder="Universidade Federal..."
-                  className="w-full rounded-xl border-2 border-slate-200 px-4 py-3 outline-none focus:border-blue-500"
+                  defaultValue={initialData?.instituicao || ""}
                 />
               </div>
-
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">
-                  Ano de Publicação
-                </label>
-                <input
-                  name="ano_publicacao"
+                <Label htmlFor="anoPublicacao">Ano de Publicação</Label>
+                <Input
+                  id="anoPublicacao"
+                  name="anoPublicacao"
                   type="number"
-                  value={formData.anoPublicacao}
-                  onChange={(e) =>
-                    setFormData({ ...formData, anoPublicacao: e.target.value })
-                  }
-                  placeholder="2024"
-                  className="w-full rounded-xl border-2 border-slate-200 px-4 py-3 outline-none focus:border-blue-500"
+                  defaultValue={initialData?.anoPublicacao || ""}
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">
-                Resumo *
-              </label>
-              <textarea
+              <Label htmlFor="resumo">Resumo (Abstract) *</Label>
+              <Textarea
+                id="resumo"
                 name="resumo"
                 required
-                rows={6}
-                value={formData.resumo}
-                onChange={(e) =>
-                  setFormData({ ...formData, resumo: e.target.value })
-                }
-                placeholder="Resumo do artigo..."
-                className="w-full resize-none rounded-xl border-2 border-slate-200 px-4 py-3 outline-none focus:border-blue-500"
+                rows={5}
+                defaultValue={initialData?.resumo}
+                placeholder="Descreva brevemente o conteúdo do artigo..."
               />
             </div>
-
+            
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">
-                Palavras-chave
-              </label>
-              <input
-                name="palavras_chave"
-                type="text"
-                value={formData.palavrasChave}
-                onChange={(e) =>
-                  setFormData({ ...formData, palavrasChave: e.target.value })
-                }
-                placeholder="machine learning, deep learning, CNN"
-                className="w-full rounded-xl border-2 border-slate-200 px-4 py-3 outline-none focus:border-blue-500"
-              />
+              <Label>Áreas de Conhecimento *</Label>
+              <div className="grid grid-cols-2 gap-2 rounded-md border p-3 md:grid-cols-3">
+                {areaLivroValues.slice(0, 12).map((area) => ( // Limitado para brevidade
+                  <label key={area} className="flex items-center gap-2 text-xs">
+                    <input
+                      type="checkbox"
+                      checked={selectedAreas.includes(area)}
+                      onChange={(e) => {
+                        if (e.target.checked) setSelectedAreas([...selectedAreas, area]);
+                        else setSelectedAreas(selectedAreas.filter(a => a !== area));
+                      }}
+                    />
+                    {area.replace("_", " ")}
+                  </label>
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Arquivo PDF</CardTitle>
+            <CardTitle>Mídia e Arquivos</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             <CloudinaryUpload
               type="pdf"
-              label="Artigo Completo *"
-              description="PDF - máx 400MB"
-              onUploadComplete={(files: any) =>
-                setFormData({ ...formData, pdfUrl: files[0].url })
-              }
+              label="Upload do PDF *"
+              onUploadComplete={(files: any) => setPdfUrl(files[0].url)}
             />
+            {pdfUrl && (
+              <p className="text-xs text-green-600 font-medium">
+                Arquivo pronto: {pdfUrl.split('/').pop()}
+              </p>
+            )}
+            
+            <div className="space-y-2">
+              <Label htmlFor="status">Status de Publicação</Label>
+              <select
+                id="status"
+                name="status"
+                defaultValue={initialData?.status || "rascunho"}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="rascunho">Rascunho</option>
+                <option value="publicado">Publicado</option>
+                <option value="arquivado">Arquivado</option>
+              </select>
+            </div>
           </CardContent>
         </Card>
 
-        <div className="flex justify-end gap-3 pt-4">
-          {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
-              Cancelar
-            </Button>
-          )}
-          <Button
-            type="submit"
-            disabled={isPending}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+        <div className="flex justify-end gap-3">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancelar
+          </Button>
+          <Button 
+            type="submit" 
+            disabled={isPending || !pdfUrl}
+            className="bg-blue-600 hover:bg-blue-700"
           >
-            {isPending ? "A processar..." : initialData ? "Atualizar" : "Adicionar"} Artigo
+            {isPending ? "Salvando..." : initialData ? "Atualizar Artigo" : "Criar Artigo"}
           </Button>
         </div>
       </div>
-
-      <input type="hidden" name="descricao" value={formData.resumo} />
-      <input type="hidden" name="slug" value={initialData?.slug ?? ""} />
-      <input type="hidden" name="midia_tipo" value={formData.pdfUrl ? "pdf" : ""} />
-      <input type="hidden" name="pdf_url" value={formData.pdfUrl} />
     </form>
   );
 }

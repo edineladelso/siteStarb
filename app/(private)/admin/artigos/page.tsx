@@ -9,8 +9,9 @@ import { DataTable } from "@/components/admin/DataTable";
 import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, FileText } from "lucide-react";
-import type { Artigo } from "@/lib/types";
-import { getArtigos, deleteArtigo } from "@/lib/actions";
+import type { Artigo, ContentStatus } from "@/lib/types";
+import { listarArtigos, genericDelete } from "@/lib/actions";
+
 import { ActionMenu } from "@/components/admin/shared/ActionMenu";
 import { ConfirmationDialog } from "@/components/admin/shared/ConfirmationDialog";
 
@@ -27,7 +28,7 @@ export default function ArtigosPage() {
 
   const loadArtigos = async () => {
     try {
-      const data = await getArtigos();
+      const data = await listarArtigos();
       setArtigos(data);
     } catch (error) {
       console.error("Erro ao carregar artigos:", error);
@@ -41,7 +42,7 @@ export default function ArtigosPage() {
     const id = deleteId;
     setDeleteId(null);
     try {
-      await deleteArtigo(id);
+      //await genericDelete(id);
       loadArtigos();
     } catch (error) {
       console.error("Erro ao deletar artigo:", error);
@@ -216,7 +217,7 @@ export default function ArtigosPage() {
               {artigo.anoPublicacao || "—"}
             </td>
             <td className="px-6 py-4">
-              <StatusBadge status={artigo.status} />
+              <StatusBadge status={artigo.status as ContentStatus} />
             </td>
             <td className="px-6 py-4 text-slate-700">
               {artigo.views.toLocaleString("pt-BR")}

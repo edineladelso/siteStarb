@@ -1,35 +1,26 @@
+// src/lib/drizzle/db/schema/profiles.ts
 import {
-  integer,
-  jsonb,
   pgTable,
-  serial,
   text,
   timestamp,
-  uuid,
+  uuid
 } from "drizzle-orm/pg-core";
 
-export type roleEnum = "admin" | "user";
+export type Role = "admin" | "user";
+export type AuthProvider = "email" | "google" | "github";
 
-export const profilesTable = pgTable("profiles", {
-  id: uuid("id").primaryKey(),
+export const profiles = pgTable("profiles", {
+  // O id deve ser o mesmo do auth.users do Supabase
+  id: uuid("id").primaryKey(), 
+  
+  email: text("email").notNull().unique(),
   nome: text("nome").notNull(),
-  apelido: text("apelido").notNull(),
-  idade: integer("idade"),
-  avatar_url: text("avatar_url"),
+  apelido: text("apelido"),
+  avatarUrl: text("avatar_url"),
+  
+  role: text("role").$type<Role>().notNull().default("user"),
+  provider: text("provider").$type<AuthProvider>().notNull().default("email"),
+  
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  updateAt: timestamp("updated_at").notNull().defaultNow(),
-  role: jsonb("role").$type<roleEnum>().notNull(),
-});
-
-export const loginTable = pgTable("login_table", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  content: text("content").notNull(),
-  userId: uuid("user_id") // ← UUID agora
-    .notNull()
-    .references(() => profilesTable.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at")
-    .notNull()
-    .$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date()),
 });
