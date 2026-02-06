@@ -8,7 +8,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-export type roleEnum = "matematica" | "fisica";
+export type roleEnum = "admin" | "user";
 
 export const profilesTable = pgTable("profiles", {
   id: uuid("id").primaryKey(),
