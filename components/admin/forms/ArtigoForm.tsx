@@ -6,11 +6,12 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from "@/components/ui/card";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import CloudinaryUpload from "../CloudinaryUpload";
-
+import { criarArtigo, atualizarArtigo } from "@/lib/actions";
 
 const categorias = [
   "IA",
@@ -23,13 +24,13 @@ const categorias = [
 
 export function ArtigoForm({
   initialData,
-  onSubmit,
   onCancel,
 }: {
   initialData?: any;
-  onSubmit: (data: any) => void;
   onCancel?: () => void;
 }) {
+  const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
   const [formData, setFormData] = useState({
     titulo: initialData?.titulo || "",
     autores: initialData?.autores || "",
@@ -41,8 +42,40 @@ export function ArtigoForm({
     pdfUrl: initialData?.pdfUrl || "",
   });
 
+  async function handleAction(payload: FormData) {
+    try {
+      setIsPending(true);
+      if (initialData?.id) {
+        payload.set("id", String(initialData.id));
+        //await updateArtigo(payload);
+      } else {
+        await criarArtigo(payload);
+        (document.getElementById("artigo-form") as HTMLFormElement)?.reset();
+        setFormData({
+          titulo: "",
+          autores: "",
+          categoria: "",
+          resumo: "",
+          palavrasChave: "",
+          anoPublicacao: "",
+          instituicao: "",
+          pdfUrl: "",
+        });
+      }
+      router.push("/admin/artigos");
+    } catch (error) {
+      console.error("Erro ao submeter artigo:", error);
+    } finally {
+      setIsPending(false);
+    }
+  }
+
   return (
-    <div className="mx-auto max-w-4xl space-y-8 py-8">
+    <form
+      id="artigo-form"
+      action={handleAction}
+      className="mx-auto max-w-4xl space-y-8 py-8"
+    >
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">
@@ -51,7 +84,7 @@ export function ArtigoForm({
           <p className="mt-1 text-slate-600">Artigo científico ou técnico</p>
         </div>
         {onCancel && (
-          <Button variant="outline" onClick={onCancel}>
+          <Button variant="outline" onClick={onCancel} type="button">
             Voltar
           </Button>
         )}
@@ -68,6 +101,7 @@ export function ArtigoForm({
                 Título do Artigo *
               </label>
               <input
+                name="titulo"
                 type="text"
                 required
                 value={formData.titulo}
@@ -85,6 +119,7 @@ export function ArtigoForm({
                   Autor(es) *
                 </label>
                 <input
+                  name="autores"
                   type="text"
                   required
                   value={formData.autores}
@@ -101,6 +136,7 @@ export function ArtigoForm({
                   Categoria *
                 </label>
                 <select
+                  name="categoria"
                   required
                   value={formData.categoria}
                   onChange={(e) =>
@@ -124,6 +160,7 @@ export function ArtigoForm({
                   Instituição
                 </label>
                 <input
+                  name="instituicao"
                   type="text"
                   value={formData.instituicao}
                   onChange={(e) =>
@@ -139,6 +176,7 @@ export function ArtigoForm({
                   Ano de Publicação
                 </label>
                 <input
+                  name="ano_publicacao"
                   type="number"
                   value={formData.anoPublicacao}
                   onChange={(e) =>
@@ -155,6 +193,7 @@ export function ArtigoForm({
                 Resumo *
               </label>
               <textarea
+                name="resumo"
                 required
                 rows={6}
                 value={formData.resumo}
@@ -171,6 +210,7 @@ export function ArtigoForm({
                 Palavras-chave
               </label>
               <input
+                name="palavras_chave"
                 type="text"
                 value={formData.palavrasChave}
                 onChange={(e) =>
@@ -206,16 +246,19 @@ export function ArtigoForm({
             </Button>
           )}
           <Button
-            onClick={(e) => {
-              e.preventDefault();
-              onSubmit(formData);
-            }}
+            type="submit"
+            disabled={isPending}
             className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
           >
-            {initialData ? "Atualizar" : "Adicionar"} Artigo
+            {isPending ? "A processar..." : initialData ? "Atualizar" : "Adicionar"} Artigo
           </Button>
         </div>
       </div>
-    </div>
+
+      <input type="hidden" name="descricao" value={formData.resumo} />
+      <input type="hidden" name="slug" value={initialData?.slug ?? ""} />
+      <input type="hidden" name="midia_tipo" value={formData.pdfUrl ? "pdf" : ""} />
+      <input type="hidden" name="pdf_url" value={formData.pdfUrl} />
+    </form>
   );
 }

@@ -9,7 +9,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import CloudinaryUpload from "../CloudinaryUpload";
+import { criarSoftware, atualizarSoftware } from "@/lib/actions";
 
 // ==================== SOFTWARE FORM ====================
 const categorias = [
@@ -23,15 +25,15 @@ const categorias = [
 
 export function SoftwareForm({
   initialData,
-  onSubmit,
   onCancel,
 }: {
   initialData?: any;
-  onSubmit: (data: any) => void;
   onCancel?: () => void;
 }) {
+  const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
   const [formData, setFormData] = useState({
-    nome: initialData?.nome || "",
+    nome: initialData?.titulo || initialData?.nome || "",
     siteOficial: initialData?.siteOficial || "",
     categoria: initialData?.categoria || "",
     descricao: initialData?.descricao || "",
@@ -42,13 +44,41 @@ export function SoftwareForm({
     screenshots: initialData?.screenshots || [],
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+  async function handleAction(payload: FormData) {
+    try {
+      setIsPending(true);
+      if (initialData?.id) {
+        payload.set("id", String(initialData.id));
+        // await atualizarSoftware(payload);
+      } else {
+        await criarSoftware(payload);
+        (document.getElementById("software-form") as HTMLFormElement)?.reset();
+        setFormData({
+          nome: "",
+          siteOficial: "",
+          categoria: "",
+          descricao: "",
+          funcionalidades: "",
+          requisitos: "",
+          preco: "Gratuito",
+          plataformas: [],
+          screenshots: [],
+        });
+      }
+      router.push("/admin/softwares");
+    } catch (error) {
+      console.error("Erro ao submeter software:", error);
+    } finally {
+      setIsPending(false);
+    }
+  }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 py-8">
+    <form
+      id="software-form"
+      action={handleAction}
+      className="mx-auto max-w-4xl space-y-8 py-8"
+    >
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">
@@ -59,7 +89,7 @@ export function SoftwareForm({
           </p>
         </div>
         {onCancel && (
-          <Button variant="outline" onClick={onCancel}>
+          <Button variant="outline" onClick={onCancel} type="button">
             Voltar
           </Button>
         )}
@@ -77,6 +107,7 @@ export function SoftwareForm({
                   Nome do Software *
                 </label>
                 <input
+                  name="titulo"
                   type="text"
                   required
                   value={formData.nome}
@@ -93,6 +124,7 @@ export function SoftwareForm({
                   Site Oficial *
                 </label>
                 <input
+                  name="site_oficial"
                   type="url"
                   required
                   value={formData.siteOficial}
@@ -111,6 +143,7 @@ export function SoftwareForm({
                   Categoria *
                 </label>
                 <select
+                  name="categoria"
                   required
                   value={formData.categoria}
                   onChange={(e) =>
@@ -132,6 +165,7 @@ export function SoftwareForm({
                   Preço
                 </label>
                 <input
+                  name="preco"
                   type="text"
                   value={formData.preco}
                   onChange={(e) =>
@@ -148,6 +182,7 @@ export function SoftwareForm({
                 Descrição Detalhada *
               </label>
               <textarea
+                name="descricao"
                 required
                 rows={6}
                 value={formData.descricao}
@@ -164,6 +199,7 @@ export function SoftwareForm({
                 Funcionalidades Principais
               </label>
               <textarea
+                name="funcionalidades"
                 rows={4}
                 value={formData.funcionalidades}
                 onChange={(e) =>
@@ -179,6 +215,7 @@ export function SoftwareForm({
                 Requisitos do Sistema
               </label>
               <textarea
+                name="requisitos"
                 rows={3}
                 value={formData.requisitos}
                 onChange={(e) =>
@@ -194,9 +231,7 @@ export function SoftwareForm({
         <Card>
           <CardHeader>
             <CardTitle>Screenshots</CardTitle>
-            <CardDescription>
-              Imagens demonstrando funcionalidades
-            </CardDescription>
+            <CardDescription>Imagens demonstrando funcionalidades</CardDescription>
           </CardHeader>
           <CardContent>
             <CloudinaryUpload
@@ -220,13 +255,18 @@ export function SoftwareForm({
             </Button>
           )}
           <Button
-            onClick={handleSubmit}
+            type="submit"
+            disabled={isPending}
             className="bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
           >
-            {initialData ? "Atualizar" : "Adicionar"} Software
+            {isPending ? "A processar..." : initialData ? "Atualizar" : "Adicionar"} Software
           </Button>
         </div>
       </div>
-    </div>
+
+      <input type="hidden" name="slug" value={initialData?.slug ?? ""} />
+      <input type="hidden" name="plataformas" value={formData.plataformas.join(",")} />
+      <input type="hidden" name="screenshots" value={formData.screenshots.join(",")} />
+    </form>
   );
 }

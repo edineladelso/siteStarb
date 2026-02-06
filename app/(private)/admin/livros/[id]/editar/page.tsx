@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { LivroForm } from "@/components/admin/forms/LivroForm";
-import { getLivroById, updateLivro } from "@/actions/livros";
+import { getLivroById } from "@/lib/actions";
 import type { Livro } from "@/lib/types";
 
 export default function EditarLivroPage() {
@@ -18,25 +18,23 @@ export default function EditarLivroPage() {
   }, [params.id]);
 
   const loadLivro = async () => {
-    const data = await getLivroById(params.id as string);
+    const id = Number(params.id);
+    if (Number.isNaN(id)) {
+      setLivro(null);
+      setLoading(false);
+      return;
+    }
+    const data = await getLivroById(id);
     setLivro(data);
     setLoading(false);
   };
 
-  const handleSubmit = async (data: any) => {
-    const result = await updateLivro(params.id as string, data);
-    if (result.success) {
-      router.push("/admin/livros");
-    } else {
-      alert("Erro ao atualizar livro: " + result.error);
-    }
-  };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
           <p className="text-slate-600">Carregando...</p>
         </div>
       </div>
@@ -50,7 +48,6 @@ export default function EditarLivroPage() {
   return (
     <LivroForm
       initialData={livro}
-      onSubmit={handleSubmit}
       onCancel={() => router.push("/admin/livros")}
     />
   );

@@ -18,7 +18,7 @@ import {
   quickMenuItems,
   softwareCategories,
   themeOptions,
-} from "@/lib/data";
+} from "@/lib/localDadosHome/data";
 import Image from "next/image";
 
 export function NavbarDesktop() {

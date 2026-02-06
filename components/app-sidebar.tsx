@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
@@ -10,9 +9,9 @@ import {
   GalleryVerticalEnd,
   Map,
   PieChart,
-  Settings2,
   SquareTerminal,
 } from "lucide-react";
+import * as React from "react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
@@ -37,20 +36,20 @@ const data = {
     {
       name: "Star B Avançado",
       logo: Command,
-      plan: "Enterprise", 
-      href:"#",
+      plan: "Enterprise",
+      href: "#",
     },
     {
       name: "Star B IA",
       logo: AudioWaveform,
       plan: "Pro",
-      href:"#",
+      href: "#",
     },
     {
       name: "Star B Normal",
       logo: GalleryVerticalEnd,
       plan: "Free",
-      href:"#",
+      href: "#",
     },
   ],
   navMain: [
@@ -80,7 +79,7 @@ const data = {
           title: "Backend",
           url: "#",
         },
-                {
+        {
           title: "Dados",
           url: "#",
         },
@@ -128,7 +127,6 @@ const data = {
         },
       ],
     },
-    
   ],
   projects: [
     {

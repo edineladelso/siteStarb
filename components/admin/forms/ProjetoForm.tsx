@@ -3,7 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import CloudinaryUpload from "../CloudinaryUpload";
+import { criarProjeto, atualizarProjeto } from "@/lib/actions";
 
 // ==================== PROJETO FORM ====================
 
@@ -18,18 +20,18 @@ const categorias = [
 
 export function ProjetoForm({
   initialData,
-  onSubmit,
   onCancel,
 }: {
   initialData?: any;
-  onSubmit: (data: any) => void;
   onCancel?: () => void;
 }) {
+  const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
   const [formData, setFormData] = useState({
     titulo: initialData?.titulo || "",
     autor: initialData?.autor || "",
     categoria: initialData?.categoria || "",
-    descricaoGeral: initialData?.descricaoGeral || "",
+    descricaoGeral: initialData?.descricao || initialData?.descricaoGeral || "",
     problemaResolvido: initialData?.problemaResolvido || "",
     tecnologias: initialData?.tecnologias || "",
     repositorioGithub: initialData?.repositorioGithub || "",
@@ -39,8 +41,43 @@ export function ProjetoForm({
     duracao: initialData?.duracao || "",
   });
 
+  async function handleAction(payload: FormData) {
+    try {
+      setIsPending(true);
+      if (initialData?.id) {
+        payload.set("id", String(initialData.id));
+        // await atualizarProjeto(payload);
+      } else {
+        await criarProjeto(payload);
+        (document.getElementById("projeto-form") as HTMLFormElement)?.reset();
+        setFormData({
+          titulo: "",
+          autor: "",
+          categoria: "",
+          descricaoGeral: "",
+          problemaResolvido: "",
+          tecnologias: "",
+          repositorioGithub: "",
+          documentacaoUrl: "",
+          imagensUrl: [],
+          dificuldade: "Intermediário",
+          duracao: "",
+        });
+      }
+      router.push("/admin/projetos");
+    } catch (error) {
+      console.error("Erro ao submeter projeto:", error);
+    } finally {
+      setIsPending(false);
+    }
+  }
+
   return (
-    <div className="mx-auto max-w-4xl space-y-8 py-8">
+    <form
+      id="projeto-form"
+      action={handleAction}
+      className="mx-auto max-w-4xl space-y-8 py-8"
+    >
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">
@@ -51,7 +88,7 @@ export function ProjetoForm({
           </p>
         </div>
         {onCancel && (
-          <Button variant="outline" onClick={onCancel}>
+          <Button variant="outline" onClick={onCancel} type="button">
             Voltar
           </Button>
         )}
@@ -69,6 +106,7 @@ export function ProjetoForm({
                   Nome do Projeto *
                 </label>
                 <input
+                  name="titulo"
                   type="text"
                   required
                   value={formData.titulo}
@@ -85,6 +123,7 @@ export function ProjetoForm({
                   Autor *
                 </label>
                 <input
+                  name="autor"
                   type="text"
                   required
                   value={formData.autor}
@@ -103,6 +142,7 @@ export function ProjetoForm({
                   Categoria *
                 </label>
                 <select
+                  name="categoria"
                   required
                   value={formData.categoria}
                   onChange={(e) =>
@@ -124,6 +164,7 @@ export function ProjetoForm({
                   Dificuldade
                 </label>
                 <select
+                  name="dificuldade"
                   value={formData.dificuldade}
                   onChange={(e) =>
                     setFormData({ ...formData, dificuldade: e.target.value })
@@ -141,6 +182,7 @@ export function ProjetoForm({
                   Duração Estimada
                 </label>
                 <input
+                  name="duracao"
                   type="text"
                   value={formData.duracao}
                   onChange={(e) =>
@@ -157,6 +199,7 @@ export function ProjetoForm({
                 Descrição Geral *
               </label>
               <textarea
+                name="descricao"
                 required
                 rows={4}
                 value={formData.descricaoGeral}
@@ -173,6 +216,7 @@ export function ProjetoForm({
                 Problema Resolvido *
               </label>
               <textarea
+                name="problema_resolvido"
                 required
                 rows={3}
                 value={formData.problemaResolvido}
@@ -192,6 +236,7 @@ export function ProjetoForm({
                 Tecnologias Utilizadas *
               </label>
               <input
+                name="tecnologias"
                 type="text"
                 required
                 value={formData.tecnologias}
@@ -208,6 +253,7 @@ export function ProjetoForm({
                 Repositório GitHub
               </label>
               <input
+                name="repositorio_github"
                 type="url"
                 value={formData.repositorioGithub}
                 onChange={(e) =>
@@ -258,16 +304,18 @@ export function ProjetoForm({
             </Button>
           )}
           <Button
-            onClick={(e) => {
-              e.preventDefault();
-              onSubmit(formData);
-            }}
+            type="submit"
+            disabled={isPending}
             className="bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
           >
-            {initialData ? "Atualizar" : "Adicionar"} Projeto
+            {isPending ? "A processar..." : initialData ? "Atualizar" : "Adicionar"} Projeto
           </Button>
         </div>
       </div>
-    </div>
+
+      <input type="hidden" name="slug" value={initialData?.slug ?? ""} />
+      <input type="hidden" name="documentacao_url" value={formData.documentacaoUrl} />
+      <input type="hidden" name="imagens_url" value={formData.imagensUrl.join(",")} />
+    </form>
   );
 }

@@ -1,74 +1,57 @@
-import { updateSession } from "@/lib/supabase/proxy";
-import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { NextResponse, NextRequest } from "next/server";
 
 export default async function proxy(request: NextRequest) {
-  const maintenanceMode =
-    process.env.MAINTENANCE_MODE === "true" ? true : false;
-
-  if (maintenanceMode && request.nextUrl.pathname !== "/manutencao") {
-    const redirectUrl = new URL("/manutencao", request.url).toString();
-    return NextResponse.redirect(redirectUrl);
-  } else {
-    return NextResponse.next();
-  }
-
-  return await updateSession(request);
-}
-
-
-
-
-
-
-export async function middleware(request: NextRequest) {
-  const { nextUrl, cookies } = request;
-
-  // Proteger apenas as rotas de admin
-  if (!nextUrl.pathname.startsWith("/admin")) {
-    return NextResponse.next();
-  }
-
-  const response = NextResponse.next();
+  const { nextUrl } = request;
+  const response = NextResponse.next({ request });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return cookies.get(name)?.value;
+        getAll() {
+          return request.cookies.getAll();
         },
-        set(name: string, value: string, options) {
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-        },
-        remove(name: string, options) {
-          response.cookies.set({
-            name,
-            value: "",
-            ...options,
-          });
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options),
+          );
         },
       },
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Atualiza/refresca a sessão (getUser faz o refresh no Supabase)
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser();
 
-  // Se não estiver autenticado, redireciona para login com retorno
-  if (!user) {
-    const redirectUrl = new URL("/login", request.url);
-    redirectUrl.searchParams.set("next", nextUrl.pathname);
+  // Helper: redirect mantendo cookies de sessão (refresh do Supabase)
+  const redirectWithCookies = (url: URL) => {
+    const res = NextResponse.redirect(url);
+    response.cookies.getAll().forEach((c) => res.cookies.set(c.name, c.value));
+    return res;
+  };
+
+  // 1) Modo manutenção: redireciona tudo exceto /manutencao
+  const modoManutencao = process.env.MODO_MANUTENCAO === "true";
+  if (modoManutencao && nextUrl.pathname !== "/manutencao") {
+    const redirectUrl = new URL("/manutencao", request.url);
+
+    console.log("Modo manutencao: ", modoManutencao)
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Usuário autenticado -> deixa seguir. Checagem de role será feita no layout/server.
+  // 2) Rotas /admin: exige usuário autenticado
+  // if (nextUrl.pathname.startsWith("/admin")) {
+  //   if (!user) {
+  //     const loginUrl = new URL("/login", request.url);
+  //     loginUrl.searchParams.set("next", nextUrl.pathname);
+  //     return redirectWithCookies(loginUrl);
+  //   }
+  // }
+
   return response;
 }
 

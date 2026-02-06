@@ -1,14 +1,14 @@
 // ==================== STATUS BADGE ====================
 
 import { Badge } from "@/components/ui/badge";
+import type { ContentStatus } from "@/lib/types";
 
-export function StatusBadge({
-  status,
-  size = "default",
-}: {
-  status: "ativo" | "rascunho" | "arquivado" | "pendente" | "publicado";
+interface StatusBadgeProps {
+  status: ContentStatus; // Agora aceita todos os status do domínio
   size?: "default" | "sm" | "lg";
-}) {
+}
+
+export function StatusBadge({ status, size = "default" }: StatusBadgeProps) {
   const statusConfig = {
     ativo: {
       label: "Ativo",

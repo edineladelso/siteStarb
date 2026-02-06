@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -11,6 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import CloudinaryUpload from "../CloudinaryUpload";
+import { criarLivro, atualizarLivro } from "@/lib/actions";
+import { livros } from "@/lib/drizzle/db";
 
 
 
@@ -26,13 +29,13 @@ const categorias = [
 // ==================== LIVRO FORM ====================
 export function LivroForm({
   initialData,
-  onSubmit,
   onCancel,
 }: {
   initialData?: any;
-  onSubmit: (data: any) => void;
   onCancel?: () => void;
 }) {
+  const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
   const [formData, setFormData] = useState({
     titulo: initialData?.titulo || "",
     autor: initialData?.autor || "",
@@ -50,10 +53,37 @@ export function LivroForm({
 
   const [newTag, setNewTag] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+  async function handleAction(payload: FormData) {
+    try {
+      setIsPending(true);
+      if (initialData?.id) {
+        payload.set("id", String(initialData.id));
+       /// await atualizarLivro();
+      } else {
+        await criarLivro(payload);
+        (document.getElementById("livro-form") as HTMLFormElement)?.reset();
+        setFormData({
+          titulo: "",
+          autor: "",
+          categoria: "",
+          descricao: "",
+          isbn: "",
+          anoPublicacao: "",
+          editora: "",
+          idioma: "Português",
+          numeroPaginas: "",
+          capaUrl: "",
+          pdfUrl: "",
+          tags: [],
+        });
+      }
+      router.push("/admin/livros");
+    } catch (error) {
+      console.error("Erro ao submeter livro:", error);
+    } finally {
+      setIsPending(false);
+    }
+  }
 
   const addTag = () => {
     if (newTag && !formData.tags.includes(newTag)) {
@@ -70,7 +100,11 @@ export function LivroForm({
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 py-8">
+    <form
+      id="livro-form"
+      action={handleAction}
+      className="mx-auto max-w-4xl space-y-8 py-8"
+    >
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">
@@ -81,7 +115,7 @@ export function LivroForm({
           </p>
         </div>
         {onCancel && (
-          <Button variant="outline" onClick={onCancel}>
+          <Button variant="outline" onClick={onCancel} type="button">
             Voltar
           </Button>
         )}
@@ -101,6 +135,7 @@ export function LivroForm({
                   Título *
                 </label>
                 <input
+                  name="titulo"
                   type="text"
                   required
                   value={formData.titulo}
@@ -117,6 +152,7 @@ export function LivroForm({
                   Autor *
                 </label>
                 <input
+                  name="autor"
                   type="text"
                   required
                   value={formData.autor}
@@ -135,6 +171,7 @@ export function LivroForm({
                   Categoria *
                 </label>
                 <select
+                  name="categoria"
                   required
                   value={formData.categoria}
                   onChange={(e) =>
@@ -156,6 +193,7 @@ export function LivroForm({
                   ISBN
                 </label>
                 <input
+                  name="isbn"
                   type="text"
                   value={formData.isbn}
                   onChange={(e) =>
@@ -173,6 +211,7 @@ export function LivroForm({
                   Editora
                 </label>
                 <input
+                  name="editora"
                   type="text"
                   value={formData.editora}
                   onChange={(e) =>
@@ -188,6 +227,7 @@ export function LivroForm({
                   Ano de Publicação
                 </label>
                 <input
+                  name="ano_publicacao"
                   type="number"
                   value={formData.anoPublicacao}
                   onChange={(e) =>
@@ -203,6 +243,7 @@ export function LivroForm({
                   Nº de Páginas
                 </label>
                 <input
+                  name="numero_paginas"
                   type="number"
                   value={formData.numeroPaginas}
                   onChange={(e) =>
@@ -219,6 +260,7 @@ export function LivroForm({
                 Descrição *
               </label>
               <textarea
+                name="descricao"
                 required
                 rows={6}
                 value={formData.descricao}
@@ -305,13 +347,19 @@ export function LivroForm({
             </Button>
           )}
           <Button
-            onClick={handleSubmit}
+            type="submit"
+            disabled={isPending}
             className="bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
           >
-            {initialData ? "Atualizar" : "Adicionar"} Livro
+            {isPending ? "A processar..." : initialData ? "Atualizar" : "Adicionar"} Livro
           </Button>
         </div>
       </div>
-    </div>
+      <input type="hidden" name="slug" value={initialData?.slug ?? ""} />
+      <input type="hidden" name="idioma" value={formData.idioma} />
+      <input type="hidden" name="capa_url" value={formData.capaUrl} />
+      <input type="hidden" name="pdf_url" value={formData.pdfUrl} />
+      <input type="hidden" name="tags" value={formData.tags.join(",")} />
+    </form>
   );
 }

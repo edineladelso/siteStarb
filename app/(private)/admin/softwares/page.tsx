@@ -10,14 +10,16 @@ import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Code } from "lucide-react";
 import type { Software } from "@/lib/types";
-import { getSoftwares, deleteSoftware } from "@/actions/softwares";
+import { getSoftwares, deleteSoftware } from "@/lib/actions";
 import { ActionMenu } from "@/components/admin/shared/ActionMenu";
+import { ConfirmationDialog } from "@/components/admin/shared/ConfirmationDialog";
 
 export default function SoftwaresPage() {
   const router = useRouter();
   const [softwares, setSoftwares] = useState<Software[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [deleteId, setDeleteId] = useState<number | null>(null);
 
   useEffect(() => {
     loadSoftwares();
@@ -34,12 +36,15 @@ export default function SoftwaresPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Tem certeza que deseja deletar este software?")) {
-      const result = await deleteSoftware(id);
-      if (result.success) {
-        loadSoftwares();
-      }
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    const id = deleteId;
+    setDeleteId(null);
+    try {
+      await deleteSoftware(id);
+      loadSoftwares();
+    } catch (error) {
+      console.error("Erro ao deletar software:", error);
     }
   };
 
@@ -241,13 +246,26 @@ export default function SoftwaresPage() {
                 onEdit={() =>
                   router.push(`/admin/softwares/${software.id}/editar`)
                 }
-                onDelete={() => handleDelete(software.id)}
+                onDelete={() => setDeleteId(software.id)}
               />
             </td>
           </>
         )}
         emptyMessage="Nenhum software cadastrado"
         emptyDescription="Clique em 'Adicionar Software' para começar"
+      />
+
+      <ConfirmationDialog
+        open={deleteId !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteId(null);
+        }}
+        title="Excluir software"
+        description="Tem certeza que deseja deletar este software? Esta ação não pode ser desfeita."
+        confirmLabel="Deletar"
+        cancelLabel="Cancelar"
+        variant="destructive"
+        onConfirm={handleDelete}
       />
     </div>
   );

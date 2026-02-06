@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Wrench } from "lucide-react";
 import type { Projeto } from "@/lib/types";
-import { getProjetos, deleteProjeto } from "@/actions/projetos";
+import { getProjetos, deleteProjeto } from "@/lib/actions";
 import { ActionMenu } from "@/components/admin/shared/ActionMenu";
 import { ConfirmationDialog } from "@/components/admin/shared/ConfirmationDialog";
 
@@ -19,7 +19,7 @@ export default function ProjetosPage() {
   const [projetos, setProjetos] = useState<Projeto[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
 
   useEffect(() => {
     loadProjetos();
@@ -40,9 +40,11 @@ export default function ProjetosPage() {
     if (!deleteId) return;
     const id = deleteId;
     setDeleteId(null);
-    const result = await deleteProjeto(id);
-    if (result.success) {
+    try {
+      await deleteProjeto(id);
       loadProjetos();
+    } catch (error) {
+      console.error("Erro ao deletar projeto:", error);
     }
   };
 

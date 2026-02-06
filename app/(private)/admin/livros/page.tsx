@@ -3,18 +3,23 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/admin/DataTable";
 import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { Plus, Search } from "lucide-react";
 import type { Livro } from "@/lib/types";
-import { getLivros, deleteLivro } from "@/actions/livros";
+import { listarLivros } from "@/lib/actions";
 import { ActionMenu } from "@/components/admin/shared/ActionMenu";
+import { ConfirmationDialog } from "@/components/admin/shared/ConfirmationDialog";
+import { genericDelete } from "@/lib/actions/shared";
 
 export default function LivrosPage() {
+  const router = useRouter();
   const [livros, setLivros] = useState<Livro[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [deleteId, setDeleteId] = useState<number | null>(null);
 
   useEffect(() => {
     loadLivros();
@@ -22,7 +27,7 @@ export default function LivrosPage() {
 
   const loadLivros = async () => {
     try {
-      const data = await getLivros();
+      const data = await listarLivros();
       setLivros(data);
     } catch (error) {
       console.error("Erro ao carregar livros:", error);
@@ -31,18 +36,22 @@ export default function LivrosPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Tem certeza que deseja deletar este livro?")) {
-      const result = await deleteLivro(id);
-      if (result.success) {
-        loadLivros();
-      }
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    const id = deleteId;
+    setDeleteId(null);
+    try {
+      await genericDelete(livros, id, "/admin/livros");
+      loadLivros();
+    } catch (error) {
+      console.error("Erro ao deletar livro:", error);
     }
   };
 
-  const filteredLivros = livros.filter(livro =>
-    livro.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    livro.autor.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredLivros = livros.filter(
+    (livro) =>
+      livro.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      livro.autor.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -51,28 +60,28 @@ export default function LivrosPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Livros</h1>
-          <p className="text-slate-600 mt-1">
+          <p className="mt-1 text-slate-600">
             Gerencie os livros técnicos da plataforma
           </p>
         </div>
         <Link href="/admin/livros/novo">
           <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Adicionar Livro
           </Button>
         </Link>
       </div>
 
       {/* Search */}
-      <div className="bg-white rounded-lg border border-slate-200 p-4">
+      <div className="rounded-lg border border-slate-200 bg-white p-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             placeholder="Buscar por título ou autor..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full rounded-lg border border-slate-300 py-2 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>
@@ -91,12 +100,12 @@ export default function LivrosPage() {
         ]}
         renderRow={(livro: Livro) => (
           <>
-            <td className="py-4 px-4">
+            <td className="px-4 py-4">
               <div className="flex items-center gap-3">
-                <img 
-                  src={livro.capaUrl} 
+                <img
+                  src={livro.capaUrl}
                   alt={livro.titulo}
-                  className="w-12 h-16 object-cover rounded"
+                  className="h-16 w-12 rounded object-cover"
                 />
                 <div>
                   <p className="font-semibold text-slate-900">{livro.titulo}</p>
@@ -104,22 +113,39 @@ export default function LivrosPage() {
                 </div>
               </div>
             </td>
-            <td className="py-4 px-4 text-slate-700">{livro.autor}</td>
-            <td className="py-4 px-4 text-slate-700">{livro.categoria}</td>
-            <td className="py-4 px-4">
+            <td className="px-4 py-4 text-slate-700">{livro.autor}</td>
+            <td className="px-4 py-4 text-slate-700">{livro.categoria}</td>
+            <td className="px-4 py-4">
               <StatusBadge status={livro.status} />
             </td>
-            <td className="py-4 px-4 text-slate-700">{livro.views.toLocaleString('pt-BR')}</td>
-            <td className="py-4 px-4 text-slate-700">{livro.downloads.toLocaleString('pt-BR')}</td>
-            <td className="py-4 px-4">
+            <td className="px-4 py-4 text-slate-700">
+              {livro.views.toLocaleString("pt-BR")}
+            </td>
+            <td className="px-4 py-4 text-slate-700">
+              {livro.downloads.toLocaleString("pt-BR")}
+            </td>
+            <td className="px-4 py-4">
               <ActionMenu
-                onEdit={() => window.location.href = `/admin/livros/${livro.id}/editar`}
-                onDelete={() => handleDelete(livro.id)}
+                onEdit={() => router.push(`/admin/livros/${livro.id}/editar`)}
+                onDelete={() => setDeleteId(livro.id)}
                 item={livro}
               />
             </td>
           </>
         )}
+      />
+
+      <ConfirmationDialog
+        open={deleteId !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteId(null);
+        }}
+        title="Excluir livro"
+        description="Tem certeza que deseja deletar este livro? Esta ação não pode ser desfeita."
+        confirmLabel="Deletar"
+        cancelLabel="Cancelar"
+        variant="destructive"
+        onConfirm={handleDelete}
       />
     </div>
   );

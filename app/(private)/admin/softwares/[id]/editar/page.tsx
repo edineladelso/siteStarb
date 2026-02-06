@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { SoftwareForm } from "@/components/admin/forms/SoftwareForm";
-import { getSoftwareById, updateSoftware } from "@/actions/softwares";
+import { getSoftwareById } from "@/lib/actions";
 import type { Software } from "@/lib/types";
 
 export default function EditarSoftwarePage() {
@@ -18,25 +18,23 @@ export default function EditarSoftwarePage() {
   }, [params.id]);
 
   const loadSoftware = async () => {
-    const data = await getSoftwareById(params.id as string);
+    const id = Number(params.id);
+    if (Number.isNaN(id)) {
+      setSoftware(null);
+      setLoading(false);
+      return;
+    }
+    const data = await getSoftwareById(id);
     setSoftware(data);
     setLoading(false);
   };
 
-  const handleSubmit = async (data: any) => {
-    const result = await updateSoftware(params.id as string, data);
-    if (result.success) {
-      router.push("/admin/softwares");
-    } else {
-      alert("Erro ao atualizar software: " + result.error);
-    }
-  };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-purple-600 border-t-transparent"></div>
           <p className="text-slate-600">Carregando...</p>
         </div>
       </div>
@@ -45,7 +43,7 @@ export default function EditarSoftwarePage() {
 
   if (!software) {
     return (
-      <div className="text-center py-12">
+      <div className="py-12 text-center">
         <p className="text-slate-600">Software não encontrado</p>
       </div>
     );
@@ -54,7 +52,6 @@ export default function EditarSoftwarePage() {
   return (
     <SoftwareForm
       initialData={software}
-      onSubmit={handleSubmit}
       onCancel={() => router.push("/admin/softwares")}
     />
   );

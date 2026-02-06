@@ -22,7 +22,7 @@ import {
   quickMenuItems,
   softwareCategories,
   themeOptions,
-} from "@/lib/data";
+} from "@/lib/localDadosHome/data";
 
 export function NavbarMobile() {
   const [openHome, setOpenHome] = React.useState(false);

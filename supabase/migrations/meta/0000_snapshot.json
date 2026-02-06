@@ -1,25 +1,18 @@
 {
-  "id": "02dbf882-85aa-4ef9-aaeb-f768b12c33ec",
+  "id": "13f585e9-a90e-48bb-8fec-e6a760e2276a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.artigos": {
-      "name": "artigos",
+    "public.livros": {
+      "name": "livros",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
-        },
-        "tipo": {
-          "name": "tipo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'artigo'"
         },
         "titulo": {
           "name": "titulo",
@@ -27,8 +20,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "autores": {
-          "name": "autores",
+        "slug": {
+          "name": "slug",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -41,36 +34,6 @@
         },
         "descricao": {
           "name": "descricao",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "resumo": {
-          "name": "resumo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "palavras_chave": {
-          "name": "palavras_chave",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "ano_publicacao": {
-          "name": "ano_publicacao",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "instituicao": {
-          "name": "instituicao",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "pdf_url": {
-          "name": "pdf_url",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -86,157 +49,25 @@
           "name": "views",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "default": 0
         },
         "downloads": {
           "name": "downloads",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "default": 0
         },
         "avaliacao": {
           "name": "avaliacao",
-          "type": "numeric(2, 1)",
+          "type": "numeric",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "default": "'0'"
-        },
-        "data_criacao": {
-          "name": "data_criacao",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "data_atualizacao": {
-          "name": "data_atualizacao",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "idx_artigos_categoria": {
-          "name": "idx_artigos_categoria",
-          "columns": [
-            {
-              "expression": "categoria",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_artigos_status": {
-          "name": "idx_artigos_status",
-          "columns": [
-            {
-              "expression": "status",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_artigos_data_criacao": {
-          "name": "idx_artigos_data_criacao",
-          "columns": [
-            {
-              "expression": "data_criacao",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_artigos_ano_publicacao": {
-          "name": "idx_artigos_ano_publicacao",
-          "columns": [
-            {
-              "expression": "ano_publicacao",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.livros": {
-      "name": "livros",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "tipo": {
-          "name": "tipo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'livro'"
-        },
-        "titulo": {
-          "name": "titulo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
         },
         "autor": {
           "name": "autor",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "categoria": {
-          "name": "categoria",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "descricao": {
-          "name": "descricao",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -263,8 +94,7 @@
           "name": "idioma",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'Português'"
+          "notNull": false
         },
         "numero_paginas": {
           "name": "numero_paginas",
@@ -272,24 +102,101 @@
           "primaryKey": false,
           "notNull": false
         },
-        "capa_url": {
-          "name": "capa_url",
-          "type": "text",
+        "detalhes": {
+          "name": "detalhes",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": true
         },
-        "pdf_url": {
-          "name": "pdf_url",
-          "type": "text",
+        "midia": {
+          "name": "midia",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "areas": {
+          "name": "areas",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "macro_areas": {
+          "name": "macro_areas",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": true
         },
         "tags": {
           "name": "tags",
-          "type": "text[]",
+          "type": "jsonb",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'{}'"
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "livros_slug_unique": {
+          "name": "livros_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slug"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.softwares": {
+      "name": "softwares",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "categoria": {
+          "name": "categoria",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "status": {
           "name": "status",
@@ -314,261 +221,50 @@
         },
         "avaliacao": {
           "name": "avaliacao",
-          "type": "numeric(2, 1)",
+          "type": "numeric",
           "primaryKey": false,
           "notNull": true,
           "default": "'0'"
         },
-        "data_criacao": {
-          "name": "data_criacao",
-          "type": "timestamp with time zone",
+        "site_oficial": {
+          "name": "site_oficial",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": true
         },
-        "data_atualizacao": {
-          "name": "data_atualizacao",
-          "type": "timestamp with time zone",
+        "funcionalidades": {
+          "name": "funcionalidades",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "idx_livros_categoria": {
-          "name": "idx_livros_categoria",
-          "columns": [
-            {
-              "expression": "categoria",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_livros_status": {
-          "name": "idx_livros_status",
-          "columns": [
-            {
-              "expression": "status",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_livros_data_criacao": {
-          "name": "idx_livros_data_criacao",
-          "columns": [
-            {
-              "expression": "data_criacao",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_livros_views": {
-          "name": "idx_livros_views",
-          "columns": [
-            {
-              "expression": "views",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.login_table": {
-      "name": "login_table",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "title": {
-          "name": "title",
+        "requisitos": {
+          "name": "requisitos",
           "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "login_table_user_id_profiles_id_fk": {
-          "name": "login_table_user_id_profiles_id_fk",
-          "tableFrom": "login_table",
-          "tableTo": "profiles",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.posts_table": {
-      "name": "posts_table",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "posts_table_user_id_users_table_id_fk": {
-          "name": "posts_table_user_id_users_table_id_fk",
-          "tableFrom": "posts_table",
-          "tableTo": "users_table",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.profiles": {
-      "name": "profiles",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "nome": {
-          "name": "nome",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "idade": {
-          "name": "idade",
-          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "avatar_url": {
-          "name": "avatar_url",
+        "preco": {
+          "name": "preco",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plataformas": {
+          "name": "plataformas",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "screenshots": {
+          "name": "screenshots",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "tutorial_url": {
+          "name": "tutorial_url",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -591,7 +287,15 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "softwares_slug_unique": {
+          "name": "softwares_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slug"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -602,16 +306,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
-        },
-        "tipo": {
-          "name": "tipo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'projeto'"
         },
         "titulo": {
           "name": "titulo",
@@ -619,8 +316,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "autor": {
-          "name": "autor",
+        "slug": {
+          "name": "slug",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -633,6 +330,40 @@
         },
         "descricao": {
           "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'rascunho'"
+        },
+        "views": {
+          "name": "views",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "downloads": {
+          "name": "downloads",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "avaliacao": {
+          "name": "avaliacao",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "autor": {
+          "name": "autor",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -663,17 +394,16 @@
         },
         "imagens_url": {
           "name": "imagens_url",
-          "type": "text[]",
+          "type": "jsonb",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'{}'"
+          "notNull": true,
+          "default": "'[]'::jsonb"
         },
         "dificuldade": {
           "name": "dificuldade",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'Intermediário'"
+          "notNull": true
         },
         "duracao": {
           "name": "duracao",
@@ -681,150 +411,55 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'rascunho'"
-        },
-        "views": {
-          "name": "views",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "downloads": {
-          "name": "downloads",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "avaliacao": {
-          "name": "avaliacao",
-          "type": "numeric(2, 1)",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'0'"
-        },
-        "data_criacao": {
-          "name": "data_criacao",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "data_atualizacao": {
-          "name": "data_atualizacao",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp with time zone",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp with time zone",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         }
       },
-      "indexes": {
-        "idx_projetos_categoria": {
-          "name": "idx_projetos_categoria",
-          "columns": [
-            {
-              "expression": "categoria",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_projetos_status": {
-          "name": "idx_projetos_status",
-          "columns": [
-            {
-              "expression": "status",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_projetos_dificuldade": {
-          "name": "idx_projetos_dificuldade",
-          "columns": [
-            {
-              "expression": "dificuldade",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_projetos_data_criacao": {
-          "name": "idx_projetos_data_criacao",
-          "columns": [
-            {
-              "expression": "data_criacao",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "projetos_slug_unique": {
+          "name": "projetos_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slug"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.softwares": {
-      "name": "softwares",
+    "public.artigos": {
+      "name": "artigos",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "tipo": {
-          "name": "tipo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'software'"
-        },
         "titulo": {
           "name": "titulo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -841,45 +476,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "site_oficial": {
-          "name": "site_oficial",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "funcionalidades": {
-          "name": "funcionalidades",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "requisitos": {
-          "name": "requisitos",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "preco": {
-          "name": "preco",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'Gratuito'"
-        },
-        "plataformas": {
-          "name": "plataformas",
-          "type": "text[]",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'{}'"
-        },
-        "screenshots": {
-          "name": "screenshots",
-          "type": "text[]",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'{}'"
-        },
         "status": {
           "name": "status",
           "type": "text",
@@ -903,131 +499,83 @@
         },
         "avaliacao": {
           "name": "avaliacao",
-          "type": "numeric(2, 1)",
+          "type": "numeric",
           "primaryKey": false,
           "notNull": true,
           "default": "'0'"
         },
-        "data_criacao": {
-          "name": "data_criacao",
-          "type": "timestamp with time zone",
+        "autores": {
+          "name": "autores",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": true
         },
-        "data_atualizacao": {
-          "name": "data_atualizacao",
-          "type": "timestamp with time zone",
+        "resumo": {
+          "name": "resumo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "palavras_chave": {
+          "name": "palavras_chave",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
+        "ano_publicacao": {
+          "name": "ano_publicacao",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instituicao": {
+          "name": "instituicao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "areas": {
+          "name": "areas",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "macro_areas": {
+          "name": "macro_areas",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "midia": {
+          "name": "midia",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp with time zone",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp with time zone",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
-        }
-      },
-      "indexes": {
-        "idx_softwares_categoria": {
-          "name": "idx_softwares_categoria",
-          "columns": [
-            {
-              "expression": "categoria",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_softwares_status": {
-          "name": "idx_softwares_status",
-          "columns": [
-            {
-              "expression": "status",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_softwares_data_criacao": {
-          "name": "idx_softwares_data_criacao",
-          "columns": [
-            {
-              "expression": "data_criacao",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.users_table": {
-      "name": "users_table",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "nome": {
-          "name": "nome",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "idade": {
-          "name": "idade",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "users_table_email_unique": {
-          "name": "users_table_email_unique",
+        "artigos_slug_unique": {
+          "name": "artigos_slug_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "email"
+            "slug"
           ]
         }
       },
@@ -1036,7 +584,18 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.tipo": {
+      "name": "tipo",
+      "schema": "public",
+      "values": [
+        "livro",
+        "software",
+        "projeto",
+        "artigo"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

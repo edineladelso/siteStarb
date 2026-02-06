@@ -13,7 +13,7 @@ export * from "./tipos";
 // DADOS
 // ============================================
 
-export * from "./dados";
+export * from "./localDadosHome/dados";
 
 // ============================================
 // UTILITÁRIOS
