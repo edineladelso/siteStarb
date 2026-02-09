@@ -8,28 +8,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import type { AnalyticsData as FullAnalyticsData } from "@/lib/types";
 
-// ==================== TIPOS ====================
-type AnalyticsData = {
-  views: { label: string; value: number }[];
-  downloads: { label: string; value: number }[];
-  categories: { name: string; count: number; percentage: number }[];
-  topContent: {
-    title: string;
-    views: number;
-    downloads: number;
-    tipo: string;
-  }[];
-  growth: {
-    metric: string;
-    value: number;
-    change: number;
-    trend: "up" | "down";
-  }[];
-};
+// Reusa os tipos globais para alinhar com o service e evitar divergências
+type AnalyticsChartsData = Pick<
+  FullAnalyticsData,
+  "views" | "downloads" | "categories" | "topContent" | "growth"
+>;
 
 // ==================== MOCK DATA ====================
-const mockAnalytics: AnalyticsData = {
+const mockAnalytics: AnalyticsChartsData = {
   views: [
     { label: "Seg", value: 1200 },
     { label: "Ter", value: 1400 },
@@ -89,7 +77,7 @@ const mockAnalytics: AnalyticsData = {
 export default function AnalyticsCharts({
   data = mockAnalytics,
 }: {
-  data?: AnalyticsData;
+  data?: AnalyticsChartsData;
 }) {
   const maxViews = Math.max(...data.views.map((d) => d.value));
   const maxDownloads = Math.max(...data.downloads.map((d) => d.value));

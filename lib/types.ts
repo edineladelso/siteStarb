@@ -21,6 +21,7 @@ import type {
   SelectSoftware as Software, 
   InsertSoftware as NewSoftware 
 } from "@/lib/drizzle/validations/index";
+import { macroAreaLivroValues } from "./domain";
 
 // Re-exportar para uso global
 export type {
@@ -178,18 +179,7 @@ export type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
 
 // ==================== Constants ====================
 
-export const CATEGORIAS = [
-  "IA",
-  "Programação",
-  "Eletrônica",
-  "Mecatrônica",
-  "Engenharia",
-  "Matemática",
-  "Física",
-  "Química",
-  "Robótica",
-  "IoT",
-] as const;
+export const CATEGORIAS = macroAreaLivroValues;
 
 export type Categoria = (typeof CATEGORIAS)[number];
 

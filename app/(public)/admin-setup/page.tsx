@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { db, profilesTable } from "@/lib/drizzle/db";
+import { db, profiles } from "@/lib/drizzle/db";
 import { eq } from "drizzle-orm";
 import { AdminSetupForm } from "./AdminSetupForm";
 
@@ -16,8 +16,8 @@ export default async function AdminSetupPage() {
 
   const [perfil] = await db
     .select()
-    .from(profilesTable)
-    .where(eq(profilesTable.id, user.id));
+    .from(profiles)
+    .where(eq(profiles.id, user.id));
 
   const conta = {
     email: user.email ?? "(sem email)",

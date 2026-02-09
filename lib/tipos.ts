@@ -3,6 +3,8 @@
  * Inclui estruturas para Livros, Softwares, Projetos, Usuários e Configurações
  */
 
+import type { StatusType } from "./drizzle/db";
+
 // ============================================
 // TIPOS DE ENUMERAÇÃO
 // ============================================
@@ -20,12 +22,6 @@ export enum NivelAcesso {
   ADMINISTRADOR = 'administrador',
 }
 
-export enum StatusPublicacao {
-  RASCUNHO = 'rascunho',
-  PUBLICADO = 'publicado',
-  ARQUIVADO = 'arquivado',
-}
-
 export enum TipoMidia {
   PDF = 'pdf',
   EPUB = 'epub',
@@ -33,31 +29,7 @@ export enum TipoMidia {
   VIDEO = 'video',
   AUDIO = 'audio',
   DOCUMENTO = 'documento',
-  SOFTWARE = 'software'
 }
-
-// ============================================
-// TIPOS DE AUTOR E CRÉDITOS
-// ============================================
-
-export interface Autor {
-  id: string;
-  nome: string;
-  email: string;
-  urlPerfil?: string;
-  fotoPerfil?: string;
-  biografiaBreve?: string;
-  dataRegistro: Date;
-  ativo: boolean;
-}
-
-export interface Credito {
-  autorId: string;
-  autor: Autor;
-  tipo: 'autor' | 'editor' | 'revisor' | 'ilustrador' | 'tradutor';
-  dataContribuicao: Date;
-}
-
 // ============================================
 // TIPOS DE MÍDIA E CLOUDINARY
 // ============================================
@@ -103,7 +75,6 @@ export interface Livro {
   editora: string,
   descricao: string;
   descricaoCompleta?: string;
-  autores: Credito[];
   categoria: string;
   subcategoria?: string;
   tipo: TipoConteudo;
@@ -120,7 +91,7 @@ export interface Livro {
   eNovo: boolean;
   popularidade: number;
   tags: string[];
-  status: StatusPublicacao;
+  status: StatusType;
 }
 
 // ============================================
@@ -149,7 +120,7 @@ export interface Software {
   nome: string;
   descricao: string;
   descricaoCompleta?: string;
-  autores: Credito[];
+  autores: string;
   categoria: string;
   subcategoria?: string;
   tipo: TipoConteudo;
@@ -165,7 +136,7 @@ export interface Software {
   eNovo: boolean;
   popularidade: number;
   tags: string[];
-  status: StatusPublicacao;
+  status: StatusType;
 }
 
 // ============================================
@@ -207,7 +178,7 @@ export interface Projeto {
   titulo: string;
   descricao: string;
   descricaoCompleta?: string;
-  autores: Credito[];
+  autores: string[];
   categoria: 'pesquisa' | 'tcc' | 'dissertacao' | 'artigo' | 'real_documentado' | 'embarcado' | 'ia' | 'software';
   tipo: TipoConteudo;
   urls: URLsRecursos;
@@ -224,7 +195,7 @@ export interface Projeto {
   eNovo: boolean;
   popularidade: number;
   tags: string[];
-  status: StatusPublicacao;
+  status: StatusType;
 }
 
 // ============================================
@@ -351,7 +322,7 @@ export interface ResultadoPesquisa {
 }
 
 // ============================================
-// TIPOS PARA ARGUMENTOS E TEXTOS
+// TIPOS PARA ARGUMENTOS EPublicacao TEXTOS
 // ============================================
 
 export interface SecaoTexto {
@@ -360,22 +331,6 @@ export interface SecaoTexto {
   conteudo: string;
   ordem: number;
   subSeco: SecaoTexto[];
-}
-
-export interface Argumento {
-  id: string;
-  titulo: string;
-  descricao: string;
-  conteudo: string;
-  secoes: SecaoTexto[];
-  recursoRelacionado?: {
-    id: string;
-    tipo: 'livro' | 'software' | 'projeto';
-  };
-  dataCriacao: Date;
-  dataAtualizacao: Date;
-  autor: Autor;
-  status: StatusPublicacao;
 }
 
 // ============================================

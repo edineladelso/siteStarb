@@ -9,8 +9,8 @@ import { DataTable } from "@/components/admin/DataTable";
 import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Code } from "lucide-react";
-import type { Software } from "@/lib/types";
-import { getSoftwares, deleteSoftware } from "@/lib/actions";
+import type { Software, ContentStatus } from "@/lib/types";
+import { genericDelete, listarSoftwares } from "@/lib/actions";
 import { ActionMenu } from "@/components/admin/shared/ActionMenu";
 import { ConfirmationDialog } from "@/components/admin/shared/ConfirmationDialog";
 
@@ -27,7 +27,7 @@ export default function SoftwaresPage() {
 
   const loadSoftwares = async () => {
     try {
-      const data = await getSoftwares();
+      const data = await listarSoftwares();
       setSoftwares(data);
     } catch (error) {
       console.error("Erro ao carregar softwares:", error);
@@ -41,7 +41,7 @@ export default function SoftwaresPage() {
     const id = deleteId;
     setDeleteId(null);
     try {
-      await deleteSoftware(id);
+      await genericDelete("projetos",id, "admin/softwares");
       loadSoftwares();
     } catch (error) {
       console.error("Erro ao deletar software:", error);
@@ -233,7 +233,7 @@ export default function SoftwaresPage() {
               </div>
             </td>
             <td className="px-6 py-4">
-              <StatusBadge status={software.status} />
+              <StatusBadge status={software.status as ContentStatus} />
             </td>
             <td className="px-6 py-4 text-slate-700">
               {software.views.toLocaleString("pt-BR")}

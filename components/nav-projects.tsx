@@ -1,12 +1,6 @@
-"use client"
+"use client";
 
-import {
-  Folder,
-  Forward,
-  MoreHorizontal,
-  Trash2,
-  type LucideIcon,
-} from "lucide-react"
+import { Folder, Forward, MoreHorizontal, type LucideIcon } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -14,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -23,30 +17,36 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { Arrow } from "@radix-ui/react-dropdown-menu"
+} from "@/components/ui/sidebar";
+import { cn } from "@/lib";
 
 export function NavProjects({
   projects,
+  className1,
+  className2,
 }: {
   projects: {
-    name: string
-    url: string
-    icon: LucideIcon
-  }[]
+    name: string;
+    url: string;
+    icon: LucideIcon;
+  }[];
+  className1?: string;
+  className2?: string;
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
 
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+    <SidebarGroup
+      className={cn("group-data-[collapsible=icon]:hidden", className1)}
+    >
       <SidebarGroupLabel>Porjetos</SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarMenu className={cn(className2)}>
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild className="[&>svg]:size-4">
               <a href={item.url}>
                 <item.icon />
-                <span>{item.name}</span>
+                <span className="text-sm">{item.name}</span>
               </a>
             </SidebarMenuButton>
             <DropdownMenu>
@@ -63,15 +63,15 @@ export function NavProjects({
               >
                 <DropdownMenuItem>
                   <Folder className="text-muted-foreground" />
-                  <span>Ver Projetos</span>
+                  <span className="text-[0.85rem]">Ver Projetos</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Forward className="text-muted-foreground" />
-                  <span>Partilhar Projeto</span>
+                  <span className="text-[0.85rem]">Partilhar Projeto</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <span>Descrição</span>
+                  <span className="text-[0.85rem]">Descrição</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -85,5 +85,5 @@ export function NavProjects({
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

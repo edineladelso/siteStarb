@@ -1,5 +1,5 @@
-import { ContentBase } from "./content";
 import { AreaLivro, MacroAreaLivro } from "./areas";
+import { ContentBase } from "./content";
 
 export interface Artigo extends ContentBase {
   tipo: "artigo";

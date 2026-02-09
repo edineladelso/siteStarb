@@ -1,11 +1,12 @@
-import { ContentBase } from "./content";
 import { AreaLivro, MacroAreaLivro } from "./areas";
+import { ContentBase } from "./content";
 
 export interface DetalhesLivro {
-  sinopse: string;
   numeroPaginas: number;
   autor: string;
-  editora: string;
+  sinopse?: string;
+  editora?: string;
+  isbn?: string | null;
 }
 
 export interface Livro extends ContentBase {
@@ -32,7 +33,7 @@ export interface Livro extends ContentBase {
 
 export interface MidiaLivro {
   capa: string;
-  pdf: string;
-  epub: string;
-  resumo: string;
+  pdf?: string;
+  epub?: string;
+  resumo?: string;
 }

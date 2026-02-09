@@ -9,8 +9,8 @@ import { DataTable } from "@/components/admin/DataTable";
 import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Wrench } from "lucide-react";
-import type { Projeto } from "@/lib/types";
-import { getProjetos, deleteProjeto } from "@/lib/actions";
+import type { ContentStatus, Projeto } from "@/lib/types";
+import { listarProjetos, genericDelete } from "@/lib/actions";
 import { ActionMenu } from "@/components/admin/shared/ActionMenu";
 import { ConfirmationDialog } from "@/components/admin/shared/ConfirmationDialog";
 
@@ -27,7 +27,7 @@ export default function ProjetosPage() {
 
   const loadProjetos = async () => {
     try {
-      const data = await getProjetos();
+      const data = await listarProjetos();
       setProjetos(data);
     } catch (error) {
       console.error("Erro ao carregar projetos:", error);
@@ -41,7 +41,7 @@ export default function ProjetosPage() {
     const id = deleteId;
     setDeleteId(null);
     try {
-      await deleteProjeto(id);
+      await genericDelete(projetos,id, "");
       loadProjetos();
     } catch (error) {
       console.error("Erro ao deletar projeto:", error);
@@ -181,7 +181,7 @@ export default function ProjetosPage() {
               </p>
             </td>
             <td className="px-6 py-4">
-              <StatusBadge status={projeto.status} />
+              <StatusBadge status={projeto.status as ContentStatus} />
             </td>
             <td className="px-6 py-4 text-slate-700">
               {projeto.views.toLocaleString("pt-BR")}

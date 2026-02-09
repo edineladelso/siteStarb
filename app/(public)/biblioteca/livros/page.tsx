@@ -1,9 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import {
+  Search,
+  Filter,
+  TrendingUp,
+  Sparkles,
+  Library,
+  Users,
+  Clock,
+  Star,
+  BookOpen,
+} from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 import LivroCard from "@/app/(public)/biblioteca/livros/ui/LivroCard";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Carousel,
   CarouselContent,
@@ -11,58 +24,203 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { categorias, livros } from "./dadosLivros";
 
-export default function LivrosPage() {
-  const [categoriaAtiva, setCategoriaAtiva] = useState<string | null>(null);
-  const [ordenacao, setOrdenacao] = useState<"popular" | "novo" | "avaliacao">(
-    "popular",
+import { fakeSelectLivros as livros } from "./dadosLivros";
+import {
+  CATEGORIAS_LIVROS,
+  getCategoriaNome,
+  type CategoriaLivroInfo,
+} from "../../../../lib/domain/areasCategoriasPatern";
+import {
+  AreaLivroParaMacroArea,
+  areaLivroValues,
+  macroAreaLivroValues,
+  type AreaLivro,
+  type MacroAreaLivro,
+} from "@/lib/domain/areas";
+
+// Types
+type OrdenacaoTipo = "popular" | "novo" | "avaliacao";
+
+// Componente de Estatística Reutilizável
+interface StatItemProps {
+  icon: React.ReactNode;
+  label: string;
+  color?: string;
+}
+
+function StatItem({ icon, label, color = "blue" }: StatItemProps) {
+  return (
+    <div
+      className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white px-4 py-2 shadow-md transition-all hover:shadow-lg"
+      role="listitem"
+    >
+      <div className={`text-${color}-600`} aria-hidden="true">
+        {icon}
+      </div>
+      <span className="text-sm font-semibold text-slate-700">{label}</span>
+    </div>
   );
+}
+
+// Componente de Botão de Ordenação Reutilizável
+interface OrdenacaoButtonProps {
+  icon: React.ReactNode;
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+function OrdenacaoButton({
+  icon,
+  label,
+  isActive,
+  onClick,
+}: OrdenacaoButtonProps) {
+  return (
+    <Button
+      variant={isActive ? "default" : "secondary"}
+      size="sm"
+      onClick={onClick}
+      className={`gap-2 transition-all ${
+        isActive
+          ? "bg-blue-600 shadow-lg shadow-blue-500/30 hover:bg-blue-700"
+          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+      }`}
+      aria-pressed={isActive}
+    >
+      <span aria-hidden="true">{icon}</span>
+      {label}
+    </Button>
+  );
+}
+
+// Componente Principal
+export default function LivrosPage() {
+  const searchParams = useSearchParams();
+  // Valores iniciais derivados da URL (sem efeito para evitar cascatas)
+  const macroAreaFromParams = useMemo<MacroAreaLivro | null>(() => {
+    const macroAreaParam = searchParams.get("macroArea");
+    if (
+      macroAreaParam &&
+      macroAreaLivroValues.includes(macroAreaParam as MacroAreaLivro)
+    ) {
+      return macroAreaParam as MacroAreaLivro;
+    }
+    return null;
+  }, [searchParams, macroAreaLivroValues]);
+
+  const areaFromParams = useMemo<AreaLivro | null>(() => {
+    const areaParam = searchParams.get("area");
+    if (areaParam && areaLivroValues.includes(areaParam as AreaLivro)) {
+      return areaParam as AreaLivro;
+    }
+    return null;
+  }, [searchParams, areaLivroValues]);
+
+  // Estados com tipos corretos
+  const [categoriaAtiva, setCategoriaAtiva] = useState<MacroAreaLivro | null>(
+    () =>
+      macroAreaFromParams ??
+      (areaFromParams ? AreaLivroParaMacroArea[areaFromParams] : null),
+  );
+  const [areaAtiva, setAreaAtiva] = useState<AreaLivro | null>(
+    () => areaFromParams,
+  );
+  const [ordenacao, setOrdenacao] = useState<OrdenacaoTipo>("popular");
   const [busca, setBusca] = useState("");
 
-  // Filtrar e ordenar livros
-  const livrosFiltrados = livros
-    .filter((l) => !categoriaAtiva || l.categoria === categoriaAtiva)
-    .filter(
-      (l) =>
-        l.titulo.toLowerCase().includes(busca.toLowerCase()) ||
-        l.autor.toLowerCase().includes(busca.toLowerCase()),
-    )
-    .sort((a, b) => {
-      if (ordenacao === "popular") return b.downloads - a.downloads;
-      if (ordenacao === "novo") return (b.novo ? 1 : 0) - (a.novo ? 1 : 0);
-      if (ordenacao === "avaliacao") return b.avaliacao - a.avaliacao;
-      return 0;
-    });
+  // Handlers nomeados para melhor debugging
+  const handleCategoriaClick = useCallback((categoria: MacroAreaLivro) => {
+    setCategoriaAtiva((prev) => (prev === categoria ? null : categoria));
+    setAreaAtiva(null);
+  }, []);
 
-  const populares = livros.filter((l) => l.popular);
-  const novos = livros.filter((l) => l.novo);
+  const handleLimparFiltros = useCallback(() => {
+    setCategoriaAtiva(null);
+    setAreaAtiva(null);
+    setBusca("");
+    setOrdenacao("popular");
+  }, []);
+
+  const handleBuscaChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setBusca(e.target.value);
+    },
+    [],
+  );
+
+  // Memoização de listas filtradas para performance
+  // ✅ FILTRO CORRIGIDO - Usando .includes() para arrays
+  const livrosFiltrados = useMemo(() => {
+    return livros
+      .filter((livro) => {
+        // Filtro por categoria
+        if (!categoriaAtiva) return true;
+
+        // ✅ CORREÇÃO: macroAreas é array, use .includes()
+        return livro.macroAreas?.includes(categoriaAtiva);
+      })
+      .filter((livro) => {
+        if (!areaAtiva) return true;
+        return livro.areas?.includes(areaAtiva);
+      })
+      .filter((livro) => {
+        // Filtro por busca
+        if (!busca) return true;
+        const termo = busca.toLowerCase();
+        return (
+          livro.titulo.toLowerCase().includes(termo) ||
+          livro.autor.toLowerCase().includes(termo) ||
+          livro.descricao?.toLowerCase().includes(termo)
+        );
+      })
+      .sort((a, b) => {
+        // Ordenação
+        switch (ordenacao) {
+          case "popular":
+            return b.downloads - a.downloads;
+          case "novo":
+            return (b.novo ? 1 : 0) - (a.novo ? 1 : 0);
+          case "avaliacao":
+            return (
+              parseFloat(b.avaliacao ?? "0") - parseFloat(a.avaliacao ?? "0")
+            );
+          default:
+            return 0;
+        }
+      });
+  }, [categoriaAtiva, areaAtiva, busca, ordenacao]);
+
+  const populares = useMemo(() => livros.filter((l) => l.popular), []);
+  const novos = useMemo(() => livros.filter((l) => l.novo), []);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
-      {/* HERO PROFISSIONAL COM FUNDO SUTIL */}
-      <section className="relative overflow-hidden border-b border-blue-100 bg-linear-to-br from-blue-600/10 via-indigo-600/5 to-purple-600/10 py-12 sm:py-16 lg:py-24">
-        {/* Background pattern sutil */}
-        <div className="absolute inset-0 opacity-5">
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
+      {/* HERO SECTION */}
+      <section
+        className="relative overflow-hidden border-b border-blue-100 bg-gradient-to-br from-blue-600/10 via-indigo-600/5 to-purple-600/10 py-12 sm:py-16 lg:py-24"
+        aria-labelledby="hero-title"
+      >
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5" aria-hidden="true">
           <div
             className="absolute inset-0"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230A4D8C' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
             }}
-          ></div>
+          />
         </div>
 
         <div className="relative z-10 container mx-auto w-full px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl space-y-6 text-center sm:space-y-8">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white px-4 py-2 shadow-lg">
-              <svg
-                className="h-5 w-5 text-blue-600"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-              </svg>
+            <div
+              className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white px-4 py-2 shadow-lg"
+              role="status"
+              aria-label="Total de livros disponíveis"
+            >
+              <BookOpen className="h-5 w-5 text-blue-600" aria-hidden="true" />
               <span className="text-sm font-semibold text-slate-700">
                 500+ Livros Técnicos
               </span>
@@ -70,7 +228,10 @@ export default function LivrosPage() {
 
             {/* Título */}
             <div className="space-y-3 sm:space-y-4">
-              <h1 className="text-4xl leading-tight font-black text-slate-900 sm:text-5xl lg:text-6xl xl:text-7xl">
+              <h1
+                id="hero-title"
+                className="text-4xl leading-tight font-black text-slate-900 sm:text-5xl lg:text-6xl xl:text-7xl"
+              >
                 Biblioteca Técnica
               </h1>
               <p className="mx-auto max-w-2xl text-lg text-slate-600 sm:text-xl lg:text-2xl">
@@ -78,298 +239,270 @@ export default function LivrosPage() {
               </p>
             </div>
 
-            {/* Busca */}
+            {/* Campo de Busca Acessível */}
             <div className="mx-auto max-w-2xl">
               <div className="relative">
-                <input
-                  type="text"
+                <label htmlFor="busca-livros" className="sr-only">
+                  Buscar livros por título, autor ou tema
+                </label>
+                <Input
+                  id="busca-livros"
+                  type="search"
                   placeholder="Buscar por título, autor ou tema..."
                   value={busca}
-                  onChange={(e) => setBusca(e.target.value)}
-                  className="w-full rounded-2xl border-2 border-blue-100 bg-white px-5 py-4 pl-14 text-slate-800 shadow-lg transition-all outline-none placeholder:text-slate-400 hover:shadow-xl focus:border-blue-400"
+                  onChange={handleBuscaChange}
+                  className="h-14 rounded-2xl border-2 border-blue-100 bg-white pr-4 pl-14 text-base shadow-lg transition-all placeholder:text-slate-400 hover:shadow-xl focus:border-blue-400 focus:shadow-xl focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
+                  aria-describedby="busca-help"
                 />
-                <svg
-                  className="absolute top-1/2 left-5 h-6 w-6 -translate-y-1/2 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+                <Search
+                  className="pointer-events-none absolute top-1/2 left-5 h-6 w-6 -translate-y-1/2 text-blue-600"
+                  aria-hidden="true"
+                />
+                <span id="busca-help" className="sr-only">
+                  Digite para filtrar livros em tempo real
+                </span>
               </div>
             </div>
 
-            {/* Stats */}
-            <div className="flex flex-wrap justify-center gap-4 pt-4 sm:gap-6">
-              <div className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white px-4 py-2 shadow-md">
-                <svg
-                  className="h-5 w-5 text-blue-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-                </svg>
-                <span className="text-sm font-semibold text-slate-700">
-                  500+ Livros
-                </span>
-              </div>
-              <div className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white px-4 py-2 shadow-md">
-                <svg
-                  className="h-5 w-5 text-indigo-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                </svg>
-                <span className="text-sm font-semibold text-slate-700">
-                  5.000+ Leitores
-                </span>
-              </div>
-              <div className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white px-4 py-2 shadow-md">
-                <svg
-                  className="h-5 w-5 text-purple-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-sm font-semibold text-slate-700">
-                  Atualizado Semanalmente
-                </span>
-              </div>
+            {/* Estatísticas */}
+            <div
+              className="flex flex-wrap justify-center gap-4 pt-4 sm:gap-6"
+              role="list"
+              aria-label="Estatísticas da biblioteca"
+            >
+              <StatItem
+                icon={<Library className="h-5 w-5" />}
+                label="500+ Livros"
+                color="blue"
+              />
+              <StatItem
+                icon={<Users className="h-5 w-5" />}
+                label="5.000+ Leitores"
+                color="indigo"
+              />
+              <StatItem
+                icon={<Clock className="h-5 w-5" />}
+                label="Atualizado Semanalmente"
+                color="purple"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      <div className="container mx-auto max-w-7xl space-y-10 px-4 py-8 sm:space-y-12 sm:px-22 sm:py-12 lg:space-y-16 lg:px-28 lg:py-16">
-        {/* CATEGORIAS COM CARDS BRANCOS E SHADOW */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+      {/* CONTEÚDO PRINCIPAL */}
+      <div className="container mx-auto max-w-7xl space-y-10 px-4 py-8 sm:space-y-12 sm:px-10 sm:py-12 lg:space-y-16 lg:px-16 lg:py-16">
+        {/* CATEGORIAS */}
+        <section className="space-y-6" aria-labelledby="categorias-heading">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <h2
+              id="categorias-heading"
+              className="text-2xl font-bold text-slate-900 sm:text-3xl"
+            >
               Explorar por Área
             </h2>
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setCategoriaAtiva(null)}
-              className={`text-sm font-medium transition-colors ${categoriaAtiva === null ? "text-blue-700" : "text-slate-500 hover:text-blue-700"}`}
+              className={`text-sm font-medium transition-colors hover:text-blue-700 ${
+                categoriaAtiva === null ? "text-blue-700" : "text-slate-500"
+              }`}
+              aria-pressed={categoriaAtiva === null}
             >
               Ver Todas
-            </button>
+            </Button>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
-            {categorias.map((cat) => (
-              <button
-                key={cat.nome}
-                onClick={() =>
-                  setCategoriaAtiva(
-                    cat.nome === categoriaAtiva ? null : cat.nome,
-                  )
-                }
-                className={`group relative rounded-2xl bg-white p-3 shadow-2xl transition-all duration-300 sm:p-6 ${
-                  categoriaAtiva === cat.nome
-                    ? "scale-105 border-blue-500 shadow-xl shadow-blue-500/20"
-                    : "border-slate-100 shadow-lg hover:scale-105 hover:border-blue-300 hover:shadow-xl"
-                }`}
-              >
-                <div className="space-y-2 text-center">
-                  <div className="text-4xl sm:text-5xl">{cat.icon}</div>
-                  <div className="text-xs font-semibold text-slate-700 sm:text-sm">
-                    {cat.nome}
+          <div
+            className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-6"
+            role="group"
+            aria-label="Filtrar por categoria"
+          >
+            {CATEGORIAS_LIVROS.map((categoria: CategoriaLivroInfo) => {
+              const isAtivo = categoriaAtiva === categoria.id;
+              return (
+                <button
+                  key={categoria.id}
+                  onClick={() => handleCategoriaClick(categoria.id)}
+                  className={`group relative rounded-2xl p-2 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl focus:border-l focus:border-l-gray-600 focus:outline-none sm:p-4 ${
+                    isAtivo
+                      ? "scale-105 border-t-3 border-b-2 border-t-blue-600 border-b-gray-600 shadow-xl shadow-gray-700/20"
+                      : "border border-slate-200 hover:border-gray-300"
+                  }`}
+                  aria-pressed={isAtivo}
+                  aria-label={`${isAtivo ? "Remover filtro" : "Filtrar por"} ${categoria.nome}`}
+                >
+                  <div className="flex flex-col items-center space-y-2 text-center">
+                    <div
+                      className="mx-auto text-blue-700 [&>svg]:size-6 sm:[&>svg]:size-8"
+                      aria-hidden="true"
+                    >
+                      {categoria.icon}
+                    </div>
+                    <div className="text-xs font-semibold text-slate-700 sm:text-sm">
+                      {categoria.nome}
+                    </div>
                   </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              );
+            })}
           </div>
         </section>
 
-        {/* FILTROS */}
-        <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-white p-4 shadow-lg sm:p-5">
+        {/* FILTROS DE ORDENAÇÃO */}
+        <section
+          className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-white p-4 shadow-lg sm:p-5"
+          aria-labelledby="ordenacao-heading"
+        >
           <div className="flex items-center gap-2">
-            <svg
-              className="h-5 w-5 text-blue-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+            <Filter className="h-5 w-5 text-blue-600" aria-hidden="true" />
+            <span
+              id="ordenacao-heading"
+              className="text-sm font-semibold text-slate-700"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-              />
-            </svg>
-            <span className="text-sm font-semibold text-slate-700">
               Ordenar:
             </span>
           </div>
 
-          <div className="flex flex-wrap justify-around gap-4">
-            <button
+          <div
+            className="flex flex-wrap gap-2 sm:gap-3"
+            role="group"
+            aria-label="Opções de ordenação"
+          >
+            <OrdenacaoButton
+              icon={<TrendingUp className="h-4 w-4" />}
+              label="Popular"
+              isActive={ordenacao === "popular"}
               onClick={() => setOrdenacao("popular")}
-              className={`flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-medium shadow transition-all sm:px-4 ${
-                ordenacao === "popular"
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-              }`}
-            >
-              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-              </svg>
-              Popular
-            </button>
-
-            <button
+            />
+            <OrdenacaoButton
+              icon={<Sparkles className="h-4 w-4" />}
+              label="Novos"
+              isActive={ordenacao === "novo"}
               onClick={() => setOrdenacao("novo")}
-              className={`spy-2 flex items-center gap-2 rounded-xl px-2 text-sm font-medium transition-all sm:px-4 ${
-                ordenacao === "novo"
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-              }`}
-            >
-              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Novos
-            </button>
-
-            <button
+            />
+            <OrdenacaoButton
+              icon={<Star className="h-4 w-4" />}
+              label="Avaliação"
+              isActive={ordenacao === "avaliacao"}
               onClick={() => setOrdenacao("avaliacao")}
-              className={`flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-medium transition-all sm:px-4 ${
-                ordenacao === "avaliacao"
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-              }`}
-            >
-              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-              Avaliação
-            </button>
+            />
           </div>
 
-          <div className="text-sm font-medium text-slate-600">
+          <div
+            className="text-sm font-medium text-slate-600"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {livrosFiltrados.length}{" "}
             {livrosFiltrados.length === 1 ? "livro" : "livros"}
           </div>
         </section>
 
-        {/* CAROUSELS - Populares e Novos */}
+        {/* CAROUSELS - Só aparecem sem filtros */}
         {!categoriaAtiva && !busca && (
           <>
-            {/* POPULARES CAROUSEL */}
-            <section className="space-y-6">
-              <div className="flex items-center gap-3">
-                <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-                  Mais Populares
-                </h2>
-              </div>
+            {/* POPULARES */}
+            <section className="space-y-6" aria-labelledby="populares-heading">
+              <h2
+                id="populares-heading"
+                className="text-2xl font-bold text-slate-900 sm:text-3xl"
+              >
+                Mais Populares
+              </h2>
 
-              <div className="relative">
-                <Carousel
-                  opts={{
-                    align: "center",
-                    loop: true,
-                  }}
-                  className="w-full"
-                >
-                  <CarouselContent className="mx-auto items-center max-sm:w-xs sm:w-full">
-                    {populares.map((livro) => (
-                      <CarouselItem
-                        key={livro.id}
-                        className="basis-full pl-4 sm:basis-1/2 lg:basis-1/3"
-                      >
-                        <LivroCard livro={livro} />
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <div className="absolute -bottom-16 left-1/2 hidden -translate-x-1/2 items-center gap-2 lg:flex">
-                    <CarouselPrevious className="relative inset-0 translate-y-0 border-2 border-slate-200 bg-white shadow-lg hover:bg-slate-50" />
-                    <CarouselNext className="relative inset-0 translate-y-0 border-2 border-slate-200 bg-white shadow-lg hover:bg-slate-50" />
-                  </div>
-                </Carousel>
-              </div>
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4">
+                  {populares.map((livro) => (
+                    <CarouselItem
+                      key={livro.id}
+                      className="basis-full pl-2 sm:basis-1/2 md:pl-4 lg:basis-1/3 xl:basis-1/4"
+                    >
+                      <LivroCard livro={livro} />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="mt-8 flex justify-center gap-2">
+                  <CarouselPrevious className="relative inset-0 translate-y-0 border-2 border-slate-200 bg-white shadow-lg hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
+                  <CarouselNext className="relative inset-0 translate-y-0 border-2 border-slate-200 bg-white shadow-lg hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
+                </div>
+              </Carousel>
             </section>
 
-            {/* NOVOS CAROUSEL */}
-            <section className="space-y-6 pt-8 lg:pt-12">
-              <div className="flex items-center gap-3">
-                <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-                  Novidades
-                </h2>
-              </div>
+            {/* NOVOS */}
+            <section className="space-y-6" aria-labelledby="novos-heading">
+              <h2
+                id="novos-heading"
+                className="text-2xl font-bold text-slate-900 sm:text-3xl"
+              >
+                Novidades
+              </h2>
 
-              <div className="relative">
-                <Carousel
-                  opts={{
-                    align: "center",
-                    loop: true,
-                  }}
-                  className="w-full overflow-hidden"
-                >
-                  <CarouselContent className="mx-auto -ml-4 max-sm:w-xs sm:w-full">
-                    {novos.map((livro) => (
-                      <CarouselItem
-                        key={livro.id}
-                        className="basis-full pl-4 sm:basis-1/2 lg:basis-1/3"
-                      >
-                        <LivroCard livro={livro} />
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <div className="absolute -bottom-16 left-1/2 hidden -translate-x-1/2 items-center gap-2 lg:flex">
-                    <CarouselPrevious className="relative inset-0 translate-y-0 border-2 border-slate-200 bg-white shadow-lg hover:bg-slate-50" />
-                    <CarouselNext className="relative inset-0 translate-y-0 border-2 border-slate-200 bg-white shadow-lg hover:bg-slate-50" />
-                  </div>
-                </Carousel>
-              </div>
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4">
+                  {novos.map((livro) => (
+                    <CarouselItem
+                      key={livro.id}
+                      className="basis-full pl-2 sm:basis-1/2 md:pl-4 lg:basis-1/3 xl:basis-1/4"
+                    >
+                      <LivroCard livro={livro} />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="mt-8 flex justify-center gap-2">
+                  <CarouselPrevious className="relative inset-0 translate-y-0 border-2 border-slate-200 bg-white shadow-lg hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
+                  <CarouselNext className="relative inset-0 translate-y-0 border-2 border-slate-200 bg-white shadow-lg hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
+                </div>
+              </Carousel>
             </section>
           </>
         )}
 
-        {/* TODOS OS LIVROS - GRID RESPONSIVO */}
-        <section className="space-y-6 pt-8 lg:pt-12">
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-              {categoriaAtiva || busca ? "Resultados" : "Toda a Biblioteca"}
-            </h2>
-          </div>
+        {/* GRID DE RESULTADOS */}
+        <section className="space-y-6" aria-labelledby="resultados-heading">
+          <h2
+            id="resultados-heading"
+            className="text-2xl font-bold text-slate-900 sm:text-3xl"
+          >
+            {categoriaAtiva
+              ? getCategoriaNome(categoriaAtiva)
+              : busca
+                ? "Resultados da Busca"
+                : "Toda a Biblioteca"}
+          </h2>
 
           {livrosFiltrados.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5">
+            <div
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5"
+              role="list"
+              aria-label="Lista de livros"
+            >
               {livrosFiltrados.map((livro) => (
-                <LivroCard key={livro.id} livro={livro} compact />
+                <div key={livro.id} role="listitem">
+                  <LivroCard livro={livro} compact />
+                </div>
               ))}
             </div>
           ) : (
-            <div className="px-4 py-16 text-center">
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-slate-100">
-                <svg
-                  className="h-10 w-10 text-slate-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-16 text-center shadow-lg">
+              <div
+                className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-slate-100"
+                aria-hidden="true"
+              >
+                <Search className="h-10 w-10 text-slate-400" />
               </div>
               <h3 className="mb-2 text-xl font-semibold text-slate-700">
                 Nenhum livro encontrado
@@ -378,11 +511,8 @@ export default function LivrosPage() {
                 Tente ajustar os filtros ou buscar por outro termo
               </p>
               <Button
-                onClick={() => {
-                  setCategoriaAtiva(null);
-                  setBusca("");
-                }}
-                className="bg-blue-600 hover:bg-blue-700"
+                onClick={handleLimparFiltros}
+                className="bg-blue-600 shadow-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Limpar Filtros
               </Button>

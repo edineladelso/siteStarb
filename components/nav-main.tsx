@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
-
+import { ChevronRight, ChevronUp, MoreHorizontal, type LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -16,27 +16,39 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { useState } from "react";
 
 export function NavMain({
   items,
+  className1,
+  className2,
+  colorIcon,
 }: {
   items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
+    title: string;
+    url: string;
+    icon?: React.ElementType;
+    isActive?: boolean;
     items?: {
-      title: string
-      url: string
-    }[]
-  }[]
+      title: string;
+      url: string;
+    }[];
+  }[];
+  className1: string;
+  className2?: string;
+  colorIcon?: string;
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const LimitItens = 7;
+  const visibleItems = isExpanded ? items : items.slice(0, LimitItens);
+  const hasMore = items.length > LimitItens;
+
   return (
-    <SidebarGroup>
+    <SidebarGroup className={cn(className1)}>
       <SidebarGroupLabel>Material</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
+        {visibleItems.map((item) => (
           <Collapsible
             key={item.title}
             asChild
@@ -45,9 +57,12 @@ export function NavMain({
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  className={cn("[&>svg]:size-4.5", className2)}
+                >
+                  {item.icon && <item.icon className={cn(colorIcon)} />}
+                  <span className="text-sm">{item.title}</span>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
@@ -67,7 +82,29 @@ export function NavMain({
             </SidebarMenuItem>
           </Collapsible>
         ))}
+        {hasMore && (
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              type="button"
+              aria-expanded={isExpanded}
+              onClick={() => setIsExpanded((prev) => !prev)}
+              className="text-sidebar-foreground/70"
+            >
+              {isExpanded ? (
+                <>
+                  <ChevronUp className="size-4" />
+                  <span>Ver menos</span>
+                </>
+              ) : (
+                <>
+                  <MoreHorizontal className="text-sidebar-foreground/70" />
+                  <span>Ver mais</span>
+                </>
+              )}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        )}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

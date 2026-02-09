@@ -1,4 +1,20 @@
-import { Livro } from "@/app/(public)/biblioteca/livros/dadosLivros";
+"use client";
+
+import { useState, useMemo } from "react";
+import Image from "next/image";
+import {
+  Heart,
+  Download,
+  Eye,
+  Info,
+  Star,
+  User,
+  Tag,
+  FileText,
+  BookOpen,
+  Sparkles,
+  TrendingUp,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,8 +25,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,319 +40,371 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
-export default function LivroCard({
-  livro,
-  compact = false,
-}: {
+import type { Livro } from "@/lib/types";
+import { getCategoriaNome, getCategoriaIcon } from "@/lib/domain/areasCategoriasPatern";
+import type { MacroAreaLivro } from "@/lib/domain/areas";
+
+// Mapeamento de cores por MacroArea para gradientes
+const CATEGORIA_GRADIENTS: Record<MacroAreaLivro, string> = {
+  Matematica: "from-purple-400 via-pink-500 to-rose-600",
+  Fisica: "from-blue-400 via-cyan-500 to-teal-600",
+  Quimica: "from-green-400 via-emerald-500 to-teal-600",
+  Materiais: "from-slate-400 via-gray-500 to-zinc-600",
+  Mecanica: "from-orange-400 via-amber-500 to-yellow-600",
+  Eletrica: "from-yellow-400 via-orange-500 to-red-600",
+  Eletronica: "from-red-400 via-pink-500 to-purple-600",
+  Controle_automacao: "from-cyan-400 via-blue-500 to-indigo-600",
+  Computacao: "from-indigo-400 via-purple-500 to-pink-600",
+  Cyber_seguranca: "from-red-500 via-rose-600 to-pink-700",
+  Telecom: "from-blue-400 via-indigo-500 to-purple-600",
+  Redes_de_computadores: "from-teal-400 via-cyan-500 to-blue-600",
+  Civil: "from-amber-400 via-orange-500 to-red-600",
+  IA: "from-blue-400 via-indigo-500 to-purple-600",
+  Programacao: "from-indigo-400 via-purple-500 to-pink-600",
+  Mecatronica: "from-green-400 via-teal-500 to-cyan-600",
+  Engenharia: "from-slate-500 via-gray-600 to-zinc-700",
+};
+
+interface LivroCardProps {
   livro: Livro;
   compact?: boolean;
-}) {
+}
+
+export default function LivroCard({ livro, compact = false }: LivroCardProps) {
   const [favorito, setFavorito] = useState(false);
 
+  // Pega a primeira MacroArea como categoria principal
+  const categoriaPrincipal = livro.macroAreas[0];
+  const categoriaLabel = getCategoriaNome(categoriaPrincipal);
+  const gradientClasses = CATEGORIA_GRADIENTS[categoriaPrincipal];
+
+  // Formata avaliação para número
+  const avaliacaoNumero = parseFloat(livro.avaliacao ?? "0");
+
+  // Determina quais formatos estão disponíveis
+  const formatosDisponiveis = useMemo(() => {
+    const formatos = [];
+    if (livro.midia.pdf) formatos.push({ tipo: "PDF", url: livro.midia.pdf });
+    if (livro.midia.epub) formatos.push({ tipo: "EPUB", url: livro.midia.epub });
+    if (livro.midia.resumo) formatos.push({ tipo: "Resumo", url: livro.midia.resumo });
+    return formatos;
+  }, [livro.midia]);
+
+  const handleFavoritoToggle = () => {
+    setFavorito((prev) => !prev);
+    // TODO: Implementar lógica de favoritos (API/localStorage)
+  };
+
+  const handleDownload = (url: string, tipo: string) => {
+    // TODO: Implementar download real
+    console.log(`Baixando ${tipo}:`, url);
+  };
+
   return (
-    <Card className="group relative overflow-hidden bg-white transition-all duration-300 hover:-translate-y-2 hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-500/10">
-      {/* Badges */}
-      <div className="absolute top-1 left-1 z-20 flex flex-wrap gap-1">
+    <Card className="group relative overflow-hidden bg-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2">
+      {/* Badges de Status */}
+      <div
+        className="absolute top-2 left-2 z-20 flex flex-wrap gap-1.5"
+        role="group"
+        aria-label="Status do livro"
+      >
         {livro.novo && (
-          <Badge className="border-0 bg-green-600 text-xs shadow-lg">
-            <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                clipRule="evenodd"
-              />
-            </svg>
+          <Badge
+            className="flex items-center gap-1 border-0 bg-green-600 text-xs font-semibold shadow-md"
+            aria-label="Livro novo"
+          >
+            <Sparkles className="h-3 w-3" aria-hidden="true" />
             Novo
           </Badge>
         )}
         {livro.popular && (
           <Badge
-            variant="secondary"
-            className="border-0 bg-orange-600 text-xs text-white shadow-lg"
+            className="flex items-center gap-1 border-0 bg-orange-600 text-xs font-semibold text-white shadow-md"
+            aria-label="Livro popular"
           >
-            <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-            </svg>
+            <TrendingUp className="h-3 w-3" aria-hidden="true" />
             Popular
           </Badge>
         )}
       </div>
 
-      {/* Favorito */}
+      {/* Botão de Favorito */}
       <button
-        onClick={() => setFavorito(!favorito)}
-        className="absolute -top-1 -right-1 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-lg transition-all hover:scale-110"
+        onClick={handleFavoritoToggle}
+        className="absolute top-2 right-2 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-lg transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        aria-label={favorito ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+        aria-pressed={favorito}
       >
-        <svg
-          className={`mt-1 mr-1 h-4 w-4 transition-colors ${favorito ? "fill-current text-red-500" : "text-slate-400"}`}
-          fill={favorito ? "currentColor" : "none"}
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-          />
-        </svg>
+        <Heart
+          className={`h-4 w-4 transition-colors ${
+            favorito ? "fill-red-500 text-red-500" : "text-slate-400"
+          }`}
+          aria-hidden="true"
+        />
       </button>
 
+      {/* Capa do Livro */}
       <CardHeader className="p-0">
         <div
-          className={`relative ${compact ? "h-40 sm:h-48" : "h-48 sm:h-56"} overflow-hidden`}
+          className={`relative ${compact ? "h-40 sm:h-48" : "h-48 sm:h-56"} overflow-hidden bg-slate-100`}
         >
-          <div
-            className={`absolute inset-0 bg-linear-to-br ${
-              livro.categoria === "IA"
-                ? "from-blue-400 via-indigo-500 to-purple-600"
-                : livro.categoria === "Programação"
-                  ? "from-indigo-400 via-purple-500 to-pink-600"
-                  : livro.categoria === "Eletrônica"
-                    ? "via-orange-500mx-auto from-yellow-400 to-red-600"
-                    : livro.categoria === "Mecatrônica"
-                      ? "from-green-400 via-teal-500 to-cyan-600"
-                      : livro.categoria === "Matemática"
-                        ? "from-purple-400 via-pink-500 to-rose-600"
-                        : "from-slate-400 via-gray-500 to-zinc-600"
-            } flex items-center justify-center transition-transform duration-500 group-hover:scale-110`}
-          >
-            <div className="px-4 text-center text-white">
-              {/* Aqui terei imagem de capa */}
-              <svg
-                className={`${compact ? "h-12 w-12" : "h-16 w-16"} mx-auto mb-2 opacity-90`}
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-              </svg>
-              <div className="text-xs font-semibold opacity-75">
-                {livro.categoria}
+          {livro.midia.capa ? (
+            <>
+              <Image
+                src={livro.midia.capa}
+                alt={`Capa do livro ${livro.titulo}`}
+                fill
+                sizes={compact ? "(max-width: 640px) 50vw, 33vw" : "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"}
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                priority={Boolean(livro.popular || livro.novo)}
+              />
+              {/* Overlay com gradiente para melhor legibilidade */}
+              <div
+                className={`absolute inset-0 bg-gradient-to-t ${gradientClasses} opacity-0 transition-opacity duration-300 group-hover:opacity-30`}
+                aria-hidden="true"
+              />
+            </>
+          ) : (
+            // Fallback caso não tenha imagem
+            <div
+              className={`flex h-full items-center justify-center bg-gradient-to-br ${gradientClasses} transition-transform duration-500 group-hover:scale-110`}
+              role="img"
+              aria-label={`Capa genérica de ${categoriaLabel}`}
+            >
+              <div className="px-4 text-center text-white">
+                <BookOpen
+                  className={`${compact ? "h-12 w-12" : "h-16 w-16"} mx-auto mb-2 opacity-90`}
+                  aria-hidden="true"
+                />
+                <div className="text-xs font-semibold opacity-75">
+                  {categoriaLabel}
+                </div>
               </div>
             </div>
+          )}
+
+          {/* Badge de Categoria sobre a imagem */}
+          <div className="absolute bottom-2 left-2">
+            <Badge
+              variant="secondary"
+              className="flex items-center gap-1 border border-white/20 bg-white/90 text-xs font-semibold text-slate-800 shadow-md backdrop-blur-sm"
+            >
+              <span className="flex h-4 w-4 items-center justify-center" aria-hidden="true">
+                {getCategoriaIcon(categoriaPrincipal)}
+              </span>
+              {categoriaLabel}
+            </Badge>
           </div>
         </div>
       </CardHeader>
-      {/* estava aqui */}
-      <CardContent className="px-3">
-        <CardTitle
-          className={`${compact ? "text-sm" : "text-base"} line-clamp-2 transition-colors group-hover:text-blue-700`}
-        >
-          {livro.titulo}
-        </CardTitle>
 
-        <p className="flex items-center gap-1 text-xs text-slate-600">
-          <svg
-            className="h-3 w-3 shrink-0"
-            fill="currentColor"
-            viewBox="0 0 20 20"
+      {/* Conteúdo do Card */}
+      <CardContent className="space-y-3 p-4">
+        <div className="space-y-2">
+          <CardTitle
+            className={`${compact ? "text-sm" : "text-base"} line-clamp-2 font-bold leading-tight text-slate-900 transition-colors group-hover:text-blue-700`}
           >
-            <path
-              fillRule="evenodd"
-              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <span className="truncate">{livro.autor}</span>
-        </p>
+            {livro.titulo}
+          </CardTitle>
 
-        {/* Avaliação e Downloads */}
-        <div className="flex items-center justify-between border-t border-slate-100 pt-1">
-          <div className="flex items-center gap-1">
-            <svg
-              className="h-3.5 w-3.5 text-yellow-500"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-            <span className="text-xs font-semibold text-slate-700">
-              {livro.avaliacao}
+          <div className="flex items-center gap-1.5 text-xs text-slate-600">
+            <User className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            <span className="truncate" title={livro.autor}>
+              {livro.autor}
             </span>
           </div>
 
-          <div className="flex items-center gap-1 text-slate-500">
-            <svg
-              className="h-3.5 w-3.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-              />
-            </svg>
-            <span className="text-xs font-medium">
-              {livro.downloads.toLocaleString()}
+          {!compact && (
+            <p className="line-clamp-2 text-xs leading-relaxed text-slate-500">
+              {livro.descricao}
+            </p>
+          )}
+        </div>
+
+        {/* Estatísticas */}
+        <div className="flex items-center justify-between border-t border-slate-100 pt-3">
+          <div className="flex items-center gap-1" title={`Avaliação: ${livro.avaliacao}`}>
+            <Star
+              className="h-4 w-4 fill-yellow-400 text-yellow-400"
+              aria-hidden="true"
+            />
+            <span className="text-sm font-semibold text-slate-700">
+              {avaliacaoNumero.toFixed(1)}
+            </span>
+          </div>
+
+          <div
+            className="flex items-center gap-1 text-slate-500"
+            title={`${livro.downloads.toLocaleString("pt-BR")} downloads`}
+          >
+            <Download className="h-4 w-4" aria-hidden="true" />
+            <span className="text-sm font-medium">
+              {livro.downloads > 1000
+                ? `${(livro.downloads / 1000).toFixed(1)}k`
+                : livro.downloads}
+            </span>
+          </div>
+
+          <div
+            className="flex items-center gap-1 text-slate-500"
+            title={`${livro.views.toLocaleString("pt-BR")} visualizações`}
+          >
+            <Eye className="h-4 w-4" aria-hidden="true" />
+            <span className="text-sm font-medium">
+              {livro.views > 1000
+                ? `${(livro.views / 1000).toFixed(1)}k`
+                : livro.views}
             </span>
           </div>
         </div>
       </CardContent>
 
-      <CardFooter className="flex gap-2 px-3 pt-2">
+      {/* Ações */}
+      <CardFooter className="flex gap-2 border-t border-slate-100 bg-slate-50/50 p-3">
+        {/* Botão Info/Detalhes */}
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
               variant="outline"
               size="sm"
-              className="flex-1 text-xs hover:border-blue-500 hover:bg-blue-50"
+              className="flex-1 gap-1.5 text-xs transition-all hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              aria-label={`Ver detalhes de ${livro.titulo}`}
             >
-              <svg
-                className="h-3.5 w-3.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <Info className="h-3.5 w-3.5" aria-hidden="true" />
+              <span className="hidden sm:inline">Info</span>
             </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent className="w-11/12 max-w-lg">
+          <AlertDialogContent className="max-h-[90vh] w-11/12 max-w-2xl overflow-y-auto">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-xl font-bold text-slate-900">
                 {livro.titulo}
               </AlertDialogTitle>
-              <AlertDialogDescription className="pt-2 text-sm leading-relaxed">
-                {livro.descricao}
+              <AlertDialogDescription className="space-y-4 pt-4 text-sm leading-relaxed">
+                <p className="text-slate-700">{livro.descricao}</p>
+
+                <div className="grid gap-2 pt-2">
+                  <div className="flex items-start gap-3">
+                    <User className="mt-0.5 h-5 w-5 shrink-0 text-blue-950" aria-hidden="true" />
+                    <div>
+                      <strong className="text-slate-900">Autor:</strong>
+                      <p className="text-slate-700">{livro.autor}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Tag className="mt-0.5 h-5 w-5 shrink-0 text-blue-950" aria-hidden="true" />
+                    <div>
+                      <strong className="text-slate-900">Categorias:</strong>
+                      <p className="text-slate-700">
+                        {livro.macroAreas.map((area) => getCategoriaNome(area)).join(", ")}
+                      </p>
+                    </div>
+                  </div>
+
+                  {livro.detalhes?.numeroPaginas && (
+                    <div className="flex items-start gap-3">
+                      <FileText className="mt-0.5 h-5 w-5 shrink-0 text-blue-950" aria-hidden="true" />
+                      <div>
+                        <strong className="text-slate-900">Páginas:</strong>
+                        <p className="text-slate-700">{livro.detalhes.numeroPaginas}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {livro.anoPublicacao && (
+                    <div className="flex items-start gap-3">
+                      <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-blue-950" aria-hidden="true" />
+                      <div>
+                        <strong className="text-slate-900">Ano:</strong>
+                        <p className="text-slate-700">{livro.anoPublicacao}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {livro.idioma && (
+                    <div className="flex items-start gap-3">
+                      <span className="mt-0.5 text-lg text-blue-950" aria-hidden="true">🌐</span>
+                      <div>
+                        <strong className="text-slate-900">Idioma:</strong>
+                        <p className="text-slate-700">{livro.idioma}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {livro.tags && livro.tags.length > 0 && (
+                    <div className="flex items-start gap-3">
+                      <Tag className="mt-0.5 h-5 w-5 shrink-0 text-blue-950" aria-hidden="true" />
+                      <div>
+                        <strong className="text-slate-900">Tags:</strong>
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {livro.tags.map((tag) => (
+                            <Badge key={tag} variant="secondary" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <div className="space-y-2 pt-4">
-              <div className="flex items-center gap-2 text-sm">
-                <svg
-                  className="h-4 w-4 text-blue-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-slate-700">
-                  <strong>Autor:</strong> {livro.autor}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <svg
-                  className="h-4 w-4 text-indigo-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-slate-700">
-                  <strong>Categoria:</strong> {livro.categoria}
-                </span>
-              </div>
-            </div>
             <AlertDialogFooter className="mt-6">
-              <AlertDialogAction className="bg-blue-600 hover:bg-blue-700">
+              <AlertDialogAction className="bg-blue-600 shadow-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                 Fechar
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
+        {/* Botão Ver/Ler */}
         <Button
           size="sm"
-          className="flex-1 bg-blue-600 text-xs hover:bg-blue-700"
+          className="flex-1 gap-1.5 bg-blue-600 text-xs shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          aria-label={`Ler ${livro.titulo}`}
         >
-          <svg
-            className="h-3.5 w-3.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-            />
-          </svg>
+          <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+          <span className="hidden sm:inline">Ler</span>
         </Button>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              size="sm"
-              variant="secondary"
-              className="px-2.5 hover:bg-slate-200"
+        {/* Menu de Download */}
+        {formatosDisponiveis.length > 0 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="gap-1.5 px-3 shadow-md hover:bg-slate-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                aria-label="Opções de download"
+              >
+                <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                {!compact && <span className="hidden sm:inline">Baixar</span>}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-48 border-slate-200 bottom-0 shadow-xl"
             >
-              <svg
-                className="h-3.5 w-3.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="absolute -right-5 bottom-12 w-32 border py-3 shadow-2xl shadow-stone-700">
-            <DropdownMenuItem className="cursor-pointer gap-2 text-xs">
-              <svg
-                className="h-3.5 w-3.5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              PDF
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer gap-2 text-xs">
-              <svg
-                className="h-3.5 w-3.5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-              </svg>
-              EPUB
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer gap-2 text-xs">
-              <svg
-                className="h-3.5 w-3.5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
-                <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
-              </svg>
-              Resumo
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <div className="px-2 py-1.5 text-xs font-semibold text-slate-500">
+                Formatos Disponíveis
+              </div>
+              <DropdownMenuSeparator />
+              {formatosDisponiveis.map((formato) => (
+                <DropdownMenuItem
+                  key={formato.tipo}
+                  onClick={() => handleDownload(formato.url, formato.tipo)}
+                  className="cursor-pointer buttom-0 gap-2 text-sm focus:bg-blue-50 focus:text-blue-700"
+                >
+                  <FileText className="h-4 w-4" aria-hidden="true" />
+                  {formato.tipo}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </CardFooter>
     </Card>
   );

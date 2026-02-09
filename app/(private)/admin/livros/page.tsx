@@ -109,7 +109,7 @@ export default function LivrosPage() {
                 />
                 <div>
                   <p className="font-semibold text-slate-900">{livro.titulo}</p>
-                  <p className="text-sm text-slate-500">{livro.isbn}</p>
+                  <p className="text-sm text-slate-500">{livro.detalhes.isbn}</p>
                 </div>
               </div>
             </td>

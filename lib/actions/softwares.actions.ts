@@ -1,13 +1,16 @@
 "use server";
 
+import type { Status } from "@/lib/domain/enums";
 import { db } from "@/lib/drizzle/db";
 import { softwares } from "@/lib/drizzle/db/schema/software";
-import { insertSoftwareSchema, selectSoftwareSchema } from "@/lib/drizzle/validations/software.schema";
+import {
+  insertSoftwareSchema,
+  selectSoftwareSchema,
+} from "@/lib/drizzle/validations/software.schema";
 import { gerarSlugUnico } from "@/lib/utils/slugify";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { eq } from "drizzle-orm";
-import type { Status } from "@/lib/domain/enums";
 import type { ActionResult, Software } from "../types";
 
 export async function criarSoftware(formData: FormData) {
@@ -16,13 +19,19 @@ export async function criarSoftware(formData: FormData) {
 
   // Processamento de Arrays (Strings separadas por vírgulas ou quebras de linha)
   const plataformasRaw = formData.get("plataformas") as string | null;
-  const plataformas = plataformasRaw 
-    ? plataformasRaw.split(/[,\n]+/).map(s => s.trim()).filter(Boolean)
+  const plataformas = plataformasRaw
+    ? plataformasRaw
+        .split(/[,\n]+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
     : [];
 
   const screenshotsRaw = formData.get("screenshots") as string | null;
-  const screenshots = screenshotsRaw 
-    ? screenshotsRaw.split(/[,\n]+/).map(s => s.trim()).filter(Boolean)
+  const screenshots = screenshotsRaw
+    ? screenshotsRaw
+        .split(/[,\n]+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
     : [];
 
   const bruto = {
@@ -33,14 +42,20 @@ export async function criarSoftware(formData: FormData) {
     status: (formData.get("status") as Status) || "rascunho",
 
     siteOficial: String(formData.get("siteOficial")),
-    funcionalidades: formData.get("funcionalidades") ? String(formData.get("funcionalidades")) : null,
-    requisitos: formData.get("requisitos") ? String(formData.get("requisitos")) : null,
-    
+    funcionalidades: formData.get("funcionalidades")
+      ? String(formData.get("funcionalidades"))
+      : null,
+    requisitos: formData.get("requisitos")
+      ? String(formData.get("requisitos"))
+      : null,
+
     preco: String(formData.get("preco")),
     plataformas,
     screenshots,
 
-    tutorialUrl: formData.get("tutorialUrl") ? String(formData.get("tutorialUrl")) : null,
+    tutorialUrl: formData.get("tutorialUrl")
+      ? String(formData.get("tutorialUrl"))
+      : null,
   };
 
   const parsed = insertSoftwareSchema.safeParse(bruto);
@@ -63,15 +78,35 @@ export async function criarSoftware(formData: FormData) {
 export async function listarSoftwares() {
   const data = await db.select().from(softwares);
   const parsed = z.array(selectSoftwareSchema).safeParse(data);
-  
+
   if (!parsed.success) return [];
   return parsed.data;
 }
 
 export async function getSoftwareBySlug(slug: string) {
   if (!slug) return null;
-  const result = await db.select().from(softwares).where(eq(softwares.slug, slug)).limit(1);
+  const result = await db
+    .select()
+    .from(softwares)
+    .where(eq(softwares.slug, slug))
+    .limit(1);
   return result[0] || null;
+}
+
+export async function getSoftwareById(id: number) {
+  if (!id || isNaN(id)) return null;
+
+  try {
+    const res = await db
+      .select()
+      .from(softwares)
+      .where(eq(softwares.id, id))
+      .limit(1);
+
+    return res[0] || null;
+  } catch (error) {
+    console.error("Erro ao buscar sofware por ID: ", error);
+  }
 }
 
 // ... imports existentes
@@ -79,7 +114,10 @@ export async function getSoftwareBySlug(slug: string) {
 /**
  * Atualizar Software
  */
-export async function atualizarSoftware(id: number, formData: FormData): Promise<ActionResult<Software>> {
+export async function atualizarSoftware(
+  id: number,
+  formData: FormData,
+): Promise<ActionResult<Software>> {
   // 1. Reutilizamos a lógica de extração que já temos (ou extraímos para uma função helper)
   const bruto = {
     titulo: String(formData.get("titulo")),
@@ -89,7 +127,11 @@ export async function atualizarSoftware(id: number, formData: FormData): Promise
   const parsed = insertSoftwareSchema.safeParse(bruto);
 
   if (!parsed.success) {
-    return { success: false, error: "Dados inválidos", validationErrors: parsed.error.flatten().fieldErrors };
+    return {
+      success: false,
+      error: "Dados inválidos",
+      validationErrors: parsed.error.flatten().fieldErrors,
+    };
   }
 
   try {
@@ -109,10 +151,12 @@ export async function atualizarSoftware(id: number, formData: FormData): Promise
 /**
  * Deletar Software
  */
-export async function deletarSoftware(id: number): Promise<ActionResult<{ id: number }>> {
+export async function deletarSoftware(
+  id: number,
+): Promise<ActionResult<{ id: number }>> {
   try {
     await db.delete(softwares).where(eq(softwares.id, id));
-    
+
     revalidatePath("/softwares");
     return { success: true, data: { id } };
   } catch (error) {

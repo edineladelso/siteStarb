@@ -1,11 +1,11 @@
 "use server";
 
 import { db } from "@/lib/drizzle/db";
+import type { AuthProvider } from "@/lib/drizzle/db/schema/profile";
 import { profiles } from "@/lib/drizzle/db/schema/profile";
 import { createClient } from "@/lib/supabase/server";
-import { eq } from "drizzle-orm";
 import { ActionResult } from "@/lib/types";
-import type { AuthProvider } from "@/lib/drizzle/db/schema/profile";
+import { eq } from "drizzle-orm";
 
 /**
  * Sincroniza o usuário autenticado no Supabase com a tabela de perfis no Drizzle.
@@ -13,9 +13,12 @@ import type { AuthProvider } from "@/lib/drizzle/db/schema/profile";
  */
 export async function syncUserProfile(): Promise<ActionResult> {
   const supabase = await createClient();
-  
+
   // 1. Obter usuário da sessão atual do Supabase
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
 
   if (authError || !user) {
     return { success: false, error: "Usuário não autenticado no Supabase." };
@@ -50,7 +53,8 @@ export async function syncUserProfile(): Promise<ActionResult> {
       console.log(`[Sync] Novo perfil criado para: ${profileData.email}`);
     } else {
       // 3b. Atualizar perfil existente (mantém nome/avatar sincronizados)
-      await db.update(profiles)
+      await db
+        .update(profiles)
         .set(profileData)
         .where(eq(profiles.id, user.id));
       console.log(`[Sync] Perfil atualizado para: ${profileData.email}`);
@@ -59,6 +63,9 @@ export async function syncUserProfile(): Promise<ActionResult> {
     return { success: true };
   } catch (dbError) {
     console.error("[Sync Error]:", dbError);
-    return { success: false, error: "Erro ao sincronizar dados com o banco local." };
+    return {
+      success: false,
+      error: "Erro ao sincronizar dados com o banco local.",
+    };
   }
 }

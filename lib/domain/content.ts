@@ -20,4 +20,6 @@ export interface ContentBase {
 
   createdAt: Date;
   updatedAt: Date;
+  novo: boolean;
+  popular: boolean;
 }

@@ -6,6 +6,7 @@ import {
   text,
   timestamp,
   numeric,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 import type {
@@ -13,6 +14,7 @@ import type {
   MidiaLivro
 } from "@/lib/domain/livro";
 import type { AreaLivro, MacroAreaLivro } from "@/lib/domain/areas";
+import type { Status } from "@/lib/domain/enums";
 
 export const livros = pgTable("livros", {
   id: serial("id").primaryKey(),
@@ -22,7 +24,7 @@ export const livros = pgTable("livros", {
   slug: text("slug").notNull().unique(),
   categoria: text("categoria").notNull(),
   descricao: text("descricao").notNull(),
-  status: text("status").$type<"rascunho" | "publicado">().default("rascunho").notNull(),
+  status: text("status").$type<Status>().default("rascunho").notNull(),
   
   views: integer("views").default(0).notNull(),
   downloads: integer("downloads").default(0).notNull(),
@@ -30,11 +32,8 @@ export const livros = pgTable("livros", {
 
   // Livro Specific Fields
   autor: text("autor").notNull(),
-  isbn: text("isbn"),
   anoPublicacao: integer("ano_publicacao"),
-  editora: text("editora"),
   idioma: text("idioma"),
-  numeroPaginas: integer("numero_paginas"),
 
   // JSONB complexos
   detalhes: jsonb("detalhes").$type<DetalhesLivro>().notNull(),
@@ -47,4 +46,6 @@ export const livros = pgTable("livros", {
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  novo: boolean("novo").default(true),
+  popular: boolean("popular").default(false)
 });

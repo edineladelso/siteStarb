@@ -1,30 +1,38 @@
 "use server";
 
 // src/lib/actions/artigos.actions.ts
-import { db } from "@/lib/drizzle/db";
-import { artigos } from "@/lib/drizzle/db/schema/artigo";
-import { insertArtigoSchema, selectArtigoSchema } from "@/lib/drizzle/validations/artigo.schema";
-import { gerarSlugUnico } from "@/lib/utils/slugify";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
-import { eq } from "drizzle-orm";
 import { toMacroAreas, type AreaLivro } from "@/lib/domain/areas";
 import type { Status } from "@/lib/domain/enums";
+import { db } from "@/lib/drizzle/db";
+import { artigos } from "@/lib/drizzle/db/schema/artigo";
+import {
+  insertArtigoSchema,
+  selectArtigoSchema,
+} from "@/lib/drizzle/validations/artigo.schema";
+import { gerarSlugUnico } from "@/lib/utils/slugify";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import type { ActionResult, Artigo } from "../types";
 
-export async function criarArtigo(formData: FormData): Promise<ActionResult<Artigo>> {
+export async function criarArtigo(
+  formData: FormData,
+): Promise<ActionResult<Artigo>> {
   try {
     const titulo = String(formData.get("titulo"));
     const slug = await gerarSlugUnico(titulo, "artigo");
 
     const areasRaw = formData.get("areas") as string | null;
-    const areas = (areasRaw ? areasRaw.split(",").map(a => a.trim()) : []) as AreaLivro[];
+    const areas = (
+      areasRaw ? areasRaw.split(",").map((a) => a.trim()) : []
+    ) as AreaLivro[];
     const macroAreas = toMacroAreas(areas);
 
     const tipoMidia = formData.get("midia_tipo") as "pdf" | "plataforma";
-    const midia = tipoMidia === "pdf" 
-      ? { tipo: "pdf", pdfUrl: String(formData.get("pdf_url")) }
-      : { tipo: "plataforma", htmlUrl: String(formData.get("html_url")) };
+    const midia =
+      tipoMidia === "pdf"
+        ? { tipo: "pdf", pdfUrl: String(formData.get("pdf_url")) }
+        : { tipo: "plataforma", htmlUrl: String(formData.get("html_url")) };
 
     const bruto = {
       titulo,
@@ -36,7 +44,9 @@ export async function criarArtigo(formData: FormData): Promise<ActionResult<Arti
       resumo: String(formData.get("resumo")),
       palavrasChave: formData.get("palavrasChave") || null,
       instituicao: formData.get("instituicao") || null,
-      anoPublicacao: formData.get("anoPublicacao") ? Number(formData.get("anoPublicacao")) : null,
+      anoPublicacao: formData.get("anoPublicacao")
+        ? Number(formData.get("anoPublicacao"))
+        : null,
       areas,
       macroAreas,
       midia,
@@ -45,18 +55,20 @@ export async function criarArtigo(formData: FormData): Promise<ActionResult<Arti
     const parsed = insertArtigoSchema.safeParse(bruto);
 
     if (!parsed.success) {
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: "Dados do artigo são inválidos.",
         // Opcional: passar os erros detalhados do Zod se o tipo permitir
       };
     }
 
-    const [novoArtigo] = await db.insert(artigos).values(parsed.data).returning();
-    
+    const [novoArtigo] = await db
+      .insert(artigos)
+      .values(parsed.data)
+      .returning();
+
     revalidatePath("/artigos");
     return { success: true, data: novoArtigo };
-
   } catch (error) {
     console.error("Erro ao criar artigo:", error);
     return { success: false, error: "Falha técnica ao salvar o artigo." };
@@ -70,21 +82,24 @@ export async function listarArtigos() {
 
 export async function getArtigoBySlug(slug: string) {
   if (!slug) return null;
-  const res = await db.select().from(artigos).where(eq(artigos.slug, slug)).limit(1);
+  const res = await db
+    .select()
+    .from(artigos)
+    .where(eq(artigos.slug, slug))
+    .limit(1);
   return res[0] || null;
 }
 
-
 export async function getArtigoById(id: number) {
   if (!id || isNaN(id)) return null;
-  
+
   try {
     const res = await db
       .select()
       .from(artigos)
       .where(eq(artigos.id, id))
       .limit(1);
-      
+
     return res[0] || null;
   } catch (error) {
     console.error("Erro ao buscar artigo por ID:", error);
@@ -93,15 +108,21 @@ export async function getArtigoById(id: number) {
 }
 // src/lib/actions/artigos.actions.ts
 
-export async function atualizarArtigo(id: number, formData: FormData): Promise<ActionResult<Artigo>> {
+export async function atualizarArtigo(
+  id: number,
+  formData: FormData,
+): Promise<ActionResult<Artigo>> {
   const areasRaw = formData.get("areas") as string | null;
-  const areas = (areasRaw ? areasRaw.split(",").map(a => a.trim()) : []) as AreaLivro[];
+  const areas = (
+    areasRaw ? areasRaw.split(",").map((a) => a.trim()) : []
+  ) as AreaLivro[];
   const macroAreas = toMacroAreas(areas);
 
   const tipoMidia = formData.get("midia_tipo") as "pdf" | "plataforma";
-  const midia = tipoMidia === "pdf" 
-    ? { tipo: "pdf", pdfUrl: String(formData.get("pdf_url")) }
-    : { tipo: "plataforma", htmlUrl: String(formData.get("html_url")) };
+  const midia =
+    tipoMidia === "pdf"
+      ? { tipo: "pdf", pdfUrl: String(formData.get("pdf_url")) }
+      : { tipo: "plataforma", htmlUrl: String(formData.get("html_url")) };
 
   const bruto = {
     titulo: String(formData.get("titulo")),
@@ -112,7 +133,9 @@ export async function atualizarArtigo(id: number, formData: FormData): Promise<A
     resumo: String(formData.get("resumo")),
     palavrasChave: formData.get("palavrasChave") || null,
     instituicao: formData.get("instituicao") || null,
-    anoPublicacao: formData.get("anoPublicacao") ? Number(formData.get("anoPublicacao")) : null,
+    anoPublicacao: formData.get("anoPublicacao")
+      ? Number(formData.get("anoPublicacao"))
+      : null,
     areas,
     macroAreas,
     midia,

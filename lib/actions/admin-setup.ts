@@ -1,9 +1,9 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { db, profiles } from "@/lib/drizzle/db";
 import { createClient } from "@/lib/supabase/server";
 import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
 /**
  * Promove a conta do utilizador logado a administrador.

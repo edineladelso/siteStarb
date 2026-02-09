@@ -4,12 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import type { ContentStatus } from "@/lib/types";
 
 interface StatusBadgeProps {
-  status: ContentStatus; // Agora aceita todos os status do domínio
+  status: ContentStatus; // Status único do domínio
   size?: "default" | "sm" | "lg";
 }
 
 export function StatusBadge({ status, size = "default" }: StatusBadgeProps) {
-  const statusConfig = {
+  const statusConfig: Record<
+    ContentStatus,
+    { label: string; className: string; icon: React.ReactNode }
+  > = {
     ativo: {
       label: "Ativo",
       className: "bg-green-100 text-green-800 hover:bg-green-200",

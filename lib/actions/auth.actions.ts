@@ -1,20 +1,23 @@
 // src/lib/actions/auth.actions.ts
 "use server";
 
-import { createClient } from "@/lib/supabase/server"; // Você precisará criar este helper
 import { db } from "@/lib/drizzle/db";
 import { profiles } from "@/lib/drizzle/db/schema/profile";
-import { loginSchema, registerSchema, type RegisterInput } from "@/lib/drizzle/validations/auth.schema";
+import {
+  registerSchema,
+  type RegisterInput,
+} from "@/lib/drizzle/validations/auth.schema";
+import { createClient } from "@/lib/supabase/server"; // Você precisará criar este helper
 import { ActionResult } from "@/lib/types";
-import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 
 /**
  * Login com Google ou GitHub
  */
-export async function loginComProvider(provider: "google" | "github"): Promise<ActionResult<string>> {
+export async function loginComProvider(
+  provider: "google" | "github",
+): Promise<ActionResult<string>> {
   const supabase = await createClient();
-  
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
@@ -29,7 +32,9 @@ export async function loginComProvider(provider: "google" | "github"): Promise<A
 /**
  * Registro com E-mail e Senha
  */
-export async function registrarComEmail(values: RegisterInput): Promise<ActionResult> {
+export async function registrarComEmail(
+  values: RegisterInput,
+): Promise<ActionResult> {
   const parsed = registerSchema.safeParse(values);
   if (!parsed.success) return { success: false, error: "Dados inválidos" };
 
@@ -40,8 +45,8 @@ export async function registrarComEmail(values: RegisterInput): Promise<ActionRe
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
-      data: { full_name: parsed.data.nome }
-    }
+      data: { full_name: parsed.data.nome },
+    },
   });
 
   if (authError) return { success: false, error: authError.message };
@@ -55,9 +60,12 @@ export async function registrarComEmail(values: RegisterInput): Promise<ActionRe
       nome: parsed.data.nome,
       provider: "email",
     });
-    
+
     return { success: true };
   } catch (err) {
-    return { success: false, error: "Usuário autenticado, mas erro ao criar perfil." };
+    return {
+      success: false,
+      error: "Usuário autenticado, mas erro ao criar perfil.",
+    };
   }
 }

@@ -1,13 +1,16 @@
 "use server";
 
+import type { Dificuldade, Status } from "@/lib/domain/enums";
 import { db } from "@/lib/drizzle/db";
 import { projetos } from "@/lib/drizzle/db/schema/projeto";
-import { insertProjetoSchema, selectProjetoSchema } from "@/lib/drizzle/validations/projeto.schema";
+import {
+  insertProjetoSchema,
+  selectProjetoSchema,
+} from "@/lib/drizzle/validations/projeto.schema";
 import { gerarSlugUnico } from "@/lib/utils/slugify";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { eq } from "drizzle-orm";
-import type { Status, Dificuldade } from "@/lib/domain/enums";
 import type { ActionResult, Projeto } from "../types";
 
 export async function criarProjeto(formData: FormData) {
@@ -16,8 +19,11 @@ export async function criarProjeto(formData: FormData) {
 
   // Tratamento de array de imagens (separadas por vírgula ou nova linha)
   const imagensRaw = formData.get("imagens_url") as string | null;
-  const imagensUrl = imagensRaw 
-    ? imagensRaw.split(/[,\n]+/).map(s => s.trim()).filter(Boolean)
+  const imagensUrl = imagensRaw
+    ? imagensRaw
+        .split(/[,\n]+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
     : [];
 
   const bruto = {
@@ -25,7 +31,7 @@ export async function criarProjeto(formData: FormData) {
     slug,
     categoria: String(formData.get("categoria")),
     descricao: String(formData.get("descricao")),
-    
+
     // Cast explícito para os tipos de União do Domínio
     status: (formData.get("status") as Status) || "rascunho",
     dificuldade: (formData.get("dificuldade") as Dificuldade) || "Iniciante",
@@ -34,9 +40,13 @@ export async function criarProjeto(formData: FormData) {
     problemaResolvido: String(formData.get("problemaResolvido")),
     tecnologias: String(formData.get("tecnologias")),
 
-    repositorioGithub: formData.get("repositorioGithub") ? String(formData.get("repositorioGithub")) : null,
-    documentacaoUrl: formData.get("documentacaoUrl") ? String(formData.get("documentacaoUrl")) : null,
-    
+    repositorioGithub: formData.get("repositorioGithub")
+      ? String(formData.get("repositorioGithub"))
+      : null,
+    documentacaoUrl: formData.get("documentacaoUrl")
+      ? String(formData.get("documentacaoUrl"))
+      : null,
+
     imagensUrl,
     duracao: formData.get("duracao") ? String(formData.get("duracao")) : null,
   };
@@ -66,15 +76,43 @@ export async function listarProjetos() {
 
 export async function getProjetoBySlug(slug: string) {
   if (!slug) return null;
-  const res = await db.select().from(projetos).where(eq(projetos.slug, slug)).limit(1);
+  const res = await db
+    .select()
+    .from(projetos)
+    .where(eq(projetos.slug, slug))
+    .limit(1);
   return res[0] || null;
+}
+
+export async function getProjetoById(id: number) {
+  if (!id || isNaN(id)) return null;
+
+  try {
+    const res = await db
+      .select()
+      .from(projetos)
+      .where(eq(projetos.id, id))
+      .limit(1);
+
+    return res[0] || null;
+  } catch (error) {
+    console.error("Erro ao buscar projeto por ID: ", error);
+  }
 }
 
 // src/lib/actions/projetos.actions.ts
 
-export async function atualizarProjeto(id: number, formData: FormData): Promise<ActionResult<Projeto>> {
+export async function atualizarProjeto(
+  id: number,
+  formData: FormData,
+): Promise<ActionResult<Projeto>> {
   const imagensRaw = formData.get("imagens_url") as string | null;
-  const imagensUrl = imagensRaw ? imagensRaw.split(/[,\n]+/).map(s => s.trim()).filter(Boolean) : [];
+  const imagensUrl = imagensRaw
+    ? imagensRaw
+        .split(/[,\n]+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
 
   const bruto = {
     titulo: String(formData.get("titulo")),
@@ -85,8 +123,12 @@ export async function atualizarProjeto(id: number, formData: FormData): Promise<
     autor: String(formData.get("autor")),
     problemaResolvido: String(formData.get("problemaResolvido")),
     tecnologias: String(formData.get("tecnologias")),
-    repositorioGithub: formData.get("repositorioGithub") ? String(formData.get("repositorioGithub")) : null,
-    documentacaoUrl: formData.get("documentacaoUrl") ? String(formData.get("documentacaoUrl")) : null,
+    repositorioGithub: formData.get("repositorioGithub")
+      ? String(formData.get("repositorioGithub"))
+      : null,
+    documentacaoUrl: formData.get("documentacaoUrl")
+      ? String(formData.get("documentacaoUrl"))
+      : null,
     imagensUrl,
     duracao: formData.get("duracao") ? String(formData.get("duracao")) : null,
   };

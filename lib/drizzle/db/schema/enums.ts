@@ -20,6 +20,11 @@ export const tipoContentEnum = pgEnum("tipo", [
   "artigo",
 ]);
 
+export const tabelasSql = pgEnum("tabela", [
+  "artigos", 'livros', "projetos", "softwares", "profiles"
+])
+
 export type StatusType = (typeof statusEnum)[number];
 export type DificuldadeType = (typeof dificuldadeEnum)[number];
 export type TipoContentType = typeof tipoContentEnum;
+export type TabelasSql = typeof tabelasSql
