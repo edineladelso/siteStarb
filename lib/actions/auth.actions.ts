@@ -63,6 +63,7 @@ export async function registrarComEmail(
 
     return { success: true };
   } catch (err) {
+    console.error("Erro ao criar perfil:", err);
     return {
       success: false,
       error: "Usuário autenticado, mas erro ao criar perfil.",

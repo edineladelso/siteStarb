@@ -12,7 +12,7 @@ import {
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import CloudinaryUpload from "../CloudinaryUpload";
-import { criarSoftware, atualizarSoftware } from "@/lib/actions";
+import { criarSoftware } from "@/lib/actions";
 
 // ==================== SOFTWARE FORM ====================
 const categorias = [

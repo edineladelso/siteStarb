@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -407,9 +408,11 @@ export default function CloudinaryUpload({
                 <div className="shrink-0">
                   {file.url && type === "image" ? (
                     <div className="h-12 w-12 overflow-hidden rounded-lg bg-slate-100">
-                      <img
+                      <Image
                         src={file.url}
                         alt={file.name}
+                        width={48}
+                        height={48}
                         className="h-full w-full object-cover"
                       />
                     </div>

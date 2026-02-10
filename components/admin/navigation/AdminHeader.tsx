@@ -8,16 +8,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { AdminSidebar } from "./AdminSidebar";
 
 // ==================== ADMIN HEADER ====================
 export function AdminHeader() {
   return (
-    <header className="sticky top-0 z-30 h-16 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
-      <div className="flex h-full items-center justify-between px-6">
+    <header className="sticky w-full top-0 z-30 h-16 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
+      <div className="flex h-full items-center justify-between px-4 sm:px-6 gap-3">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex items-center gap-3 text-sm">
+          <SidebarTrigger />
           <Link
             href="/admin"
             className="text-slate-600 transition-colors hover:text-blue-600"
@@ -209,15 +210,3 @@ export function AdminHeader() {
   );
 }
 
-// ==================== ADMIN LAYOUT ====================
-export function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
-      <AdminSidebar />
-      <div className="ml-64 transition-all duration-300">
-        <AdminHeader />
-        <main className="p-6">{children}</main>
-      </div>
-    </div>
-  );
-}

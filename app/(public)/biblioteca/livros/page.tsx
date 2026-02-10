@@ -111,7 +111,7 @@ function LivrosPageInner() {
       return macroAreaParam as MacroAreaLivro;
     }
     return null;
-  }, [searchParams, macroAreaLivroValues]);
+  }, [searchParams]);
 
   const areaFromParams = useMemo<AreaLivro | null>(() => {
     const areaParam = searchParams.get("area");
@@ -119,7 +119,7 @@ function LivrosPageInner() {
       return areaParam as AreaLivro;
     }
     return null;
-  }, [searchParams, areaLivroValues]);
+  }, [searchParams]);
 
   // Estados com tipos corretos
   const [categoriaAtiva, setCategoriaAtiva] = useState<MacroAreaLivro | null>(
@@ -331,7 +331,7 @@ function LivrosPageInner() {
       </section>
 
       {/* CONTEÚDO PRINCIPAL */}
-      <div className="container mx-auto lg:w-5xl max-w-6xl space-y-10 px-4 py-8 sm:space-y-12 sm:px-6 sm:py-12 lg:space-y-16 lg:px-10 lg:py-16">
+      <div className="container mx-auto max-w-6xl space-y-10 px-4 py-8 sm:space-y-12 sm:px-6 sm:py-12 lg:w-5xl lg:space-y-16 lg:px-10 lg:py-16">
         {/* CATEGORIAS */}
         <section className="space-y-6" aria-labelledby="categorias-heading">
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -458,13 +458,13 @@ function LivrosPageInner() {
                   loop: true,
                 }}
                 setApi={setPopularesApi}
-                className="w-full  overflow-hidden"
+                className="w-full overflow-hidden"
               >
                 <CarouselContent className="mx-auto max-w-5xl gap-3 px-2">
                   {populares.map((livro) => (
                     <CarouselItem
                       key={livro.id}
-                      className="basis-[82%] sm:basis-1/2 lg:basis-[33%] 2xl:basis-1/4 max-w-75"
+                      className="max-w-75 basis-[82%] sm:basis-1/2 lg:basis-[33%] 2xl:basis-1/4"
                     >
                       <LivroCard livro={livro} />
                     </CarouselItem>
@@ -498,7 +498,7 @@ function LivrosPageInner() {
                   {novos.map((livro) => (
                     <CarouselItem
                       key={livro.id}
-                      className="basis-[82%] sm:basis-1/2 lg:basis-[33%] 2xl:basis-1/4 max-w-75"
+                      className="max-w-75 basis-[82%] sm:basis-1/2 lg:basis-[33%] 2xl:basis-1/4"
                     >
                       <LivroCard livro={livro} />
                     </CarouselItem>

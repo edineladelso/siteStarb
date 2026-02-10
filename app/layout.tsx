@@ -1,7 +1,3 @@
-import { AppSidebar } from "@/components/app-sidebar";
-import Footer from "@/components/layout/footer";
-import Header from "@/components/layout/header";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
 import {
   Maven_Pro,
@@ -62,14 +58,7 @@ export default function RootLayout({
     >
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <body className="bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
-        <SidebarProvider>
-          <AppSidebar />
-          <div className="flex min-h-screen w-full flex-col">
-            <Header />
-            <main className="flex flex-1">{children}</main>
-            <Footer />
-          </div>
-        </SidebarProvider>
+        <div>{children}</div>
       </body>
     </html>
   );

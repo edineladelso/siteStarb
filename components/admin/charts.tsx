@@ -1,33 +1,5 @@
-import type {
-  AnalyticsData,
-  AnalyticsFilters,
-  AnalyticsOverview,
-  CategoryData,
-  ContentTypeMetrics,
-  GrowthMetric,
-  TimeSeriesData,
-  TopContentItem,
-  ViewsDownloadsData,
-} from "@/lib/types";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  Area,
-  AreaChart,
-} from "recharts";
+import React from "react";
 
 // ============================================================================
 // UI COMPONENTS

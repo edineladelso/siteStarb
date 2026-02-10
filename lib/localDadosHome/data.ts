@@ -124,7 +124,7 @@ export const homeMenuItems: NavItem[] = [
   },
   {
     title: "Contato",
-    href: "/contato",
+    href: "/sobre/contato",
   },
 ];
 

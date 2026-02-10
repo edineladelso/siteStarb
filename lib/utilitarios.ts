@@ -1,456 +1,450 @@
-/**
- * Utilitários para manipulação de dados centralizados
- * Inclui funções para filtro, busca, formatação e processamento
- */
+// /**
+//  * Utilitários para manipulação de dados centralizados
+//  * Inclui funções para filtro, busca, formatação e processamento
+//  */
 
-import {
-  EstatisticasLivro,
-  EstatisticasProjeto,
-  EstatisticasSoftware,
-  FiltrosPesquisa,
-  Livro,
-  NivelAcesso,
-  Projeto,
-  ResultadoPesquisa,
-  Software,
-  TipoConteudo,
-  Usuario,
-} from "./tipos";
+// import {
+//   EstatisticasLivro,
+//   EstatisticasProjeto,
+//   EstatisticasSoftware,
+//   FiltrosPesquisa,
+//   NivelAcesso,
+//   ResultadoPesquisa,
+//   TipoConteudo,
+//   Usuario,
+// } from "./tipos";
+// import type { Livro, Projeto, Software } from "./types";
 
-// ============================================
-// FUNÇÕES DE FILTRO
-// ============================================
+// // ============================================
+// // FUNÇÕES DE FILTRO
+// // ============================================
 
-export function filtrarLivrosPorCategoria(
-  livros: Livro[],
-  categoria: string,
-): Livro[] {
-  return livros.filter(
-    (livro) => livro.categoria.toLowerCase() === categoria.toLowerCase(),
-  );
-}
+// export function filtrarLivrosPorCategoria(
+//   livros: Livro[],
+//   categoria: string,
+// ): Livro[] {
+//   return livros.filter(
+//     (livro) => livro.categoria.toLowerCase() === categoria.toLowerCase(),
+//   );
+// }
 
-export function filtrarPorTipo(
-  recurso: Livro | Software | Projeto,
-  tipo: TipoConteudo,
-): boolean {
-  return recurso.tipo === tipo;
-}
+// export function filtrarPorTipo(
+//   recurso: Livro | Software | Projeto,
+//   tipo: TipoConteudo,
+// ): boolean {
+//   return recurso.categoria === tipo;
+// }
 
-export function filtrarPorNivel(
-  usuario: Usuario,
-  nivelMinimo: NivelAcesso,
-): boolean {
-  const niveis = [
-    NivelAcesso.VISITANTE,
-    NivelAcesso.USUARIO_BASICO,
-    NivelAcesso.USUARIO_PREMIUM,
-    NivelAcesso.MODERADOR,
-    NivelAcesso.ADMINISTRADOR,
-  ];
+// export function filtrarPorNivel(
+//   usuario: Usuario,
+//   nivelMinimo: NivelAcesso,
+// ): boolean {
+//   const niveis = [
+//     NivelAcesso.VISITANTE,
+//     NivelAcesso.USUARIO_BASICO,
+//     NivelAcesso.USUARIO_PREMIUM,
+//     NivelAcesso.MODERADOR,
+//     NivelAcesso.ADMINISTRADOR,
+//   ];
 
-  const indexUsuario = niveis.indexOf(usuario.nivelAcesso);
-  const indexMinimo = niveis.indexOf(nivelMinimo);
+//   const indexUsuario = niveis.indexOf(usuario.nivelAcesso);
+//   const indexMinimo = niveis.indexOf(nivelMinimo);
 
-  return indexUsuario >= indexMinimo;
-}
+//   return indexUsuario >= indexMinimo;
+// }
 
-export function filtrarNovos(
-  recursos: (Livro | Software | Projeto)[],
-): (Livro | Software | Projeto)[] {
-  return recursos.filter((r) => r.eNovo);
-}
+// export function filtrarNovos(
+//   recursos: (Livro | Software | Projeto)[],
+// ): (Livro | Software | Projeto)[] {
+//   return recursos.filter((r) => r.createdAt);
+// }
 
-export function aplicarFiltrosPesquisa(
-  livros: Livro[],
-  softwares: Software[],
-  projetos: Projeto[],
-  filtros: FiltrosPesquisa,
-): ResultadoPesquisa[] {
-  const resultados: ResultadoPesquisa[] = [];
+// export function aplicarFiltrosPesquisa(
+//   livros: Livro[],
+//   softwares: Software[],
+//   projetos: Projeto[],
+//   filtros: FiltrosPesquisa,
+// ): ResultadoPesquisa[] {
+//   const resultados: ResultadoPesquisa[] = [];
 
-  // Filtrar livros
-  let livrosFiltrados = livros;
-  if (filtros.categoria) {
-    livrosFiltrados = filtrarLivrosPorCategoria(livros, filtros.categoria);
-  }
-  if (filtros.tipo) {
-    livrosFiltrados = livrosFiltrados.filter((l) =>
-      filtrarPorTipo(l, filtros.tipo!),
-    );
-  }
-  if (filtros.apenasNovos) {
-    livrosFiltrados = livrosFiltrados.filter((l) => l.eNovo);
-  }
+//   // Filtrar livros
+//   let livrosFiltrados = livros;
+//   if (filtros.categoria) {
+//     livrosFiltrados = filtrarLivrosPorCategoria(livros, filtros.categoria);
+//   }
+//   if (filtros.tipo) {
+//     livrosFiltrados = livrosFiltrados.filter((l) =>
+//       filtrarPorTipo(l, filtros.tipo!),
+//     );
+//   }
+//   if (filtros.apenasNovos) {
+//     livrosFiltrados = livrosFiltrados.filter((l) => l.createdAt);
+//   }
 
-  resultados.push(
-    ...livrosFiltrados.map((livro) => ({
-      id: livro.id,
-      titulo: livro.titulo,
-      descricao: livro.descricao,
-      tipo: "livro" as const,
-      capa: livro.urls.capa?.url,
-      popularidade: livro.popularidade,
-      href: `/biblioteca/livros/${livro.id}`,
-    })),
-  );
+//   // resultados.push(
+//   //   ...livrosFiltrados.map((livro) => ({
+//   //     id: livro.id,
+//   //     titulo: livro.titulo,
 
-  // Filtrar softwares
-  let softwaresFiltrados = softwares;
-  if (filtros.categoria) {
-    softwaresFiltrados = softwares.filter(
-      (s) => s.categoria.toLowerCase() === filtros.categoria!.toLowerCase(),
-    );
-  }
-  if (filtros.tipo) {
-    softwaresFiltrados = softwaresFiltrados.filter((s) =>
-      filtrarPorTipo(s, filtros.tipo!),
-    );
-  }
-  if (filtros.apenasNovos) {
-    softwaresFiltrados = softwaresFiltrados.filter((s) => s.eNovo);
-  }
+//   //   }  Livro)),
+//   // );
 
-  resultados.push(
-    ...softwaresFiltrados.map((software) => ({
-      id: software.id,
-      titulo: software.nome,
-      descricao: software.descricao,
-      tipo: "software" as const,
-      capa: software.urls.capa?.url,
-      popularidade: software.popularidade,
-      href: `/softwares/${software.id}`,
-    })),
-  );
+//   // Filtrar softwares
+//   let softwaresFiltrados = softwares;
+//   if (filtros.categoria) {
+//     softwaresFiltrados = softwares.filter(
+//       (s) => s.categoria.toLowerCase() === filtros.categoria!.toLowerCase(),
+//     );
+//   }
+//   if (filtros.tipo) {
+//     softwaresFiltrados = softwaresFiltrados.filter((s) =>
+//       filtrarPorTipo(s, filtros.tipo!),
+//     );
+//   }
+//   if (filtros.apenasNovos) {
+//     softwaresFiltrados = softwaresFiltrados.filter((s) => s.eNovo);
+//   }
 
-  // Filtrar projetos
-  let projetosFiltrados = projetos;
-  if (filtros.tipo) {
-    projetosFiltrados = projetosFiltrados.filter((p) =>
-      filtrarPorTipo(p, filtros.tipo!),
-    );
-  }
-  if (filtros.apenasNovos) {
-    projetosFiltrados = projetosFiltrados.filter((p) => p.eNovo);
-  }
+//   resultados.push(
+//     ...softwaresFiltrados.map((software) => ({
+//       id: software.id,
+//       titulo: software.nome,
+//       descricao: software.descricao,
+//       tipo: "software" as const,
+//       capa: software.urls.capa?.url,
+//       popularidade: software.popularidade,
+//       href: `/softwares/${software.id}`,
+//     })),
+//   );
 
-  resultados.push(
-    ...projetosFiltrados.map((projeto) => ({
-      id: projeto.id,
-      titulo: projeto.titulo,
-      descricao: projeto.descricao,
-      tipo: "projeto" as const,
-      capa: projeto.urls.capa?.url,
-      popularidade: projeto.popularidade,
-      href: `/projetos/${projeto.id}`,
-    })),
-  );
+//   // Filtrar projetos
+//   let projetosFiltrados = projetos;
+//   if (filtros.tipo) {
+//     projetosFiltrados = projetosFiltrados.filter((p) =>
+//       filtrarPorTipo(p, filtros.tipo!),
+//     );
+//   }
+//   if (filtros.apenasNovos) {
+//     projetosFiltrados = projetosFiltrados.filter((p) => p.eNovo);
+//   }
 
-  // Aplicar ordenação
-  if (filtros.ordenacao) {
-    resultados.sort((a, b) => {
-      switch (filtros.ordenacao) {
-        case "recente":
-          return 0;
-        case "populares":
-          return b.popularidade - a.popularidade;
-        case "avaliacao":
-          return 0;
-        default:
-          return 0;
-      }
-    });
-  }
+//   resultados.push(
+//     ...projetosFiltrados.map((projeto) => ({
+//       id: projeto.id,
+//       titulo: projeto.titulo,
+//       descricao: projeto.descricao,
+//       tipo: "projeto" as const,
+//       capa: projeto.urls.capa?.url,
+//       popularidade: projeto.popularidade,
+//       href: `/projetos/${projeto.id}`,
+//     })),
+//   );
 
-  return resultados;
-}
+//   // Aplicar ordenação
+//   if (filtros.ordenacao) {
+//     resultados.sort((a, b) => {
+//       switch (filtros.ordenacao) {
+//         case "recente":
+//           return 0;
+//         case "populares":
+//           return b.popularidade - a.popularidade;
+//         case "avaliacao":
+//           return 0;
+//         default:
+//           return 0;
+//       }
+//     });
+//   }
 
-// ============================================
-// FUNÇÕES DE BUSCA
-// ============================================
+//   return resultados;
+// }
 
-export function buscarLivros(livros: Livro[], termo: string): Livro[] {
-  const termoLower = termo.toLowerCase();
-  return livros.filter(
-    (livro) =>
-      livro.titulo.toLowerCase().includes(termoLower) ||
-      livro.descricao.toLowerCase().includes(termoLower) ||
-      livro.tags.some((tag) => tag.toLowerCase().includes(termoLower)),
-  );
-}
+// // ============================================
+// // FUNÇÕES DE BUSCA
+// // ============================================
 
-export function buscarSoftwares(
-  softwares: Software[],
-  termo: string,
-): Software[] {
-  const termoLower = termo.toLowerCase();
-  return softwares.filter(
-    (software) =>
-      software.nome.toLowerCase().includes(termoLower) ||
-      software.descricao.toLowerCase().includes(termoLower) ||
-      software.tags.some((tag) => tag.toLowerCase().includes(termoLower)),
-  );
-}
+// export function buscarLivros(livros: Livro[], termo: string): Livro[] {
+//   const termoLower = termo.toLowerCase();
+//   return livros.filter(
+//     (livro) =>
+//       livro.titulo.toLowerCase().includes(termoLower) ||
+//       livro.descricao.toLowerCase().includes(termoLower) ||
+//       livro.tags.some((tag) => tag.toLowerCase().includes(termoLower)),
+//   );
+// }
 
-export function buscarProjetos(projetos: Projeto[], termo: string): Projeto[] {
-  const termoLower = termo.toLowerCase();
-  return projetos.filter(
-    (projeto) =>
-      projeto.titulo.toLowerCase().includes(termoLower) ||
-      projeto.descricao.toLowerCase().includes(termoLower) ||
-      projeto.tags.some((tag) => tag.toLowerCase().includes(termoLower)),
-  );
-}
+// export function buscarSoftwares(
+//   softwares: Software[],
+//   termo: string,
+// ): Software[] {
+//   const termoLower = termo.toLowerCase();
+//   return softwares.filter(
+//     (software) =>
+//       software.nome.toLowerCase().includes(termoLower) ||
+//       software.descricao.toLowerCase().includes(termoLower) ||
+//       software.tags.some((tag) => tag.toLowerCase().includes(termoLower)),
+//   );
+// }
 
-// ============================================
-// FUNÇÕES DE FORMATAÇÃO
-// ============================================
+// export function buscarProjetos(projetos: Projeto[], termo: string): Projeto[] {
+//   const termoLower = termo.toLowerCase();
+//   return projetos.filter(
+//     (projeto) =>
+//       projeto.titulo.toLowerCase().includes(termoLower) ||
+//       projeto.descricao.toLowerCase().includes(termoLower) ||
+//       projeto.tags.some((tag) => tag.toLowerCase().includes(termoLower)),
+//   );
+// }
 
-export function formatarData(data: Date): string {
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(data);
-}
+// // ============================================
+// // FUNÇÕES DE FORMATAÇÃO
+// // ============================================
 
-export function formatarDataCompleta(data: Date): string {
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(data);
-}
+// export function formatarData(data: Date): string {
+//   return new Intl.DateTimeFormat("pt-BR", {
+//     day: "2-digit",
+//     month: "2-digit",
+//     year: "numeric",
+//   }).format(data);
+// }
 
-export function formatarPreco(preco: number, moeda: string = "BRL"): string {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: moeda,
-  }).format(preco);
-}
+// export function formatarDataCompleta(data: Date): string {
+//   return new Intl.DateTimeFormat("pt-BR", {
+//     day: "2-digit",
+//     month: "long",
+//     year: "numeric",
+//     hour: "2-digit",
+//     minute: "2-digit",
+//   }).format(data);
+// }
 
-export function formatarNumeros(numero: number): string {
-  if (numero >= 1_000_000) {
-    return (numero / 1_000_000).toFixed(1) + "M";
-  }
-  if (numero >= 1_000) {
-    return (numero / 1_000).toFixed(1) + "K";
-  }
-  return numero.toString();
-}
+// export function formatarPreco(preco: number, moeda: string = "BRL"): string {
+//   return new Intl.NumberFormat("pt-BR", {
+//     style: "currency",
+//     currency: moeda,
+//   }).format(preco);
+// }
 
-// ============================================
-// FUNÇÕES DE VALIDAÇÃO
-// ============================================
+// export function formatarNumeros(numero: number): string {
+//   if (numero >= 1_000_000) {
+//     return (numero / 1_000_000).toFixed(1) + "M";
+//   }
+//   if (numero >= 1_000) {
+//     return (numero / 1_000).toFixed(1) + "K";
+//   }
+//   return numero.toString();
+// }
 
-export function usuarioPodeAcessar(
-  usuario: Usuario,
-  recurso: Livro | Software | Projeto,
-): boolean {
-  // Recursos gratuitos são acessíveis para todos
-  if (recurso.tipo === TipoConteudo.LIVRE) {
-    return true;
-  }
+// // ============================================
+// // FUNÇÕES DE VALIDAÇÃO
+// // ============================================
 
-  // Recursos pagos precisam de acesso premium
-  if (recurso.tipo === TipoConteudo.PAGO) {
-    return (
-      usuario.nivelAcesso === NivelAcesso.USUARIO_PREMIUM ||
-      usuario.nivelAcesso === NivelAcesso.MODERADOR ||
-      usuario.nivelAcesso === NivelAcesso.ADMINISTRADOR
-    );
-  }
+// export function usuarioPodeAcessar(
+//   usuario: Usuario,
+//   recurso: Livro | Software | Projeto,
+// ): boolean {
+//   // Recursos gratuitos são acessíveis para todos
+//   if (recurso.tipo === TipoConteudo.LIVRE) {
+//     return true;
+//   }
 
-  return false;
-}
+//   // Recursos pagos precisam de acesso premium
+//   if (recurso.tipo === TipoConteudo.PAGO) {
+//     return (
+//       usuario.nivelAcesso === NivelAcesso.USUARIO_PREMIUM ||
+//       usuario.nivelAcesso === NivelAcesso.MODERADOR ||
+//       usuario.nivelAcesso === NivelAcesso.ADMINISTRADOR
+//     );
+//   }
 
-export function usuarioPodeDownload(usuario: Usuario): boolean {
-  const plano = usuario.subscricao.plano;
-  return plano.acessoDownloads;
-}
+//   return false;
+// }
 
-export function usuarioPodeAcessarIA(usuario: Usuario): boolean {
-  const plano = usuario.subscricao.plano;
-  return plano.acessoIA;
-}
+// export function usuarioPodeDownload(usuario: Usuario): boolean {
+//   const plano = usuario.subscricao.plano;
+//   return plano.acessoDownloads;
+// }
 
-export function verificarPermissaoDownload(
-  livro: Livro,
-  usuario: Usuario,
-): { permitido: boolean; motivo?: string } {
-  if (!livro.permissaoDownload.permitido) {
-    return {
-      permitido: false,
-      motivo: "O publicador não permite downloads deste livro",
-    };
-  }
+// export function usuarioPodeAcessarIA(usuario: Usuario): boolean {
+//   const plano = usuario.subscricao.plano;
+//   return plano.acessoIA;
+// }
 
-  if (!usuarioPodeAcessar(usuario, livro)) {
-    return {
-      permitido: false,
-      motivo: "Você não tem acesso a este recurso",
-    };
-  }
+// export function verificarPermissaoDownload(
+//   livro: Livro,
+//   usuario: Usuario,
+// ): { permitido: boolean; motivo?: string } {
+//   if (!livro.permissaoDownload.permitido) {
+//     return {
+//       permitido: false,
+//       motivo: "O publicador não permite downloads deste livro",
+//     };
+//   }
 
-  if (!usuarioPodeDownload(usuario)) {
-    return {
-      permitido: false,
-      motivo: "Seu plano não permite downloads",
-    };
-  }
+//   if (!usuarioPodeAcessar(usuario, livro)) {
+//     return {
+//       permitido: false,
+//       motivo: "Você não tem acesso a este recurso",
+//     };
+//   }
 
-  return { permitido: true };
-}
+//   if (!usuarioPodeDownload(usuario)) {
+//     return {
+//       permitido: false,
+//       motivo: "Seu plano não permite downloads",
+//     };
+//   }
 
-// ============================================
-// FUNÇÕES DE ESTATÍSTICAS
-// ============================================
+//   return { permitido: true };
+// }
 
-export function calcularTaxaCrescimento(
-  estatisticasAntigas: number,
-  estatisticasNovas: number,
-): number {
-  if (estatisticasAntigas === 0) return 0;
-  return (
-    ((estatisticasNovas - estatisticasAntigas) / estatisticasAntigas) * 100
-  );
-}
+// // ============================================
+// // FUNÇÕES DE ESTATÍSTICAS
+// // ============================================
 
-export function obterTendencia(
-  recurso: Livro | Software | Projeto,
-): "em_alta" | "estavel" | "em_baixa" {
-  const { views, downloads } = recurso.estatisticas as
-    | EstatisticasLivro
-    | EstatisticasSoftware
-    | EstatisticasProjeto;
+// export function calcularTaxaCrescimento(
+//   estatisticasAntigas: number,
+//   estatisticasNovas: number,
+// ): number {
+//   if (estatisticasAntigas === 0) return 0;
+//   return (
+//     ((estatisticasNovas - estatisticasAntigas) / estatisticasAntigas) * 100
+//   );
+// }
 
-  const proporacao = downloads / (views || 1);
+// export function obterTendencia(
+//   recurso: Livro | Software | Projeto,
+// ): "em_alta" | "estavel" | "em_baixa" {
+//   const { views, downloads } = recurso.estatisticas as
+//     | EstatisticasLivro
+//     | EstatisticasSoftware
+//     | EstatisticasProjeto;
 
-  if (proporacao > 0.3) return "em_alta";
-  if (proporacao > 0.1) return "estavel";
-  return "em_baixa";
-}
+//   const proporacao = downloads / (views || 1);
 
-export function obterRecursosPopulares(
-  recursosy: (Livro | Software | Projeto)[],
-  limite: number = 10,
-): (Livro | Software | Projeto)[] {
-  return recursosy
-    .sort((a, b) => b.popularidade - a.popularidade)
-    .slice(0, limite);
-}
+//   if (proporacao > 0.3) return "em_alta";
+//   if (proporacao > 0.1) return "estavel";
+//   return "em_baixa";
+// }
 
-export function obterRecursosMaisVisualizados(
-  recursos: (Livro | Software | Projeto)[],
-  limite: number = 10,
-): (Livro | Software | Projeto)[] {
-  return recursos
-    .sort((a, b) => {
-      const viewsA = (
-        a.estatisticas as
-          | EstatisticasLivro
-          | EstatisticasSoftware
-          | EstatisticasProjeto
-      ).views;
-      const viewsB = (
-        b.estatisticas as
-          | EstatisticasLivro
-          | EstatisticasSoftware
-          | EstatisticasProjeto
-      ).views;
-      return viewsB - viewsA;
-    })
-    .slice(0, limite);
-}
+// export function obterRecursosPopulares(
+//   recursosy: (Livro | Software | Projeto)[],
+//   limite: number = 10,
+// ): (Livro | Software | Projeto)[] {
+//   return recursosy
+//     .sort((a, b) => b.popularidade - a.popularidade)
+//     .slice(0, limite);
+// }
 
-// ============================================
-// FUNÇÕES DE MANIPULAÇÃO
-// ============================================
+// export function obterRecursosMaisVisualizados(
+//   recursos: (Livro | Software | Projeto)[],
+//   limite: number = 10,
+// ): (Livro | Software | Projeto)[] {
+//   return recursos
+//     .sort((a, b) => {
+//       const viewsA = (
+//         a.estatisticas as
+//           | EstatisticasLivro
+//           | EstatisticasSoftware
+//           | EstatisticasProjeto
+//       ).views;
+//       const viewsB = (
+//         b.estatisticas as
+//           | EstatisticasLivro
+//           | EstatisticasSoftware
+//           | EstatisticasProjeto
+//       ).views;
+//       return viewsB - viewsA;
+//     })
+//     .slice(0, limite);
+// }
 
-export function extrairTagsUnicas(
-  recursos: (Livro | Software | Projeto)[],
-): string[] {
-  const tags = new Set<string>();
-  recursos.forEach((recurso) => {
-    recurso.tags.forEach((tag) => tags.add(tag));
-  });
-  return Array.from(tags).sort();
-}
+// // ============================================
+// // FUNÇÕES DE MANIPULAÇÃO
+// // ============================================
 
-export function agruparPorCategoria(livros: Livro[]): Record<string, Livro[]> {
-  return livros.reduce(
-    (acc, livro) => {
-      if (!acc[livro.categoria]) {
-        acc[livro.categoria] = [];
-      }
-      acc[livro.categoria].push(livro);
-      return acc;
-    },
-    {} as Record<string, Livro[]>,
-  );
-}
+// export function extrairTagsUnicas(
+//   recursos: (Livro | Software | Projeto)[],
+// ): string[] {
+//   const tags = new Set<string>();
+//   recursos.forEach((recurso) => {
+//     recurso.tags.forEach((tag) => tags.add(tag));
+//   });
+//   return Array.from(tags).sort();
+// }
 
-export function obterAutorPrincipal(
-  recurso: Livro | Software | Projeto,
-): string {
-  const autorPrincipal = recurso.autores.find((c) => c.tipo === "autor");
-  return autorPrincipal?.autor.nome || "Desconhecido";
-}
+// export function agruparPorCategoria(livros: Livro[]): Record<string, Livro[]> {
+//   return livros.reduce(
+//     (acc, livro) => {
+//       if (!acc[livro.categoria]) {
+//         acc[livro.categoria] = [];
+//       }
+//       acc[livro.categoria].push(livro);
+//       return acc;
+//     },
+//     {} as Record<string, Livro[]>,
+//   );
+// }
 
-// ============================================
-// FUNÇÕES PARA CLOUDINARY
-// ============================================
+// export function obterAutorPrincipal(
+//   recurso: Livro | Software | Projeto,
+// ): string {
+//   const autorPrincipal = recurso.autores.find((c) => c.tipo === "autor");
+//   return autorPrincipal?.autor.nome || "Desconhecido";
+// }
 
-export function gerarURLCloudinary(
-  publicId: string,
-  opcoes?: {
-    largura?: number;
-    altura?: number;
-    qualidade?: "auto" | "low" | "medium" | "high";
-    formato?: "auto" | "webp" | "jpg" | "png";
-  },
-): string {
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_NAME || "starb";
-  let url = `https://res.cloudinary.com/${cloudName}/image/upload`;
+// // ============================================
+// // FUNÇÕES PARA CLOUDINARY
+// // ============================================
 
-  const transformacoes: string[] = [];
+// export function gerarURLCloudinary(
+//   publicId: string,
+//   opcoes?: {
+//     largura?: number;
+//     altura?: number;
+//     qualidade?: "auto" | "low" | "medium" | "high";
+//     formato?: "auto" | "webp" | "jpg" | "png";
+//   },
+// ): string {
+//   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_NAME || "starb";
+//   let url = `https://res.cloudinary.com/${cloudName}/image/upload`;
 
-  if (opcoes?.largura) {
-    transformacoes.push(`w_${opcoes.largura}`);
-  }
+//   const transformacoes: string[] = [];
 
-  if (opcoes?.altura) {
-    transformacoes.push(`h_${opcoes.altura}`);
-  }
+//   if (opcoes?.largura) {
+//     transformacoes.push(`w_${opcoes.largura}`);
+//   }
 
-  if (opcoes?.qualidade) {
-    transformacoes.push(`q_${opcoes.qualidade}`);
-  }
+//   if (opcoes?.altura) {
+//     transformacoes.push(`h_${opcoes.altura}`);
+//   }
 
-  if (opcoes?.formato) {
-    transformacoes.push(`f_${opcoes.formato}`);
-  }
+//   if (opcoes?.qualidade) {
+//     transformacoes.push(`q_${opcoes.qualidade}`);
+//   }
 
-  if (transformacoes.length > 0) {
-    url += `/${transformacoes.join(",")}/`;
-  } else {
-    url += "/";
-  }
+//   if (opcoes?.formato) {
+//     transformacoes.push(`f_${opcoes.formato}`);
+//   }
 
-  return url + publicId;
-}
+//   if (transformacoes.length > 0) {
+//     url += `/${transformacoes.join(",")}/`;
+//   } else {
+//     url += "/";
+//   }
 
-export function obterURLCapaOtimizada(
-  publicId: string,
-  largura: number = 400,
-  altura: number = 600,
-): string {
-  return gerarURLCloudinary(publicId, {
-    largura,
-    altura,
-    qualidade: "high",
-    formato: "auto",
-  });
-}
+//   return url + publicId;
+// }
+
+// export function obterURLCapaOtimizada(
+//   publicId: string,
+//   largura: number = 400,
+//   altura: number = 600,
+// ): string {
+//   return gerarURLCloudinary(publicId, {
+//     largura,
+//     altura,
+//     qualidade: "high",
+//     formato: "auto",
+//   });
+// }

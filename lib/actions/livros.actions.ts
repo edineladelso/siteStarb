@@ -183,6 +183,7 @@ export async function atualizarLivro(
     revalidatePath(`/biblioteca/livro/${atualizado.slug}`);
     return { success: true, data: atualizado };
   } catch (error) {
+    console.error("Erro ao atualizar livro:", error);
     return { success: false, error: "Falha ao atualizar o livro no banco." };
   }
 }

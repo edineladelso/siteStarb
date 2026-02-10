@@ -1,6 +1,6 @@
 "use client";
 
-import imgCarousel, { ImgType } from "@/components/property/carouselProperty";
+import imgCarousel from "@/components/property/carouselProperty";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -61,12 +61,6 @@ const philosophyPrinciples = [
   "Projetos reais com código, decisões e contexto",
   "Formação para construir, não apenas consumir conhecimento",
 ];
-
-type ResourceLink = {
-  title: string;
-  href: string;
-  description?: string;
-};
 
 export default function SobrePage() {
   const imgSObre = imgCarousel.find((e) => e.value === "imgMeca2")!;

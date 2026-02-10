@@ -69,35 +69,6 @@ export interface EstatisticasLivro {
   dataUltimaAtualizacao: Date;
 }
 
-export interface Livro {
-  id: string;
-  titulo: string;
-  editora: string,
-  descricao: string;
-  descricaoCompleta?: string;
-  categoria: string;
-  subcategoria?: string;
-  tipo: TipoConteudo;
-  urls: URLsRecursos;
-  issn?: string;
-  isbn?: string;
-  anoPublicacao: number;
-  idioma: string;
-  paginas?: number;
-  permissaoDownload: PermissaoDownload;
-  estatisticas: EstatisticasLivro;
-  dataCriacao: Date;
-  dataPublicacao: Date;
-  eNovo: boolean;
-  popularidade: number;
-  tags: string[];
-  status: StatusType;
-}
-
-// ============================================
-// TIPOS PARA SOFTWARES E FERRAMENTAS
-// ============================================
-
 export interface EspecificacoesSistema {
   sO: string[];
   arquitetura: string[];
@@ -115,29 +86,6 @@ export interface EstatisticasSoftware {
   dataUltimaAtualizacao?: Date;
 }
 
-export interface Software {
-  id: string;
-  nome: string;
-  descricao: string;
-  descricaoCompleta?: string;
-  autores: string;
-  categoria: string;
-  subcategoria?: string;
-  tipo: TipoConteudo;
-  urls: URLsRecursos;
-  urlDownload?: string;
-  urlOficial: string;
-  versao: string;
-  licenca: string;
-  especificacoes: EspecificacoesSistema;
-  estatisticas: EstatisticasSoftware;
-  dataCriacao: Date;
-  dataPublicacao: Date;
-  eNovo: boolean;
-  popularidade: number;
-  tags: string[];
-  status: StatusType;
-}
 
 // ============================================
 // TIPOS PARA PROJETOS E PESQUISA
@@ -172,36 +120,6 @@ export interface EstatisticasProjeto {
   totalAvaliacoes: number;
   dataUltimaAtualizacao: Date;
 }
-
-export interface Projeto {
-  id: string;
-  titulo: string;
-  descricao: string;
-  descricaoCompleta?: string;
-  autores: string[];
-  categoria: 'pesquisa' | 'tcc' | 'dissertacao' | 'artigo' | 'real_documentado' | 'embarcado' | 'ia' | 'software';
-  tipo: TipoConteudo;
-  urls: URLsRecursos;
-  repositorio?: string;
-  urlDemo?: string;
-  objetivos: string[];
-  etapas: EtapaProjeto[];
-  tecnologias: Tecnologia[];
-  resultados: string;
-  conclusoes?: string;
-  estatisticas: EstatisticasProjeto;
-  dataCriacao: Date;
-  dataPublicacao: Date;
-  eNovo: boolean;
-  popularidade: number;
-  tags: string[];
-  status: StatusType;
-}
-
-// ============================================
-// TIPOS PARA USUÁRIOS
-// ============================================
-
 export interface PlanSubscricao {
   id: string;
   nome: string;

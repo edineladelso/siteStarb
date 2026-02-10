@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import CloudinaryUpload from "../CloudinaryUpload";
-import { criarProjeto, atualizarProjeto } from "@/lib/actions";
+import { criarProjeto } from "@/lib/actions";
 
 // ==================== PROJETO FORM ====================
 

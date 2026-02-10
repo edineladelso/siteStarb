@@ -147,6 +147,7 @@ export async function atualizarProjeto(
     revalidatePath("/projetos");
     return { success: true, data: atualizado };
   } catch (error) {
+    console.error("Erro ao atualizar projeto:", error);
     return { success: false, error: "Erro ao atualizar projeto" };
   }
 }

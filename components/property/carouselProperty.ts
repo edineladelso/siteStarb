@@ -7,7 +7,6 @@ import imgMeca3 from "@/public/image/meca3.webp";
 import imgMeca5 from "@/public/image/meca5.webp";
 import imgAi from "@/public/img/IA.webp";
 import imglivros from "@/public/img/imglivros.webp";
-import imgMecatronica from "@/public/img/mecatronica.webp";
 import type { StaticImageData } from "next/image";
 
 export type ImgType = {

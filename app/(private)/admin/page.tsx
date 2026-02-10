@@ -15,7 +15,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState({
+  const [stats] = useState({
     totalLivros: 45,
     totalSoftwares: 12,
     totalProjetos: 8,
@@ -56,7 +56,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 ">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900 mb-2">

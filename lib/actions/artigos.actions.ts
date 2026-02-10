@@ -155,6 +155,7 @@ export async function atualizarArtigo(
     revalidatePath("/artigos");
     return { success: true, data: atualizado };
   } catch (error) {
+    console.error("Erro ao atualizar artigo:", error);
     return { success: false, error: "Erro ao atualizar artigo" };
   }
 }
