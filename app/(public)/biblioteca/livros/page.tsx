@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { Suspense, useCallback, useMemo, useState, useEffect } from "react";
 import {
   Search,
   Filter,
@@ -97,7 +97,7 @@ function OrdenacaoButton({
 }
 
 // Componente Principal
-export default function LivrosPage() {
+function LivrosPageInner() {
   const searchParams = useSearchParams();
   const [popularesApi, setPopularesApi] = useState<CarouselApi | null>(null);
   const [novosApi, setNovosApi] = useState<CarouselApi | null>(null);
@@ -563,5 +563,13 @@ export default function LivrosPage() {
         </section>
       </div>
     </div>
+  );
+}
+
+export default function LivrosPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50" />}>
+      <LivrosPageInner />
+    </Suspense>
   );
 }
