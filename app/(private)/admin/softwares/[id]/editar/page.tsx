@@ -6,46 +6,55 @@ import { useRouter, useParams } from "next/navigation";
 import { SoftwareForm } from "@/components/admin/forms/SoftwareForm";
 import { getSoftwareById } from "@/lib/actions";
 import type { Software } from "@/lib/types";
+import { LoadingContent } from "../../../ui/Loading";
+import { ErrorContent } from "@/app/error/ErrorComponent";
 
 export default function EditarSoftwarePage() {
   const router = useRouter();
   const params = useParams();
   const [software, setSoftware] = useState<Software | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
-    loadSoftware();
-  }, [params.id]);
+  const loadSoftware = async (id: number) => {
+    try {
+      if (isNaN(id)) throw new Error("ID inválido");
 
-  const loadSoftware = async () => {
-    const id = Number(params.id);
-    if (Number.isNaN(id)) {
-      setSoftware(null);
+      const data = await getSoftwareById(id);
+
+      if (!data) {
+        setError(true);
+      } else {
+        setSoftware(data);
+      }
+    } catch (err) {
+      console.error("Falha ao carregar livro: ", err);
+      setError(true);
+    } finally {
       setLoading(false);
-      return;
     }
-    const data = await getSoftwareById(id);
-    setSoftware(data);
-    setLoading(false);
   };
 
+  useEffect(() => {
+    if (params?.id) {
+      loadSoftware(Number(params.id));
+    }
+  }, [params.id]);
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-purple-600 border-t-transparent"></div>
-          <p className="text-slate-600">Carregando...</p>
-        </div>
-      </div>
-    );
+    return <LoadingContent conteudo="softwares" />;
   }
 
-  if (!software) {
+  if (error || !software) {
     return (
-      <div className="py-12 text-center">
-        <p className="text-slate-600">Software não encontrado</p>
-      </div>
+      <ErrorContent
+        conteudo="Livro"
+        backUrl="/admin/livros"
+        secondaryAction={{
+          label: "Criar novo Artigo",
+          onClick: () => router.push("/admin/livros/novo"),
+        }}
+      />
     );
   }
 

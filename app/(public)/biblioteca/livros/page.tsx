@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import {
   Search,
   Filter,
@@ -23,6 +23,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 
 import { fakeSelectLivros as livros } from "./dadosLivros";
@@ -98,6 +99,8 @@ function OrdenacaoButton({
 // Componente Principal
 export default function LivrosPage() {
   const searchParams = useSearchParams();
+  const [popularesApi, setPopularesApi] = useState<CarouselApi | null>(null);
+  const [novosApi, setNovosApi] = useState<CarouselApi | null>(null);
   // Valores iniciais derivados da URL (sem efeito para evitar cascatas)
   const macroAreaFromParams = useMemo<MacroAreaLivro | null>(() => {
     const macroAreaParam = searchParams.get("macroArea");
@@ -195,11 +198,48 @@ export default function LivrosPage() {
   const populares = useMemo(() => livros.filter((l) => l.popular), []);
   const novos = useMemo(() => livros.filter((l) => l.novo), []);
 
+  // Autoplay contínuo usando requestAnimationFrame (sem timers bloqueantes)
+  useEffect(() => {
+    const AUTOPLAY_MS = 3500;
+    let rafId: number;
+    let lastTime = performance.now();
+
+    const step = (time: number, api: CarouselApi | null) => {
+      if (!api) return;
+      if (time - lastTime >= AUTOPLAY_MS) {
+        api.scrollNext();
+        lastTime = time;
+      }
+      rafId = requestAnimationFrame((t) => step(t, api));
+    };
+
+    rafId = requestAnimationFrame((t) => step(t, popularesApi));
+    return () => cancelAnimationFrame(rafId);
+  }, [popularesApi]);
+
+  useEffect(() => {
+    const AUTOPLAY_MS = 3500;
+    let rafId: number;
+    let lastTime = performance.now();
+
+    const step = (time: number, api: CarouselApi | null) => {
+      if (!api) return;
+      if (time - lastTime >= AUTOPLAY_MS) {
+        api.scrollNext();
+        lastTime = time;
+      }
+      rafId = requestAnimationFrame((t) => step(t, api));
+    };
+
+    rafId = requestAnimationFrame((t) => step(t, novosApi));
+    return () => cancelAnimationFrame(rafId);
+  }, [novosApi]);
+
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
+    <div className="min-h-screen w-full overflow-x-hidden bg-linear-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
       {/* HERO SECTION */}
       <section
-        className="relative overflow-hidden border-b border-blue-100 bg-gradient-to-br from-blue-600/10 via-indigo-600/5 to-purple-600/10 py-12 sm:py-16 lg:py-24"
+        className="relative overflow-hidden border-b border-blue-100 bg-linear-to-br from-blue-600/10 via-indigo-600/5 to-purple-600/10 py-12 sm:py-16 lg:py-24"
         aria-labelledby="hero-title"
       >
         {/* Background Pattern */}
@@ -213,7 +253,7 @@ export default function LivrosPage() {
         </div>
 
         <div className="relative z-10 container mx-auto w-full px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl space-y-6 text-center sm:space-y-8">
+          <div className="mx-auto max-w-170 space-y-6 text-center sm:space-y-8">
             {/* Badge */}
             <div
               className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white px-4 py-2 shadow-lg"
@@ -291,7 +331,7 @@ export default function LivrosPage() {
       </section>
 
       {/* CONTEÚDO PRINCIPAL */}
-      <div className="container mx-auto max-w-7xl space-y-10 px-4 py-8 sm:space-y-12 sm:px-10 sm:py-12 lg:space-y-16 lg:px-16 lg:py-16">
+      <div className="container mx-auto lg:w-5xl max-w-6xl space-y-10 px-4 py-8 sm:space-y-12 sm:px-6 sm:py-12 lg:space-y-16 lg:px-10 lg:py-16">
         {/* CATEGORIAS */}
         <section className="space-y-6" aria-labelledby="categorias-heading">
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -324,7 +364,7 @@ export default function LivrosPage() {
                 <button
                   key={categoria.id}
                   onClick={() => handleCategoriaClick(categoria.id)}
-                  className={`group relative rounded-2xl p-2 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl focus:border-l focus:border-l-gray-600 focus:outline-none sm:p-4 ${
+                  className={`group relative rounded-2xl p-4 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl focus:border-l focus:border-l-gray-600 focus:outline-none sm:p-4 ${
                     isAtivo
                       ? "scale-105 border-t-3 border-b-2 border-t-blue-600 border-b-gray-600 shadow-xl shadow-gray-700/20"
                       : "border border-slate-200 hover:border-gray-300"
@@ -354,7 +394,7 @@ export default function LivrosPage() {
           className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-white p-4 shadow-lg sm:p-5"
           aria-labelledby="ordenacao-heading"
         >
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Filter className="h-5 w-5 text-blue-600" aria-hidden="true" />
             <span
               id="ordenacao-heading"
@@ -414,16 +454,17 @@ export default function LivrosPage() {
 
               <Carousel
                 opts={{
-                  align: "start",
+                  align: "center",
                   loop: true,
                 }}
-                className="w-full"
+                setApi={setPopularesApi}
+                className="w-full  overflow-hidden"
               >
-                <CarouselContent className="-ml-2 md:-ml-4">
+                <CarouselContent className="mx-auto max-w-5xl gap-3 px-2">
                   {populares.map((livro) => (
                     <CarouselItem
                       key={livro.id}
-                      className="basis-full pl-2 sm:basis-1/2 md:pl-4 lg:basis-1/3 xl:basis-1/4"
+                      className="basis-[82%] sm:basis-1/2 lg:basis-[33%] 2xl:basis-1/4 max-w-75"
                     >
                       <LivroCard livro={livro} />
                     </CarouselItem>
@@ -447,16 +488,17 @@ export default function LivrosPage() {
 
               <Carousel
                 opts={{
-                  align: "start",
+                  align: "center",
                   loop: true,
                 }}
-                className="w-full"
+                setApi={setNovosApi}
+                className="w-full overflow-hidden"
               >
-                <CarouselContent className="-ml-2 md:-ml-4">
+                <CarouselContent className="mx-auto max-w-5xl gap-3 px-2">
                   {novos.map((livro) => (
                     <CarouselItem
                       key={livro.id}
-                      className="basis-full pl-2 sm:basis-1/2 md:pl-4 lg:basis-1/3 xl:basis-1/4"
+                      className="basis-[82%] sm:basis-1/2 lg:basis-[33%] 2xl:basis-1/4 max-w-75"
                     >
                       <LivroCard livro={livro} />
                     </CarouselItem>
@@ -486,7 +528,7 @@ export default function LivrosPage() {
 
           {livrosFiltrados.length > 0 ? (
             <div
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5"
+              className="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5"
               role="list"
               aria-label="Lista de livros"
             >

@@ -1,15 +1,22 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
+import { useState } from "react";
+
+type SortablePrimitive = string | number | boolean | Date | null | undefined;
 
 interface Column<T> {
-  key: keyof T | string;
+  key: keyof T;
   label: string;
   sortable?: boolean;
-  render?: (value: any, item: T) => React.ReactNode;
+  render?: (value: T[keyof T], item: T) => React.ReactNode;
 }
 
 interface DataTableProps<T> {
@@ -34,7 +41,7 @@ export function DataTable<T extends { id: string | number }>({
   onRowClick,
 }: DataTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortColumn, setSortColumn] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -44,17 +51,39 @@ export function DataTable<T extends { id: string | number }>({
   const sortedData = [...data].sort((a, b) => {
     if (!sortColumn) return 0;
 
-    const aValue = (a as any)[sortColumn];
-    const bValue = (b as any)[sortColumn];
+    const aValue = a[sortColumn] as SortablePrimitive;
+    const bValue = b[sortColumn] as SortablePrimitive;
 
-    if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
-    if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
+    if (aValue === undefined || aValue === null) return 1;
+    if (bValue === undefined || bValue === null) return -1;
+
+    const toNumber = (value: SortablePrimitive): number | null => {
+      if (typeof value === "number") return value;
+      if (typeof value === "boolean") return value ? 1 : 0;
+      if (value instanceof Date) return value.getTime();
+      return null;
+    };
+
+    const aNumber = toNumber(aValue);
+    const bNumber = toNumber(bValue);
+
+    if (aNumber !== null && bNumber !== null) {
+      if (aNumber < bNumber) return sortDirection === "asc" ? -1 : 1;
+      if (aNumber > bNumber) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    }
+
+    const aText = String(aValue).toLowerCase();
+    const bText = String(bValue).toLowerCase();
+
+    if (aText < bText) return sortDirection === "asc" ? -1 : 1;
+    if (aText > bText) return sortDirection === "asc" ? 1 : -1;
     return 0;
   });
 
   const paginatedData = sortedData.slice(startIndex, endIndex);
 
-  const handleSort = (columnKey: string) => {
+  const handleSort = (columnKey: keyof T) => {
     if (sortColumn === columnKey) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
@@ -108,8 +137,12 @@ export function DataTable<T extends { id: string | number }>({
                 </svg>
               </div>
               <div>
-                <p className="text-lg font-semibold text-slate-900">{emptyMessage}</p>
-                <p className="mt-1 text-sm text-slate-500">{emptyDescription}</p>
+                <p className="text-lg font-semibold text-slate-900">
+                  {emptyMessage}
+                </p>
+                <p className="mt-1 text-sm text-slate-500">
+                  {emptyDescription}
+                </p>
               </div>
             </div>
           </div>
@@ -133,7 +166,7 @@ export function DataTable<T extends { id: string | number }>({
                     >
                       {column.sortable !== false ? (
                         <button
-                          onClick={() => handleSort(String(column.key))}
+                          onClick={() => handleSort(column.key)}
                           className="flex items-center gap-2 transition-colors hover:text-blue-600"
                         >
                           {column.label}
@@ -188,7 +221,9 @@ export function DataTable<T extends { id: string | number }>({
                     key={item.id}
                     onClick={() => onRowClick?.(item)}
                     className={`border-b border-slate-100 transition-colors ${
-                      onRowClick ? "cursor-pointer hover:bg-slate-50" : "hover:bg-slate-50"
+                      onRowClick
+                        ? "cursor-pointer hover:bg-slate-50"
+                        : "hover:bg-slate-50"
                     } ${index % 2 === 0 ? "bg-white" : "bg-slate-50/50"}`}
                   >
                     {renderRow(item)}
@@ -203,7 +238,8 @@ export function DataTable<T extends { id: string | number }>({
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-slate-600">
-            Mostrando {startIndex + 1} a {Math.min(endIndex, data.length)} de {data.length} itens
+            Mostrando {startIndex + 1} a {Math.min(endIndex, data.length)} de{" "}
+            {data.length} itens
           </p>
 
           <div className="flex items-center gap-2">
@@ -241,12 +277,18 @@ export function DataTable<T extends { id: string | number }>({
 
                   return (
                     <div key={page} className="flex items-center gap-1">
-                      {showEllipsis && <span className="px-2 text-slate-400">...</span>}
+                      {showEllipsis && (
+                        <span className="px-2 text-slate-400">...</span>
+                      )}
                       <Button
                         variant={currentPage === page ? "default" : "outline"}
                         size="sm"
                         onClick={() => setCurrentPage(page)}
-                        className={currentPage === page ? "bg-blue-600 hover:bg-blue-700" : ""}
+                        className={
+                          currentPage === page
+                            ? "bg-blue-600 hover:bg-blue-700"
+                            : ""
+                        }
                       >
                         {page}
                       </Button>

@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/admin/DataTable";
 import { StatusBadge } from "@/components/admin/shared/StatusBadge";
@@ -102,9 +103,11 @@ export default function LivrosPage() {
           <>
             <td className="px-4 py-4">
               <div className="flex items-center gap-3">
-                <img
+                <Image
                   src={livro.midia.capa}
                   alt={livro.titulo}
+                  width={48}
+                  height={64}
                   className="h-16 w-12 rounded object-cover"
                 />
                 <div>
@@ -128,7 +131,6 @@ export default function LivrosPage() {
               <ActionMenu
                 onEdit={() => router.push(`/admin/livros/${livro.id}/editar`)}
                 onDelete={() => setDeleteId(livro.id)}
-                item={livro}
               />
             </td>
           </>

@@ -3,10 +3,11 @@
 import { cn } from "@/lib";
 import { Home } from "lucide-react";
 import { buttonVariants } from "../ui/button";
+import Link from "next/link";
 
 export function BtnHome() {
   return (
-    <a
+    <Link
       href="/"
       className={cn(
         buttonVariants({ variant: "outline" }),
@@ -15,6 +16,6 @@ export function BtnHome() {
     >
       <span className="hidden sm:block sm:px-7 font-bold">Voltar à Home</span>{" "}
       <Home className="sm:hidden" />
-    </a>
+    </Link>
   );
 }

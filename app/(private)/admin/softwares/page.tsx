@@ -21,10 +21,6 @@ export default function SoftwaresPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
-  useEffect(() => {
-    loadSoftwares();
-  }, []);
-
   const loadSoftwares = async () => {
     try {
       const data = await listarSoftwares();
@@ -36,12 +32,16 @@ export default function SoftwaresPage() {
     }
   };
 
+  useEffect(() => {
+    loadSoftwares();
+  }, []);
+
   const handleDelete = async () => {
     if (!deleteId) return;
     const id = deleteId;
     setDeleteId(null);
     try {
-      await genericDelete("projetos",id, "admin/softwares");
+      await genericDelete("projetos", id, "admin/softwares");
       loadSoftwares();
     } catch (error) {
       console.error("Erro ao deletar software:", error);
@@ -194,7 +194,7 @@ export default function SoftwaresPage() {
           <>
             <td className="px-6 py-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 text-white">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-br from-purple-500 to-pink-600 text-white">
                   <Code className="h-6 w-6" />
                 </div>
                 <div>

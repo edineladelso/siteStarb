@@ -1,7 +1,5 @@
 "use client";
 
-import { ChevronRight, ChevronUp, MoreHorizontal, type LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import {
   Collapsible,
   CollapsibleContent,
@@ -17,6 +15,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
+import { ChevronRight, ChevronUp, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 
 export function NavMain({

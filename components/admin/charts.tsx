@@ -54,7 +54,7 @@ const MetricCard: React.FC<{
         </p>
       </div>
       <div
-        className={`h-12 w-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-lg`}
+        className={`h-12 w-12 rounded-xl bg-linear-to-br ${color} flex items-center justify-center text-white shadow-lg`}
       >
         {icon}
       </div>

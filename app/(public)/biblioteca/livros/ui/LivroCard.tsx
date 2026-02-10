@@ -44,7 +44,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import type { Livro } from "@/lib/types";
-import { getCategoriaNome, getCategoriaIcon } from "@/lib/domain/areasCategoriasPatern";
+import {
+  getCategoriaNome,
+  getCategoriaIcon,
+} from "@/lib/domain/areasCategoriasPatern";
 import type { MacroAreaLivro } from "@/lib/domain/areas";
 
 // Mapeamento de cores por MacroArea para gradientes
@@ -88,8 +91,10 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
   const formatosDisponiveis = useMemo(() => {
     const formatos = [];
     if (livro.midia.pdf) formatos.push({ tipo: "PDF", url: livro.midia.pdf });
-    if (livro.midia.epub) formatos.push({ tipo: "EPUB", url: livro.midia.epub });
-    if (livro.midia.resumo) formatos.push({ tipo: "Resumo", url: livro.midia.resumo });
+    if (livro.midia.epub)
+      formatos.push({ tipo: "EPUB", url: livro.midia.epub });
+    if (livro.midia.resumo)
+      formatos.push({ tipo: "Resumo", url: livro.midia.resumo });
     return formatos;
   }, [livro.midia]);
 
@@ -104,7 +109,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
   };
 
   return (
-    <Card className="group relative overflow-hidden bg-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2">
+    <Card className="group relative overflow-hidden bg-white shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20">
       {/* Badges de Status */}
       <div
         className="absolute top-2 left-2 z-20 flex flex-wrap gap-1.5"
@@ -134,8 +139,10 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
       {/* Botão de Favorito */}
       <button
         onClick={handleFavoritoToggle}
-        className="absolute top-2 right-2 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-lg transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        aria-label={favorito ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+        className="absolute top-2 right-2 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-lg transition-all hover:scale-110 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+        aria-label={
+          favorito ? "Remover dos favoritos" : "Adicionar aos favoritos"
+        }
         aria-pressed={favorito}
       >
         <Heart
@@ -149,7 +156,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
       {/* Capa do Livro */}
       <CardHeader className="p-0">
         <div
-          className={`relative ${compact ? "h-40 sm:h-48" : "h-48 sm:h-56"} overflow-hidden bg-slate-100`}
+          className={`relative ${compact ? "h-45 sm:h-55" : "h-50 sm:h-56"} overflow-hidden bg-slate-100`}
         >
           {livro.midia.capa ? (
             <>
@@ -157,20 +164,24 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
                 src={livro.midia.capa}
                 alt={`Capa do livro ${livro.titulo}`}
                 fill
-                sizes={compact ? "(max-width: 640px) 50vw, 33vw" : "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"}
+                sizes={
+                  compact
+                    ? "(max-width: 640px) 50vw, 33vw"
+                    : "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                }
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
                 priority={Boolean(livro.popular || livro.novo)}
               />
               {/* Overlay com gradiente para melhor legibilidade */}
               <div
-                className={`absolute inset-0 bg-gradient-to-t ${gradientClasses} opacity-0 transition-opacity duration-300 group-hover:opacity-30`}
+                className={`absolute inset-0 bg-linear-to-t ${gradientClasses} opacity-0 transition-opacity duration-300 group-hover:opacity-30`}
                 aria-hidden="true"
               />
             </>
           ) : (
             // Fallback caso não tenha imagem
             <div
-              className={`flex h-full items-center justify-center bg-gradient-to-br ${gradientClasses} transition-transform duration-500 group-hover:scale-110`}
+              className={`flex h-full items-center justify-center bg-linear-to-br ${gradientClasses} transition-transform duration-500 group-hover:scale-110`}
               role="img"
               aria-label={`Capa genérica de ${categoriaLabel}`}
             >
@@ -192,7 +203,10 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
               variant="secondary"
               className="flex items-center gap-1 border border-white/20 bg-white/90 text-xs font-semibold text-slate-800 shadow-md backdrop-blur-sm"
             >
-              <span className="flex h-4 w-4 items-center justify-center" aria-hidden="true">
+              <span
+                className="flex h-4 w-4 items-center justify-center"
+                aria-hidden="true"
+              >
                 {getCategoriaIcon(categoriaPrincipal)}
               </span>
               {categoriaLabel}
@@ -202,10 +216,10 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
       </CardHeader>
 
       {/* Conteúdo do Card */}
-      <CardContent className="space-y-3 p-4">
+      <CardContent className="space-y-1 px-4">
         <div className="space-y-2">
           <CardTitle
-            className={`${compact ? "text-sm" : "text-base"} line-clamp-2 font-bold leading-tight text-slate-900 transition-colors group-hover:text-blue-700`}
+            className={`${compact ? "text-sm" : "text-base"} line-clamp-2 leading-tight font-bold text-slate-900 transition-colors group-hover:text-blue-700`}
           >
             {livro.titulo}
           </CardTitle>
@@ -225,8 +239,11 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
         </div>
 
         {/* Estatísticas */}
-        <div className="flex items-center justify-between border-t border-slate-100 pt-3">
-          <div className="flex items-center gap-1" title={`Avaliação: ${livro.avaliacao}`}>
+        <div className="flex items-center justify-between border-t border-slate-100 p-2">
+          <div
+            className="flex items-center gap-1"
+            title={`Avaliação: ${livro.avaliacao}`}
+          >
             <Star
               className="h-4 w-4 fill-yellow-400 text-yellow-400"
               aria-hidden="true"
@@ -263,7 +280,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
       </CardContent>
 
       {/* Ações */}
-      <CardFooter className="flex gap-2 border-t border-slate-100 bg-slate-50/50 p-3">
+      <CardFooter className="flex gap-2 border-t border-slate-100 bg-slate-50/50 px-4">
         {/* Botão Info/Detalhes */}
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -282,73 +299,105 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
               <AlertDialogTitle className="text-xl font-bold text-slate-900">
                 {livro.titulo}
               </AlertDialogTitle>
-              <AlertDialogDescription className="space-y-4 pt-4 text-sm leading-relaxed">
-                <p className="text-slate-700">{livro.descricao}</p>
+              <AlertDialogDescription asChild>
+                <div className="space-y-4 pt-4 text-sm leading-relaxed text-slate-700">
+                  <p>{livro.descricao}</p>
 
-                <div className="grid gap-2 pt-2">
-                  <div className="flex items-start gap-3">
-                    <User className="mt-0.5 h-5 w-5 shrink-0 text-blue-950" aria-hidden="true" />
-                    <div>
-                      <strong className="text-slate-900">Autor:</strong>
-                      <p className="text-slate-700">{livro.autor}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Tag className="mt-0.5 h-5 w-5 shrink-0 text-blue-950" aria-hidden="true" />
-                    <div>
-                      <strong className="text-slate-900">Categorias:</strong>
-                      <p className="text-slate-700">
-                        {livro.macroAreas.map((area) => getCategoriaNome(area)).join(", ")}
-                      </p>
-                    </div>
-                  </div>
-
-                  {livro.detalhes?.numeroPaginas && (
+                  <div className="grid gap-2 pt-2">
                     <div className="flex items-start gap-3">
-                      <FileText className="mt-0.5 h-5 w-5 shrink-0 text-blue-950" aria-hidden="true" />
+                      <User
+                        className="mt-0.5 h-5 w-5 shrink-0 text-blue-950"
+                        aria-hidden="true"
+                      />
                       <div>
-                        <strong className="text-slate-900">Páginas:</strong>
-                        <p className="text-slate-700">{livro.detalhes.numeroPaginas}</p>
+                        <strong className="text-slate-900">Autor:</strong>
+                        <p className="text-slate-700">{livro.autor}</p>
                       </div>
                     </div>
-                  )}
 
-                  {livro.anoPublicacao && (
                     <div className="flex items-start gap-3">
-                      <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-blue-950" aria-hidden="true" />
+                      <Tag
+                        className="mt-0.5 h-5 w-5 shrink-0 text-blue-950"
+                        aria-hidden="true"
+                      />
                       <div>
-                        <strong className="text-slate-900">Ano:</strong>
-                        <p className="text-slate-700">{livro.anoPublicacao}</p>
+                        <strong className="text-slate-900">Categorias:</strong>
+                        <p className="text-slate-700">
+                          {livro.macroAreas
+                            .map((area) => getCategoriaNome(area))
+                            .join(", ")}
+                        </p>
                       </div>
                     </div>
-                  )}
 
-                  {livro.idioma && (
-                    <div className="flex items-start gap-3">
-                      <span className="mt-0.5 text-lg text-blue-950" aria-hidden="true">🌐</span>
-                      <div>
-                        <strong className="text-slate-900">Idioma:</strong>
-                        <p className="text-slate-700">{livro.idioma}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {livro.tags && livro.tags.length > 0 && (
-                    <div className="flex items-start gap-3">
-                      <Tag className="mt-0.5 h-5 w-5 shrink-0 text-blue-950" aria-hidden="true" />
-                      <div>
-                        <strong className="text-slate-900">Tags:</strong>
-                        <div className="mt-1 flex flex-wrap gap-1">
-                          {livro.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
+                    {livro.detalhes?.numeroPaginas && (
+                      <div className="flex items-start gap-3">
+                        <FileText
+                          className="mt-0.5 h-5 w-5 shrink-0 text-blue-950"
+                          aria-hidden="true"
+                        />
+                        <div>
+                          <strong className="text-slate-900">Páginas:</strong>
+                          <p className="text-slate-700">
+                            {livro.detalhes.numeroPaginas}
+                          </p>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+
+                    {livro.anoPublicacao && (
+                      <div className="flex items-start gap-3">
+                        <BookOpen
+                          className="mt-0.5 h-5 w-5 shrink-0 text-blue-950"
+                          aria-hidden="true"
+                        />
+                        <div>
+                          <strong className="text-slate-900">Ano:</strong>
+                          <p className="text-slate-700">
+                            {livro.anoPublicacao}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {livro.idioma && (
+                      <div className="flex items-start gap-3">
+                        <span
+                          className="mt-0.5 text-lg text-blue-950"
+                          aria-hidden="true"
+                        >
+                          🌐
+                        </span>
+                        <div>
+                          <strong className="text-slate-900">Idioma:</strong>
+                          <p className="text-slate-700">{livro.idioma}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {livro.tags && livro.tags.length > 0 && (
+                      <div className="flex items-start gap-3">
+                        <Tag
+                          className="mt-0.5 h-5 w-5 shrink-0 text-blue-950"
+                          aria-hidden="true"
+                        />
+                        <div>
+                          <strong className="text-slate-900">Tags:</strong>
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {livro.tags.map((tag) => (
+                              <Badge
+                                key={tag}
+                                variant="secondary"
+                                className="text-xs"
+                              >
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </AlertDialogDescription>
             </AlertDialogHeader>
@@ -363,7 +412,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
         {/* Botão Ver/Ler */}
         <Button
           size="sm"
-          className="flex-1 gap-1.5 bg-blue-600 text-xs shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="flex-1 gap-1.5 bg-slate-700 text-xs shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           aria-label={`Ler ${livro.titulo}`}
         >
           <Eye className="h-3.5 w-3.5" aria-hidden="true" />
@@ -376,8 +425,8 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
             <DropdownMenuTrigger asChild>
               <Button
                 size="sm"
-                variant="secondary"
-                className="gap-1.5 px-3 shadow-md hover:bg-slate-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                variant="outline"
+                className="gap-1.5 px-3 flex-1 hover:bg-slate-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 aria-label="Opções de download"
               >
                 <Download className="h-3.5 w-3.5" aria-hidden="true" />
@@ -386,7 +435,9 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-48 border-slate-200 bottom-0 shadow-xl"
+              side="top"
+              sideOffset={8}
+              className="w-48 border-slate-200 shadow-xl"
             >
               <div className="px-2 py-1.5 text-xs font-semibold text-slate-500">
                 Formatos Disponíveis
@@ -396,7 +447,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
                 <DropdownMenuItem
                   key={formato.tipo}
                   onClick={() => handleDownload(formato.url, formato.tipo)}
-                  className="cursor-pointer buttom-0 gap-2 text-sm focus:bg-blue-50 focus:text-blue-700"
+                  className="cursor-pointer top-0 gap-2 text-sm focus:bg-blue-50 focus:text-blue-700"
                 >
                   <FileText className="h-4 w-4" aria-hidden="true" />
                   {formato.tipo}

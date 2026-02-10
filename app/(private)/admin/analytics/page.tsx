@@ -1,6 +1,6 @@
 // 1. Importar o componente
 
-import AnalyticsService from "@/components/admin/AnaliticsServices";
+// import AnalyticsService from "@/components/admin/AnaliticsServices";
 import AnalyticsComponent from "@/components/admin/AnalyticsComponents";
 
 
@@ -10,8 +10,8 @@ export default function AnalyticsPage() {
 }
 
 // 3. Usar o serviço diretamente
-const service = AnalyticsService.getInstance();
-const data = await service.getAnalyticsData({
-  period: 30,
-  contentType: 'all'
-});
+// const service = AnalyticsService.getInstance();
+// const data = await service.getAnalyticsData({
+//   period: 30,
+//   contentType: 'all'
+// });

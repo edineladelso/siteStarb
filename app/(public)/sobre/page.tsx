@@ -306,8 +306,8 @@ export default function SobrePage() {
 
               <div className="rounded-2xl border-l-4 border-blue-600 bg-linear-to-br from-blue-50 to-indigo-50 p-6 shadow-lg sm:p-8">
                 <blockquote className="mb-6 text-lg text-slate-700 italic sm:text-xl">
-                  "Conhecimento só tem valor quando é estruturado, compreendido
-                  e aplicável."
+                  &quot;Conhecimento só tem valor quando é estruturado, compreendido
+                  e aplicável.&quot;
                 </blockquote>
 
                 <div className="space-y-3">

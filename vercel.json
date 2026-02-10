@@ -1,7 +1,3 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "crons": [
-    {"path": "/api/keep-neon-awake",
-  "schedule": "*/5 * * * *"}
-  ]
+  "$schema": "https://openapi.vercel.sh/vercel.json"
 }

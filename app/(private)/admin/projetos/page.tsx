@@ -21,10 +21,6 @@ export default function ProjetosPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
-  useEffect(() => {
-    loadProjetos();
-  }, []);
-
   const loadProjetos = async () => {
     try {
       const data = await listarProjetos();
@@ -36,12 +32,16 @@ export default function ProjetosPage() {
     }
   };
 
+  useEffect(() => {
+    loadProjetos();
+  }, []);
+
   const handleDelete = async () => {
     if (!deleteId) return;
     const id = deleteId;
     setDeleteId(null);
     try {
-      await genericDelete(projetos,id, "");
+      await genericDelete(projetos, id, "");
       loadProjetos();
     } catch (error) {
       console.error("Erro ao deletar projeto:", error);
@@ -145,7 +145,7 @@ export default function ProjetosPage() {
           <>
             <td className="px-6 py-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 text-white">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-br from-green-500 to-emerald-600 text-white">
                   <Wrench className="h-6 w-6" />
                 </div>
                 <div>

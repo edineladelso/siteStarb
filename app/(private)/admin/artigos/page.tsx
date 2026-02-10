@@ -1,16 +1,16 @@
 // ==================== app/admin/artigos/page.tsx ====================
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/admin/DataTable";
 import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, FileText } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { listarArtigos } from "@/lib/actions";
 import type { Artigo, ContentStatus } from "@/lib/types";
-import { listarArtigos, genericDelete } from "@/lib/actions";
+import { FileText, Plus, Search } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { ActionMenu } from "@/components/admin/shared/ActionMenu";
 import { ConfirmationDialog } from "@/components/admin/shared/ConfirmationDialog";
@@ -39,7 +39,6 @@ export default function ArtigosPage() {
 
   const handleDelete = async () => {
     if (!deleteId) return;
-    const id = deleteId;
     setDeleteId(null);
     try {
       //await genericDelete(id);
@@ -67,7 +66,7 @@ export default function ArtigosPage() {
           </p>
         </div>
         <Link href="/admin/artigos/novo">
-          <Button className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700">
+          <Button className="bg-linear-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700">
             <Plus className="mr-2 h-4 w-4" />
             Adicionar Artigo
           </Button>
@@ -196,7 +195,7 @@ export default function ArtigosPage() {
           <>
             <td className="px-6 py-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-red-600 text-white">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-br from-orange-500 to-red-600 text-white">
                   <FileText className="h-6 w-6" />
                 </div>
                 <div>

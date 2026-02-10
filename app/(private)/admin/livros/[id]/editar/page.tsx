@@ -16,12 +16,6 @@ export default function EditarLivroPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    if (params?.id) {
-      loadLivro(Number(params.id));
-    }
-  }, [params.id]);
-
   const loadLivro = async (id: number) => {
     try {
       if (isNaN(id)) throw new Error("ID inválido");
@@ -40,6 +34,12 @@ export default function EditarLivroPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (params?.id) {
+      loadLivro(Number(params.id));
+    }
+  }, [params.id]);
 
   if (loading) {
     return <LoadingContent conteudo="livros" />;
