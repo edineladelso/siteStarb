@@ -10,12 +10,14 @@ export default function AdminLayout({
 }) {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full ">
+      <div className="bg-sidebar-accent flex min-h-screen w-full">
         <AdminSidebar />
         <SidebarInset>
-          <div className="flex min-h-screen  flex-col">
+          <div className="flex min-h-screen flex-col">
             <AdminHeader />
-            <main className="flex justify-center my-10 flex-1">{children}</main>
+            <main className="my-10 flex flex-1 justify-center px-6 sm:px-10">
+              {children}
+            </main>
           </div>
         </SidebarInset>
       </div>

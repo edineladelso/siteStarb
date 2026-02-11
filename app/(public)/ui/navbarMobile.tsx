@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  booksCategories,
+  conteudoBiblioteca,
   documentationLinks,
   homeMenuItems,
   quickMenuItems,
@@ -88,20 +88,20 @@ export function NavbarMobile() {
         <Collapsible open={openBooks} onOpenChange={setOpenBooks}>
           <CollapsibleTrigger asChild>
             <div className="hover:bg-accent flex cursor-pointer items-center justify-between rounded-sm px-2 py-2">
-              <span className="text-sm font-medium">Livros</span>
+              <span className="text-sm font-medium">Biblioteca</span>
               <ChevronDown className="h-4 w-4 transition-transform" />
             </div>
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-1 rounded p-2 shadow">
-            {booksCategories.map((book) => (
+            {conteudoBiblioteca.map((conteudo) => (
               <Link
-                key={book.href}
-                href={book.href}
+                key={conteudo.href}
+                href={conteudo.href}
                 className="hover:bg-accent flex flex-col gap-1 rounded-sm px-2 py-2 text-sm"
               >
-                <div className="text-xs font-medium">{book.title}</div>
+                <div className="text-xs font-medium">{conteudo.title}</div>
                 <div className="text-muted-foreground text-xs">
-                  {book.description}
+                  {conteudo.description}
                 </div>
               </Link>
             ))}

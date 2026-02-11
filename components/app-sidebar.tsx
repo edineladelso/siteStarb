@@ -218,19 +218,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <ServiceSwitcher services={data.services} />
       </SidebarHeader>
-      <SidebarContent className="">
+      <SidebarContent >
         <NavMain
           className1={cn(
             "overflow-y-scroll scroll",
             isCollapsed
-              ? "h-[50vh]"
-              : "max-h-[60vh]",
+              ? "h-[50vh] sm:mt-10"
+              : "sm:max-h-[60vh]",
           )}
           className2="text-sidebar-foreground/70"
           colorIcon={cn(isCollapsed && "text-sidebar-foreground/70")}
           items={data.navMain}
         />
-        <Separator />
+        <Separator className={cn(isCollapsed && "sm:hidden")} />
         <NavProjects
           className2="text-sidebar-foreground/70"
           projects={data.projects}

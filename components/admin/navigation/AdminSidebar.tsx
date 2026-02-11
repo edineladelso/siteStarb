@@ -15,12 +15,18 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Command } from "lucide-react";
+import { Command, Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { ReactElement } from "react";
 
 // ==================== ADMIN SIDEBAR ====================
-const menuItems = [
+const menuItems: {
+  title: string;
+  href: string;
+  icon: ReactElement;
+  badge?: string;
+}[] = [
   {
     title: "Dashboard",
     href: "/admin",
@@ -39,6 +45,11 @@ const menuItems = [
         />
       </svg>
     ),
+  },
+  {
+    title: "Home",
+    href: "/",
+    icon: <Home />,
   },
   {
     title: "Livros",

@@ -59,7 +59,7 @@ export function NavMain({
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
                   tooltip={item.title}
-                  className={cn("[&>svg]:size-4.5", className2)}
+                  className={cn("", className2)}
                 >
                   {item.icon && <item.icon className={cn(colorIcon)} />}
                   <span className="text-sm">{item.title}</span>
@@ -68,15 +68,17 @@ export function NavMain({
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </a>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
+                  {item.items?.map(
+                    (subItem: { title: string; url: string }) => (
+                      <SidebarMenuSubItem key={subItem.title}>
+                        <SidebarMenuSubButton asChild>
+                          <a href={subItem.url}>
+                            <span>{subItem.title}</span>
+                          </a>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ),
+                  )}
                 </SidebarMenuSub>
               </CollapsibleContent>
             </SidebarMenuItem>

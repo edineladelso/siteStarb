@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronsUpDown, Plus } from "lucide-react"
+import { ChevronsUpDown, Plus } from "lucide-react";
+import * as React from "react";
 
 import {
   DropdownMenu,
@@ -11,29 +11,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export function ServiceSwitcher({
   services,
 }: {
   services: {
-    name: string
-    logo: React.ElementType
-    plan: string
-    href: string
-  }[]
+    name: string;
+    logo: React.ElementType;
+    plan: string;
+    href: string;
+  }[];
 }) {
-  const { isMobile } = useSidebar()
-  const [activeServices, setActiveTeam] = React.useState(services[0])
+  const { isMobile } = useSidebar();
+  const [activeServices, setActiveTeam] = React.useState(services[0]);
 
   if (!activeServices) {
-    return null
+    return null;
   }
 
   return (
@@ -45,11 +45,13 @@ export function ServiceSwitcher({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <activeServices.logo className="size-4" />
+              <div className="text-sidebar-primary ml-1 flex aspect-square size-8 items-center justify-center rounded-lg border">
+                <activeServices.logo className="size-5.5" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeServices.name}</span>
+                <span className="truncate font-medium">
+                  {activeServices.name}
+                </span>
                 <span className="truncate text-xs">{activeServices.plan}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -82,11 +84,13 @@ export function ServiceSwitcher({
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
               </div>
-              <div className="text-muted-foreground font-medium">Adicionar Serviço</div>
+              <div className="text-muted-foreground font-medium">
+                Adicionar Serviço
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

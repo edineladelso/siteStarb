@@ -11,10 +11,11 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import { Search } from "lucide-react";
+import Link from "next/link";
 import * as React from "react";
-import { Button } from "../ui/button";
+import { Button } from "../../../components/ui/button";
 
-export default function Pesquisa() {
+export default function Pesquisa({ compact = false }: { compact?: boolean }) {
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -32,29 +33,46 @@ export default function Pesquisa() {
   return (
     <>
       <Button
-        variant={"outline"}
+        variant="outline"
         onClick={() => setOpen(true)}
-        size={"sm"}
-        className="bg-white border-none text-muted-foreground hover:text-foreground flex items-center justify-between gap-2 shadow shadow-gray-400/55 transition-colors sm:w-70"
+        size="sm"
+        className={`text-muted-foreground hover:text-foreground flex items-center justify-between gap-2 border-none bg-white shadow shadow-gray-400/55 transition-colors ${
+          compact ? "w-10 justify-center px-2 sm:w-10" : "sm:w-64"
+        }`}
+        aria-label="Abrir pesquisa"
       >
         <div className="flex items-center gap-2">
-          <Search className="h-6 w-6" />
-          <span className="hidden text-sm font-medium lg:inline-flex">
-            Pesquisar...
-          </span>
+          <Search className="h-5 w-5" />
+          {!compact && (
+            <span className="hidden text-sm font-medium lg:inline-flex">
+              Pesquisar...
+            </span>
+          )}
         </div>
-        <kbd className="pointer-events-none hidden h-5 items-center gap-1 rounded bg-gray-700 p-2 font-mono text-[10px] font-medium text-white opacity-100 select-none lg:inline-flex">
-          <span className="text-xs">Ctrl+K</span>
-        </kbd>
+        {!compact && (
+          <kbd className="pointer-events-none hidden h-5 items-center gap-1 rounded bg-gray-700 px-2 font-mono text-[10px] font-medium text-white lg:inline-flex">
+            <span className="text-xs">Ctrl+K</span>
+          </kbd>
+        )}
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog
+        className="top-2 mt-10 translate-y-1 transform"
+        open={open}
+        onOpenChange={setOpen}
+      >
         <CommandInput placeholder="Comando ou pesquisa..." />
         <CommandList>
           <CommandEmpty>Sem resultado encontrado.</CommandEmpty>
           <CommandGroup heading="Sugestões">
-            <CommandItem>Matematica</CommandItem>
-            <CommandItem>Engenharia</CommandItem>
-            <CommandItem>Software</CommandItem>
+            <CommandItem>
+              <Link href="/biblioteca/livros">Livros</Link>
+            </CommandItem>
+            <CommandItem>
+              <Link href="/biblioteca/artigos">Artigos</Link>
+            </CommandItem>
+            <CommandItem>
+              <Link href="/academico/softwares">Softwares</Link>
+            </CommandItem>
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Definições">

@@ -34,7 +34,7 @@ import Link from "next/link";
 
 const StarBHomePage = () => {
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen">
       {/* Navigation */}
 
       <main className="mx-auto max-w-7xl space-y-16 px-4 py-8 sm:space-y-24 sm:px-12 sm:py-12 lg:space-y-28 lg:px-16 lg:py-16">
@@ -168,7 +168,7 @@ const StarBHomePage = () => {
                   </div>
                   <div className="h-3 overflow-hidden rounded-full border border-blue-100 bg-white/60 shadow-sm backdrop-blur-sm">
                     <div
-                      className="animate-progress h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"
+                      className="animate-progress h-full rounded-full bg-linear-to-r from-blue-500 via-indigo-500 to-purple-500"
                       style={{ width: "75%" }}
                     ></div>
                   </div>
@@ -180,7 +180,7 @@ const StarBHomePage = () => {
                 {/* Mini cards de destaque */}
                 <div className="grid grid-cols-3 gap-3">
                   <div className="rounded-xl border border-blue-100 bg-linear-to-br from-blue-50 to-indigo-50 p-4 text-center shadow-sm transition-shadow hover:shadow-md">
-                    <div className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-2xl font-bold text-transparent">
+                    <div className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-2xl font-bold text-transparent">
                       4.9
                     </div>
                     <div className="mt-1 mb-1 flex justify-center">
@@ -190,7 +190,7 @@ const StarBHomePage = () => {
                   </div>
 
                   <div className="rounded-xl border border-indigo-100 bg-linear-to-br from-indigo-50 to-purple-50 p-4 text-center shadow-sm transition-shadow hover:shadow-md">
-                    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
+                    <div className="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
                       98%
                     </div>
                     <div className="mt-2 flex justify-center">
@@ -210,7 +210,7 @@ const StarBHomePage = () => {
                   </div>
 
                   <div className="rounded-xl border border-purple-100 bg-linear-to-br from-purple-50 to-pink-50 p-4 text-center shadow-sm transition-shadow hover:shadow-md">
-                    <div className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-2xl font-bold text-transparent">
+                    <div className="bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-2xl font-bold text-transparent">
                       24h
                     </div>
                     <div className="mt-2 flex justify-center">
@@ -232,7 +232,7 @@ const StarBHomePage = () => {
 
                 {/* Linha decorativa com ícones */}
                 <div className="flex items-center justify-center gap-4 pt-4">
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
+                  <div className="h-px flex-1 bg-linear-to-r from-transparent via-blue-200 to-transparent"></div>
                   <div className="flex gap-2">
                     <div className="h-2 w-2 animate-bounce rounded-full bg-blue-500"></div>
                     <div
@@ -244,7 +244,7 @@ const StarBHomePage = () => {
                       style={{ animationDelay: "0.2s" }}
                     ></div>
                   </div>
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
+                  <div className="h-px flex-1 bg-linear-to-r from-transparent via-blue-200 to-transparent"></div>
                 </div>
               </div>
             </div>

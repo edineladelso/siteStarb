@@ -14,8 +14,8 @@ import Link from "next/link";
 // ==================== ADMIN HEADER ====================
 export function AdminHeader() {
   return (
-    <header className="sticky w-full top-0 z-30 h-16 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
-      <div className="flex h-full items-center justify-between px-4 sm:px-6 gap-3">
+    <header className="bg-sidebar/95 sticky top-0 z-30 h-16 w-full border-b border-slate-200 backdrop-blur-sm">
+      <div className="flex h-full items-center justify-between gap-3 px-4 sm:px-6">
         {/* Breadcrumb */}
         <div className="flex items-center gap-3 text-sm">
           <SidebarTrigger />
@@ -209,4 +209,3 @@ export function AdminHeader() {
     </header>
   );
 }
-

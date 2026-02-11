@@ -18,45 +18,18 @@ export interface ThemeOption {
   icon: "circle" | "circle-check";
 }
 
-export const booksCategories: MenuItem[] = [
+export const conteudoBiblioteca: MenuItem[] = [
   {
-    title: "Matematica",
-    href: "/livros/matematica",
+    title: "Livros",
+    href: "/biblioteca/livros",
     description:
-      "Livros e materiais sobre diversos ramos da matemática, desde álgebra, cálculo avançado até analise matemática.",
+      "Livros e materiais sobre diversos ramos da ciência e engenharia",
   },
   {
-    title: "Física",
-    href: "/livros/fisica",
+    title: "Artigos",
+    href: "/biblioteca/artigos",
     description:
-      "Livros e materiais sobre diversos ramos da física, desde mecânica clássica até física quântica.",
-  },
-  {
-    title: "Mecanica",
-    href: "/livros/mecanica",
-    description:
-      "Livros e materiais sobre diversos ramos da mecânica, desde estática até dinâmica.",
-  },
-  {
-    title: "Eletrotécnica",
-    href: "/livros/eletrotecnica",
-    description: "Livros e materiais sobre diversos ramos da eletrotécnica.",
-  },
-  {
-    title: "Automação e controle",
-    href: "/livros/automacaoecontrole",
-    description:
-      "Livros e materiais sobre diversos ramos da automação e controle.",
-  },
-  {
-    title: "Programação",
-    href: "/livros/programacao",
-    description: "Livros e materiais sobre diversos ramos da programação.",
-  },
-  {
-    title: "Engenharia",
-    href: "/livros/engenharia",
-    description: "Livros e materiais sobre diversos ramos da engenharia.",
+      "Artigos e materiais sobre diversos ramos da ciência e engenharia",
   },
 ];
 
