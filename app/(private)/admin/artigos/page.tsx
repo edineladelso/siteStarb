@@ -58,7 +58,7 @@ export default function ArtigosPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Artigos</h1>
           <p className="mt-1 text-slate-600">
@@ -66,7 +66,7 @@ export default function ArtigosPage() {
           </p>
         </div>
         <Link href="/admin/artigos/novo">
-          <Button className="bg-linear-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700">
+          <Button className="w-full bg-linear-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Adicionar Artigo
           </Button>
@@ -88,7 +88,7 @@ export default function ArtigosPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-lg border border-slate-200 bg-white p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100">
