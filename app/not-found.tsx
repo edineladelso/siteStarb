@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function NotFound() {
   return (
-    <main className="font m-auto mt-10 mb-0 flex min-h-screen max-w-5xl flex-col items-center gap-8 text-base max-sm:text-sm md:text-2xl">
+    <main className="font m-auto mb-0 flex min-h-screen max-w-5xl flex-col items-center justify-center gap-16 text-base max-sm:text-sm md:text-2xl">
       <div className="flex flex-row items-center justify-center space-x-2 font-sans font-bold md:gap-3">
         <p>Ops!</p>
         <p className="font-heading text-blue-700 md:py-3">Erro 404</p>

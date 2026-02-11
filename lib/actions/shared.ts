@@ -12,7 +12,7 @@ import { revalidatePath } from "next/cache";
  * @param id - O ID numérico do registro
  * @param path - O caminho do Next.js para revalidar o cache (ex: "/biblioteca")
  */
-export async function genericDelete<T extends { id: number }>(
+export async function genericDelete(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   table: any, // Usamos any aqui para flexibilidade com as tabelas do Drizzle
   id: number,

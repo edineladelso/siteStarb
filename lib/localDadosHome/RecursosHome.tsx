@@ -9,19 +9,18 @@ export const recursosHome = [
     icon: <BookIcon />,
     badge: "500+ Livros",
   },
+    {
+    titulo: "Artigos Científicos",
+    descricao: "Papers, pesquisas e estudos técnicos comentados e organizados",
+    href: "/artigos",
+    icon: <AcademicIcon />,
+  },
   {
     titulo: "Softwares Profissionais",
     descricao:
       "Tutoriais e documentação de ferramentas como AutoCAD, MATLAB, SolidWorks",
-    href: "/softwares",
+    href: "/academia/softwares",
     icon: <CodeIcon />,
-  },
-  {
-    titulo: "Artigos Científicos",
-    descricao:
-      "Papers, pesquisas e estudos técnicos comentados e organizados",
-    href: "/artigos",
-    icon: <AcademicIcon />,
   },
   {
     titulo: "IA & Machine Learning",
@@ -32,4 +31,3 @@ export const recursosHome = [
     badge: "Novo",
   },
 ];
-

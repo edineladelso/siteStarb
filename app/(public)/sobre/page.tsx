@@ -1,6 +1,17 @@
 "use client";
 
 import imgCarousel from "@/components/property/carouselProperty";
+import {
+  AcademicIcon,
+  AtualizadoIcon,
+  ProjectIcon,
+  VerificadoIcon,
+} from "@/lib/localDadosHome/IconesHome";
+import {
+  BadgeHelp,
+  BookOpenText,
+  ChevronRight
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,37 +23,56 @@ const libraryLinks = [
     description: "Livros técnicos de engenharia",
   },
   {
-    title: "Programação",
-    href: "/biblioteca/programacao",
+    title: "Livros",
+    href: "/biblioteca/livros",
     description: "Desenvolvimento de software",
   },
   {
     title: "IA & ML",
-    href: "/biblioteca/ia",
+    href: "/biblioteca/livros/ia",
     description: "Inteligência artificial",
+  },
+  {
+    title: "Artigos",
+    href: "/biblioteca/artigos",
+    description: "Publicações científicas",
   },
 ];
 
 const academicLinks = [
   {
     title: "TCC",
-    href: "/academico/tcc",
+    href: "/academia/tcc",
     description: "Trabalhos de conclusão",
   },
   {
     title: "Dissertações",
-    href: "/academico/dissertacoes",
+    href: "/academia/dissertacoes",
     description: "Mestrado e doutorado",
   },
   {
-    title: "Artigos",
-    href: "/academico/artigos",
-    description: "Publicações científicas",
+    title: "Cursos",
+    href: "/academia/Cursos",
+    description: "Aprenda com cursos didáticos",
+  },
+  {
+    title: "Softwares",
+    href: "/academia/softwares",
+    description: "Tutoriais, instalação e uso",
   },
 ];
 
 const projectLinks = [
-  { title: "IoT", href: "/projetos/iot", description: "Internet das Coisas" },
+  {
+    title: "Programação",
+    href: "/projetos/programacao",
+    description: "Web, Nativa, Microcontroladores",
+  },
+  {
+    title: "IoT",
+    href: "/projetos/iot",
+    description: "Internet das Coisas",
+  },
   {
     title: "Automação",
     href: "/projetos/automacao",
@@ -65,9 +95,9 @@ const philosophyPrinciples = [
 export default function SobrePage() {
   const imgSObre = imgCarousel.find((e) => e.value === "imgMeca2")!;
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
+    <div className="min-h-screen w-full bg-linear-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden border-b border-blue-100 bg-linear-to-br from-blue-600/10 via-indigo-600/5 to-purple-600/10">
+      <section className="relative px-2 overflow-hidden border-b border-blue-100 bg-linear-to-br from-blue-600/10 via-indigo-600/5 to-purple-600/10">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-5">
           <div
@@ -164,21 +194,15 @@ export default function SobrePage() {
       </section>
 
       {/* CONTEÚDO PRINCIPAL */}
-      <div className="container mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+      <div className="container overflow-hidden mx-auto max-w-6xl px-5 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         <div className="grid gap-8 lg:grid-cols-3 lg:gap-12">
           {/* CONTEÚDO PRINCIPAL */}
           <div className="space-y-10 sm:space-y-12 lg:col-span-2">
             {/* O QUE VOCÊ ENCONTRA */}
             <section className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-blue-500 to-indigo-600">
-                  <svg
-                    className="h-6 w-6 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-                  </svg>
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-slate-900">
+                  <BadgeHelp size={40} />
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
                   O que você encontra aqui
@@ -198,14 +222,8 @@ export default function SobrePage() {
             {/* BIBLIOTECA TÉCNICA */}
             <section className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 to-purple-600">
-                  <svg
-                    className="h-6 w-6 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-                  </svg>
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-slate-900">
+                  <BookOpenText size={40} />
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
                   Biblioteca Técnica
@@ -224,14 +242,8 @@ export default function SobrePage() {
             {/* PRODUÇÃO ACADÊMICA */}
             <section className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-purple-500 to-pink-600">
-                  <svg
-                    className="h-6 w-6 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-                  </svg>
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-slate-900 text-shadow-slate-800">
+                  <AcademicIcon size={40} />
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
                   Produção Acadêmica
@@ -250,18 +262,8 @@ export default function SobrePage() {
             {/* ESPAÇO DE PROJETOS */}
             <section className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-green-500 to-teal-600">
-                  <svg
-                    className="h-6 w-6 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-slate-900">
+                  <ProjectIcon size={40} />
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
                   Espaço de Projetos
@@ -280,18 +282,8 @@ export default function SobrePage() {
             {/* FILOSOFIA */}
             <section className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-amber-500 to-orange-600">
-                  <svg
-                    className="h-6 w-6 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-slate-900">
+                  <AtualizadoIcon size={40} className="text-slate-900" />
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
                   Filosofia da Star B
@@ -300,24 +292,14 @@ export default function SobrePage() {
 
               <div className="rounded-2xl border-l-4 border-blue-600 bg-linear-to-br from-blue-50 to-indigo-50 p-6 shadow-lg sm:p-8">
                 <blockquote className="mb-6 text-lg text-slate-700 italic sm:text-xl">
-                  &quot;Conhecimento só tem valor quando é estruturado, compreendido
-                  e aplicável.&quot;
+                  &quot;Conhecimento só tem valor quando é estruturado,
+                  compreendido e aplicável.&quot;
                 </blockquote>
 
                 <div className="space-y-3">
                   {philosophyPrinciples.map((principle, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <svg
-                        className="mt-0.5 h-5 w-5 shrink-0 text-blue-600"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                    <div key={index} className="flex items-center gap-3">
+                      <VerificadoIcon size={5} />
                       <p className="text-base text-slate-700">{principle}</p>
                     </div>
                   ))}
@@ -330,20 +312,11 @@ export default function SobrePage() {
           <aside className="space-y-6 lg:col-span-1">
             {/* Imagem destacada */}
             <div className="sticky top-24 space-y-6">
-              <div className="rounded-2xl border border-slate-100 shadow-xl">
-                {/* <div className="aspect-4/3 bg-linear-to-br from-blue-400 via-indigo-500 to-purple-600 flex items-center justify-center">
-                  {/* Placeholder - substitua com sua imagem real *
-                  <div className="text-center text-white p-6">
-                    <svg className="w-20 h-20 mx-auto mb-3 opacity-90" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                    <p className="text-sm font-semibold">Mecatrônica</p>
-                  </div>
-                </div> */}
+              <div className="rounded-2xl border border-slate-100 shadow shadow-gray-400">
                 <Image
                   src={imgSObre.src}
                   alt={imgSObre.alt}
-                  className="h-auto w-full scale-132 transform rounded-2xl object-cover transition-all duration-500 hover:scale-110"
+                  className="h-auto w-full scale-132 transform rounded-2xl object-cover transition-all duration-500 hover:scale-105"
                 />
               </div>
 
@@ -422,19 +395,9 @@ function LinkGrid({
           href={item.href}
           className="group block rounded-xl border-2 border-slate-100 bg-white p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl"
         >
-          <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-blue-500 to-indigo-600">
-              <svg
-                className="h-5 w-5 text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
+          <div className="flex items-center gap-4">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg text-slate-900 shadow shadow-gray-400 hover:shadow-blue-600">
+              <ChevronRight size={40} />
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="mb-1 text-base font-semibold text-slate-900 transition-colors group-hover:text-blue-700">

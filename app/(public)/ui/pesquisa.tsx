@@ -71,7 +71,7 @@ export default function Pesquisa({ compact = false }: { compact?: boolean }) {
               <Link href="/biblioteca/artigos">Artigos</Link>
             </CommandItem>
             <CommandItem>
-              <Link href="/academico/softwares">Softwares</Link>
+              <Link href="/academia/softwares">Softwares</Link>
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />

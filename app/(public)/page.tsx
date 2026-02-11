@@ -34,7 +34,7 @@ import Link from "next/link";
 
 const StarBHomePage = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen w-full">
       {/* Navigation */}
 
       <main className="mx-auto max-w-7xl space-y-16 px-4 py-8 sm:space-y-24 sm:px-12 sm:py-12 lg:space-y-28 lg:px-16 lg:py-16">
@@ -285,7 +285,7 @@ const StarBHomePage = () => {
                       </span>
                     )}
 
-                    <div className="mb-4 transform text-blue-600 transition-transform group-hover:scale-110">
+                    <div className="mb-4 transform text-blue-600 transition-transform group-hover:scale-110 [&>svg]:size-8">
                       {recurso.icon}
                     </div>
 

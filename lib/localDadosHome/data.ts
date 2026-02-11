@@ -120,11 +120,11 @@ export const quickMenuItems: NavItem[] = [
   },
   {
     title: "Cursos",
-    href: "/academico/cursos",
+    href: "/academia/cursos",
   },
   {
     title: "Documentação",
-    href: "/academico/documentacao",
+    href: "/academia/documentacao",
   },
 ];
 
@@ -226,7 +226,7 @@ export const premiumItems: PremiumItem[] = [
     title: "Projetos de Pesquisa, TCC e Dissertações",
     description:
       "Acesso completo a projetos de pesquisa, de conclusao de curso e muito mais",
-    href: "/academico/tcc",
+    href: "/academia/tcc",
   },
   {
     title: "Projetos Reais Documentados",
@@ -271,9 +271,9 @@ export const libraryLinks: ResourceLink[] = [
 ];
 
 export const academicLinks: ResourceLink[] = [
-  { title: "TCC e Monografias", href: "/academico/tcc" },
-  { title: "Dissertações", href: "/academico/dissertacoes" },
-  { title: "Artigos Científicos", href: "/academico/artigos" },
+  { title: "TCC e Monografias", href: "/academia/tcc" },
+  { title: "Dissertações", href: "/academia/dissertacoes" },
+  { title: "Artigos Científicos", href: "/academia/artigos" },
 ];
 
 export const projectLinks: ResourceLink[] = [

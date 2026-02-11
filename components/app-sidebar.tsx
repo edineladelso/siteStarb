@@ -183,7 +183,7 @@ const data = {
       href: "#",
     },
     {
-      name: "Star B Normal",
+      name: "Star B Basico",
       logo: GalleryVerticalEnd,
       plan: "Free",
       href: "#",
@@ -221,12 +221,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent >
         <NavMain
           className1={cn(
-            "overflow-y-scroll scroll",
+            "overflow-y-scroll",
             isCollapsed
-              ? "h-[50vh] sm:mt-10"
+              ? "h-[50vh] sm:mt-10 sm:overflow-x-hidden"
               : "sm:max-h-[60vh]",
           )}
-          className2="text-sidebar-foreground/70"
+          className2=""
           colorIcon={cn(isCollapsed && "text-sidebar-foreground/70")}
           items={data.navMain}
         />

@@ -3,8 +3,6 @@
  * Inclui estruturas para Livros, Softwares, Projetos, Usuários e Configurações
  */
 
-import type { StatusType } from "./drizzle/db";
-
 // ============================================
 // TIPOS DE ENUMERAÇÃO
 // ============================================

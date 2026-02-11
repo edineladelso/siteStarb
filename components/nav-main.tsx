@@ -35,7 +35,7 @@ export function NavMain({
       url: string;
     }[];
   }[];
-  className1: string;
+  className1?: string;
   className2?: string;
   colorIcon?: string;
 }) {

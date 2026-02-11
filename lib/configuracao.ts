@@ -249,7 +249,7 @@ export const ROTAS = {
   livros: "/biblioteca/livros",
   softwares: "/softwares",
   projetos: "/projetos",
-  artigos: "/academico/artigos",
+  artigos: "/academia/artigos",
   ia: "/ia",
   premium: "/plano/premium",
   sobre: "/sobre",

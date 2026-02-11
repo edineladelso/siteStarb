@@ -144,6 +144,7 @@ export async function atualizarSoftware(
     revalidatePath("/softwares");
     return { success: true, data: atualizado };
   } catch (error) {
+    console.error("Erro ao atualizar software:", error);
     return { success: false, error: "Erro ao atualizar software" };
   }
 }
@@ -160,6 +161,7 @@ export async function deletarSoftware(
     revalidatePath("/softwares");
     return { success: true, data: { id } };
   } catch (error) {
+    console.error("Erro ao excluir software:", error);
     return { success: false, error: "Não foi possível excluir o software" };
   }
 }
