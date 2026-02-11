@@ -2,7 +2,18 @@
 // ANALYTICS SERVICE - Singleton Pattern
 // ============================================================================
 
-import type { AnalyticsData, AnalyticsFilters, AnalyticsOverview, CategoryData, ContentTypeMetrics, GrowthMetric, TimeSeriesData, TopContentItem, ViewsDownloadsData } from '@/lib/types';
+import type {
+  AnalyticsData,
+  AnalyticsFilters,
+  AnalyticsOverview,
+  CategoryData,
+  ContentType,
+  ContentTypeMetrics,
+  GrowthMetric,
+  TimeSeriesData,
+  TopContentItem,
+  ViewsDownloadsData,
+} from "@/lib/types";
 
 class AnalyticsService {
   private static instance: AnalyticsService;
@@ -65,7 +76,7 @@ class AnalyticsService {
     };
   }
 
-  private generateOverview(contentType?: string): AnalyticsOverview {
+  private generateOverview(contentType?: ContentType | "all"): AnalyticsOverview {
     const base = {
       totalViews: 45678,
       totalDownloads: 12453,
@@ -124,8 +135,8 @@ class AnalyticsService {
     return categories;
   }
 
-  private generateTopContent(contentType?: string): TopContentItem[] {
-    const allContent = [
+  private generateTopContent(contentType?: ContentType | "all"): TopContentItem[] {
+    const allContent: TopContentItem[] = [
       { title: "Introdução ao Machine Learning", views: 3456, downloads: 892, tipo: "livro" },
       { title: "AutoCAD 2024 Professional", views: 2987, downloads: 654, tipo: "software" },
       { title: "Sistema IoT com Arduino", views: 2654, downloads: 543, tipo: "projeto" },
@@ -133,7 +144,7 @@ class AnalyticsService {
       { title: "Python para Data Science", views: 2198, downloads: 467, tipo: "livro" },
       { title: "SolidWorks 2024", views: 1987, downloads: 432, tipo: "software" },
       { title: "Robô Autônomo com ROS", views: 1876, downloads: 398, tipo: "projeto" },
-      { title: "Deep Learning Applications", views: 1654, downloads: 367, tipo: "artigo" }
+      { title: "Deep Learning Applications", views: 1654, downloads: 367, tipo: "artigo" },
     ];
 
     if (contentType && contentType !== "all") {

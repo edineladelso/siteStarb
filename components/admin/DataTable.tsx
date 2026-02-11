@@ -156,7 +156,7 @@ export function DataTable<T extends { id: string | number }>({
       <Card className="border-slate-200 bg-white shadow-lg">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[720px]">
               <thead className="border-b border-slate-200 bg-slate-50">
                 <tr>
                   {columns.map((column) => (
@@ -236,13 +236,13 @@ export function DataTable<T extends { id: string | number }>({
       </Card>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-slate-600">
             Mostrando {startIndex + 1} a {Math.min(endIndex, data.length)} de{" "}
             {data.length} itens
           </p>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               variant="outline"
               size="sm"

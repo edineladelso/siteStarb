@@ -528,7 +528,7 @@ function LivrosPageInner() {
 
           {livrosFiltrados.length > 0 ? (
             <div
-              className="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5"
+              className="grid grid-cols-1 gap-4 min-[380px]:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5"
               role="list"
               aria-label="Lista de livros"
             >

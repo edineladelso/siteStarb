@@ -116,7 +116,7 @@ const AnalyticsComponent: React.FC = () => {
         period: Number(e.target.value) as 7 | 30 | 90,
       }));
     },
-    []
+    [],
   );
 
   const handleContentTypeChange = useCallback(
@@ -126,7 +126,7 @@ const AnalyticsComponent: React.FC = () => {
         contentType: e.target.value as TipoConteudo,
       }));
     },
-    []
+    [],
   );
 
   const handleAutoRefreshToggle = useCallback(() => {
@@ -152,7 +152,7 @@ const AnalyticsComponent: React.FC = () => {
   // ==================== RENDERIZAÇÃO CONDICIONAL ====================
   if (loading && !data) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 px-4">
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 px-4">
         <div className="text-center">
           <RefreshCw
             className="mx-auto mb-4 h-10 w-10 animate-spin text-blue-600 sm:h-12 sm:w-12"
@@ -169,7 +169,7 @@ const AnalyticsComponent: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 p-4">
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 p-4">
         <div
           className="w-full max-w-md rounded-xl border border-red-200 bg-red-50 p-6 shadow-lg"
           role="alert"
@@ -181,7 +181,7 @@ const AnalyticsComponent: React.FC = () => {
           <p className="mb-6 text-sm text-red-600 sm:text-base">{error}</p>
           <button
             onClick={handleManualRefresh}
-            className="w-full rounded-lg bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-red-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:text-base"
+            className="w-full rounded-lg bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-red-700 hover:shadow-lg focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none sm:text-base"
           >
             Tentar Novamente
           </button>
@@ -194,7 +194,7 @@ const AnalyticsComponent: React.FC = () => {
 
   // ==================== RENDER PRINCIPAL ====================
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
       {/* Container com padding responsivo */}
       <div className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8">
         {/* ==================== HEADER ==================== */}
@@ -220,7 +220,10 @@ const AnalyticsComponent: React.FC = () => {
             <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
               {/* Filtro de Período */}
               <div className="flex w-full items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm sm:w-auto">
-                <Calendar className="h-4 w-4 flex-shrink-0 text-slate-500 sm:h-5 sm:w-5" aria-hidden="true" />
+                <Calendar
+                  className="h-4 w-4 flex-shrink-0 text-slate-500 sm:h-5 sm:w-5"
+                  aria-hidden="true"
+                />
                 <label htmlFor="period-filter" className="sr-only">
                   Selecionar período
                 </label>
@@ -238,7 +241,10 @@ const AnalyticsComponent: React.FC = () => {
 
               {/* Filtro de Tipo de Conteúdo */}
               <div className="flex w-full items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm sm:w-auto">
-                <Filter className="h-4 w-4 flex-shrink-0 text-slate-500 sm:h-5 sm:w-5" aria-hidden="true" />
+                <Filter
+                  className="h-4 w-4 flex-shrink-0 text-slate-500 sm:h-5 sm:w-5"
+                  aria-hidden="true"
+                />
                 <label htmlFor="content-type-filter" className="sr-only">
                   Filtrar por tipo de conteúdo
                 </label>
@@ -261,7 +267,7 @@ const AnalyticsComponent: React.FC = () => {
                 {/* Auto Refresh */}
                 <button
                   onClick={handleAutoRefreshToggle}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:flex-none sm:text-sm ${
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium shadow-sm transition-all focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none sm:flex-none sm:text-sm ${
                     autoRefresh
                       ? "border-blue-500 bg-blue-50 text-blue-700"
                       : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
@@ -279,7 +285,7 @@ const AnalyticsComponent: React.FC = () => {
                 <button
                   onClick={handleManualRefresh}
                   disabled={loading}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-3 py-2 text-xs font-medium text-white shadow-md transition-all hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none sm:text-sm"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-3 py-2 text-xs font-medium text-white shadow-md transition-all hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none sm:text-sm"
                 >
                   <RefreshCw
                     className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
@@ -310,7 +316,9 @@ const AnalyticsComponent: React.FC = () => {
             value={data.overview.totalDownloads}
             change={8.3}
             trend="up"
-            icon={<Download className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />}
+            icon={
+              <Download className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+            }
             color="from-purple-500 to-purple-600"
           />
           <MetricCard
@@ -318,7 +326,9 @@ const AnalyticsComponent: React.FC = () => {
             value={data.overview.activeUsers}
             change={15.7}
             trend="up"
-            icon={<Users className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />}
+            icon={
+              <Users className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+            }
             color="from-emerald-500 to-emerald-600"
           />
           <MetricCard
@@ -326,7 +336,12 @@ const AnalyticsComponent: React.FC = () => {
             value={data.overview.avgRating.toFixed(1)}
             change={2.1}
             trend="down"
-            icon={<TrendingUp className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />}
+            icon={
+              <TrendingUp
+                className="h-5 w-5 sm:h-6 sm:w-6"
+                aria-hidden="true"
+              />
+            }
             color="from-amber-500 to-amber-600"
           />
         </section>
@@ -338,14 +353,24 @@ const AnalyticsComponent: React.FC = () => {
             description="Visualizações e downloads ao longo do tempo"
           >
             <div role="img" aria-label="Gráfico de tendências">
-              <ResponsiveContainer width="100%" height={250} className="sm:h-[300px] md:h-[350px]">
+              <ResponsiveContainer
+                width="100%"
+                height={250}
+                className="sm:h-[300px] md:h-[350px]"
+              >
                 <AreaChart data={data.timeSeries}>
                   <defs>
                     <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                     </linearGradient>
-                    <linearGradient id="colorDownloads" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient
+                      id="colorDownloads"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
                       <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                     </linearGradient>
@@ -402,7 +427,11 @@ const AnalyticsComponent: React.FC = () => {
         <div className="mb-4 space-y-4 sm:mb-6 sm:space-y-6 md:mb-8 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
           {/* Distribuição por Categoria */}
           <ChartCard title="Por Categoria">
-            <ResponsiveContainer width="100%" height={250} className="sm:h-[280px] md:h-[300px]">
+            <ResponsiveContainer
+              width="100%"
+              height={250}
+              className="sm:h-[280px] md:h-[300px]"
+            >
               <PieChart>
                 <Pie
                   data={data.categories}
@@ -433,7 +462,11 @@ const AnalyticsComponent: React.FC = () => {
 
           {/* Métricas por Tipo */}
           <ChartCard title="Por Tipo">
-            <ResponsiveContainer width="100%" height={250} className="sm:h-[280px] md:h-[300px]">
+            <ResponsiveContainer
+              width="100%"
+              height={250}
+              className="sm:h-[280px] md:h-[300px]"
+            >
               <BarChart data={data.contentTypeMetrics}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis
@@ -450,7 +483,10 @@ const AnalyticsComponent: React.FC = () => {
                   className="sm:text-xs"
                 />
                 <Tooltip contentStyle={{ fontSize: "12px" }} />
-                <Legend wrapperStyle={{ fontSize: "11px" }} className="sm:text-xs" />
+                <Legend
+                  wrapperStyle={{ fontSize: "11px" }}
+                  className="sm:text-xs"
+                />
                 <Bar
                   dataKey="views"
                   fill="#3b82f6"
@@ -483,7 +519,10 @@ const AnalyticsComponent: React.FC = () => {
             {/* Versão Mobile - Cards */}
             <div className="space-y-2 sm:hidden">
               {data.topContent.map((item, index) => {
-                const conversion = ((item.downloads / item.views) * 100).toFixed(1);
+                const conversion = (
+                  (item.downloads / item.views) *
+                  100
+                ).toFixed(1);
                 return (
                   <div
                     key={`${item.title}-${index}`}
@@ -505,7 +544,11 @@ const AnalyticsComponent: React.FC = () => {
                           {index + 1}
                         </div>
                         <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-blue-50 text-blue-600">
-                          {CONTENT_TYPE_ICONS[item.tipo as keyof typeof CONTENT_TYPE_ICONS]}
+                          {
+                            CONTENT_TYPE_ICONS[
+                              item.tipo as keyof typeof CONTENT_TYPE_ICONS
+                            ]
+                          }
                         </div>
                       </div>
                       <span
@@ -520,14 +563,16 @@ const AnalyticsComponent: React.FC = () => {
                         {conversion}%
                       </span>
                     </div>
-                    <p className="mb-2 text-sm font-semibold text-slate-900 line-clamp-2">
+                    <p className="mb-2 line-clamp-2 text-sm font-semibold text-slate-900">
                       {item.title}
                     </p>
                     <div className="flex items-center justify-between text-xs text-slate-600">
                       <span className="capitalize">{item.tipo}</span>
                       <div className="flex items-center gap-3">
                         <span>{item.views.toLocaleString("pt-BR")} views</span>
-                        <span>{item.downloads.toLocaleString("pt-BR")} downloads</span>
+                        <span>
+                          {item.downloads.toLocaleString("pt-BR")} downloads
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -562,7 +607,10 @@ const AnalyticsComponent: React.FC = () => {
                 </thead>
                 <tbody>
                   {data.topContent.map((item, index) => {
-                    const conversion = ((item.downloads / item.views) * 100).toFixed(1);
+                    const conversion = (
+                      (item.downloads / item.views) *
+                      100
+                    ).toFixed(1);
                     return (
                       <tr
                         key={`${item.title}-${index}`}
@@ -591,9 +639,13 @@ const AnalyticsComponent: React.FC = () => {
                         <td className="px-3 py-3 md:px-4">
                           <div className="flex items-center gap-2">
                             <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-50 text-blue-600 md:h-8 md:w-8">
-                              {CONTENT_TYPE_ICONS[item.tipo as keyof typeof CONTENT_TYPE_ICONS]}
+                              {
+                                CONTENT_TYPE_ICONS[
+                                  item.tipo as keyof typeof CONTENT_TYPE_ICONS
+                                ]
+                              }
                             </div>
-                            <span className="hidden text-xs font-medium capitalize text-slate-700 md:inline md:text-sm">
+                            <span className="hidden text-xs font-medium text-slate-700 capitalize md:inline md:text-sm">
                               {item.tipo}
                             </span>
                           </div>
@@ -642,18 +694,22 @@ const AnalyticsComponent: React.FC = () => {
             >
               <div className="mb-3 flex items-center justify-between md:mb-4">
                 <div
-                  className={`flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-md sm:h-10 sm:w-10 md:h-12 md:w-12 ${
+                  className={`flex h-8 w-8 items-center justify-center rounded-xl bg-linear-to-br text-white shadow-md sm:h-10 sm:w-10 md:h-12 md:w-12 ${
                     GRADIENT_COLORS[index % GRADIENT_COLORS.length]
                   }`}
                 >
-                  {CONTENT_TYPE_ICONS[metric.tipo as keyof typeof CONTENT_TYPE_ICONS]}
+                  {
+                    CONTENT_TYPE_ICONS[
+                      metric.tipo as keyof typeof CONTENT_TYPE_ICONS
+                    ]
+                  }
                 </div>
                 <span className="text-xl font-bold text-slate-900 sm:text-2xl md:text-3xl">
                   {metric.total}
                 </span>
               </div>
 
-              <h4 className="mb-2 text-sm font-bold capitalize text-slate-900 sm:text-base md:mb-3 md:text-lg">
+              <h4 className="mb-2 text-sm font-bold text-slate-900 capitalize sm:text-base md:mb-3 md:text-lg">
                 {metric.tipo}s
               </h4>
 
@@ -661,7 +717,7 @@ const AnalyticsComponent: React.FC = () => {
                 <div className="flex items-center justify-between text-xs sm:text-sm">
                   <span className="text-slate-600">Views</span>
                   <span className="font-semibold text-slate-900">
-                    {metric.views > 999 
+                    {metric.views > 999
                       ? `${(metric.views / 1000).toFixed(1)}k`
                       : metric.views}
                   </span>
@@ -699,12 +755,15 @@ const AnalyticsComponent: React.FC = () => {
           aria-label="Insights"
         >
           {/* Taxa de Conversão */}
-          <div className="rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 text-white shadow-lg sm:p-5 md:p-6">
+          <div className="rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 p-4 text-white shadow-lg sm:p-5 md:p-6">
             <div className="mb-3 flex items-center justify-between md:mb-4">
               <h3 className="text-sm font-bold sm:text-base md:text-lg">
                 Conversão
               </h3>
-              <TrendingUp className="h-6 w-6 opacity-80 sm:h-7 sm:w-7 md:h-8 md:w-8" aria-hidden="true" />
+              <TrendingUp
+                className="h-6 w-6 opacity-80 sm:h-7 sm:w-7 md:h-8 md:w-8"
+                aria-hidden="true"
+              />
             </div>
             <p className="mb-1 text-2xl font-bold sm:text-3xl md:mb-2 md:text-4xl">
               {data.overview.conversionRate}%
@@ -714,45 +773,54 @@ const AnalyticsComponent: React.FC = () => {
             </p>
             <div className="mt-3 border-t border-emerald-400/30 pt-3 md:mt-4 md:pt-4">
               <p className="text-xs text-emerald-100 sm:text-sm">
-                Meta: 30% • Faltam {(30 - data.overview.conversionRate).toFixed(1)}%
+                Meta: 30% • Faltam{" "}
+                {(30 - data.overview.conversionRate).toFixed(1)}%
               </p>
             </div>
           </div>
 
           {/* Total de Conteúdo */}
-          <div className="rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 p-4 text-white shadow-lg sm:p-5 md:p-6">
+          <div className="rounded-xl bg-linear-to-br from-blue-500 to-indigo-600 p-4 text-white shadow-lg sm:p-5 md:p-6">
             <div className="mb-3 flex items-center justify-between md:mb-4">
               <h3 className="text-sm font-bold sm:text-base md:text-lg">
                 Conteúdo
               </h3>
-              <BookOpen className="h-6 w-6 opacity-80 sm:h-7 sm:w-7 md:h-8 md:w-8" aria-hidden="true" />
+              <BookOpen
+                className="h-6 w-6 opacity-80 sm:h-7 sm:w-7 md:h-8 md:w-8"
+                aria-hidden="true"
+              />
             </div>
             <p className="mb-1 text-2xl font-bold sm:text-3xl md:mb-2 md:text-4xl">
               {data.overview.totalContent}
             </p>
-            <p className="text-xs text-blue-100 sm:text-sm">
-              Itens publicados
-            </p>
+            <p className="text-xs text-blue-100 sm:text-sm">Itens publicados</p>
             <div className="mt-3 border-t border-blue-400/30 pt-3 md:mt-4 md:pt-4">
               <div className="flex items-center justify-between text-xs sm:text-sm">
                 <span className="text-blue-100">Média/categoria</span>
                 <span className="font-semibold">
-                  {Math.floor(data.overview.totalContent / data.categories.length)}
+                  {Math.floor(
+                    data.overview.totalContent / data.categories.length,
+                  )}
                 </span>
               </div>
             </div>
           </div>
 
           {/* Engajamento */}
-          <div className="rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 p-4 text-white shadow-lg sm:p-5 md:p-6">
+          <div className="rounded-xl bg-linear-to-br from-purple-500 to-pink-600 p-4 text-white shadow-lg sm:p-5 md:p-6">
             <div className="mb-3 flex items-center justify-between md:mb-4">
               <h3 className="text-sm font-bold sm:text-base md:text-lg">
                 Engajamento
               </h3>
-              <Users className="h-6 w-6 opacity-80 sm:h-7 sm:w-7 md:h-8 md:w-8" aria-hidden="true" />
+              <Users
+                className="h-6 w-6 opacity-80 sm:h-7 sm:w-7 md:h-8 md:w-8"
+                aria-hidden="true"
+              />
             </div>
             <p className="mb-1 text-2xl font-bold sm:text-3xl md:mb-2 md:text-4xl">
-              {(data.overview.totalViews / data.overview.activeUsers).toFixed(1)}
+              {(data.overview.totalViews / data.overview.activeUsers).toFixed(
+                1,
+              )}
             </p>
             <p className="text-xs text-purple-100 sm:text-sm">
               Views por usuário
@@ -761,7 +829,9 @@ const AnalyticsComponent: React.FC = () => {
               <div className="flex items-center justify-between text-xs sm:text-sm">
                 <span className="text-purple-100">Downloads/usuário</span>
                 <span className="font-semibold">
-                  {(data.overview.totalDownloads / data.overview.activeUsers).toFixed(1)}
+                  {(
+                    data.overview.totalDownloads / data.overview.activeUsers
+                  ).toFixed(1)}
                 </span>
               </div>
             </div>
@@ -792,11 +862,17 @@ const AnalyticsComponent: React.FC = () => {
                     </span>
                     {metric.trend === "up" ? (
                       <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 sm:h-8 sm:w-8">
-                        <TrendingUp className="h-4 w-4 text-emerald-600 sm:h-5 sm:w-5" aria-hidden="true" />
+                        <TrendingUp
+                          className="h-4 w-4 text-emerald-600 sm:h-5 sm:w-5"
+                          aria-hidden="true"
+                        />
                       </div>
                     ) : (
                       <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-red-100 sm:h-8 sm:w-8">
-                        <TrendingDown className="h-4 w-4 text-red-600 sm:h-5 sm:w-5" aria-hidden="true" />
+                        <TrendingDown
+                          className="h-4 w-4 text-red-600 sm:h-5 sm:w-5"
+                          aria-hidden="true"
+                        />
                       </div>
                     )}
                   </div>
@@ -808,7 +884,9 @@ const AnalyticsComponent: React.FC = () => {
                   <div className="mb-2 flex items-center gap-2">
                     <span
                       className={`text-xs font-semibold sm:text-sm ${
-                        metric.trend === "up" ? "text-emerald-600" : "text-red-600"
+                        metric.trend === "up"
+                          ? "text-emerald-600"
+                          : "text-red-600"
                       }`}
                     >
                       {metric.trend === "up" ? "+" : "-"}
@@ -861,8 +939,9 @@ const AnalyticsComponent: React.FC = () => {
                 Sobre os Dados
               </h4>
               <p className="text-xs leading-relaxed text-blue-800 sm:text-sm">
-                Dados atualizados em tempo real. Estatísticas incluem visualizações,
-                downloads e engajamento. Use os filtros para personalizar.
+                Dados atualizados em tempo real. Estatísticas incluem
+                visualizações, downloads e engajamento. Use os filtros para
+                personalizar.
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-blue-700 sm:mt-3 sm:gap-4">
                 <span className="flex items-center gap-1">

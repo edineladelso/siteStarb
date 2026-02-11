@@ -1,22 +1,16 @@
-import { db } from "../drizzle/db";
-import { artigos, livros, projetos, softwares } from "../drizzle/db/schema";
-import { eq } from "drizzle-orm";
+import { createSlug } from "./createSlug";
 
-export function createSlug(text: string): string {
-  return text
-    .toString()
-    .normalize("NFD") // Remove acentos
-    .replace(/[\u0300-\u036f]/g, "") // Remove diacríticos
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-") // Substitui espaços por hífens
-    .replace(/[^\w-]+/g, "") // Remove caracteres não alfanuméricos
-    .replace(/--+/g, "-"); // Remove hífens duplos
-}
+export { createSlug };
 
 export type SlugTipo = "livro" | "artigo" | "projeto" | "software";
 
 export async function gerarSlugUnico(titulo: string, tipo: SlugTipo) {
+  const [{ db }, { artigos, livros, projetos, softwares }] = await Promise.all([
+    import("../drizzle/db"),
+    import("../drizzle/db/schema"),
+  ]);
+  const { eq } = await import("drizzle-orm");
+
   const base = createSlug(titulo);
   let slug = base;
   let contador = 1;

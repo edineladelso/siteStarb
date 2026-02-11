@@ -67,7 +67,7 @@ export async function criarArtigo(
       .values(parsed.data)
       .returning();
 
-    revalidatePath("/artigos");
+    revalidatePath("/biblioteca/artigos");
     return { success: true, data: novoArtigo };
   } catch (error) {
     console.error("Erro ao criar artigo:", error);
@@ -152,7 +152,7 @@ export async function atualizarArtigo(
       .where(eq(artigos.id, id))
       .returning();
 
-    revalidatePath("/artigos");
+    revalidatePath("/biblioteca/artigos");
     return { success: true, data: atualizado };
   } catch (error) {
     console.error("Erro ao atualizar artigo:", error);

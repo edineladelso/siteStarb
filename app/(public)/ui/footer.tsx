@@ -42,7 +42,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/artigos"
+                    href="/biblioteca/artigos"
                     className="transition-colors hover:text-blue-700"
                   >
                     Artigos

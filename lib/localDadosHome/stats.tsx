@@ -25,9 +25,3 @@ export const StatsData: StatsType[] = [
     icon: <FileTextIcon />,
   },
 ];
-
-export const StatsCard: StatsType[] = [
-  {
-    
-  }
-]

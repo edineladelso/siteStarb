@@ -4,7 +4,7 @@ import imgManutencao from "@/public/img/manutencao.webp";
 
 export default function ManutencaoPage() {
   return (
-    <div className="text-foreground font-body flex h-screen flex-col items-center gap-12 text-gray-600">
+    <div className="text-foreground font-body flex h-screen flex-col items-center justify-center gap-12">
       <h1 className="flex w-full items-center justify-center gap-3 text-4xl">
         <span>Website em</span>
         <span className="text- font-bold text-blue-700">manutencao</span>

@@ -273,7 +273,7 @@ export const libraryLinks: ResourceLink[] = [
 export const academicLinks: ResourceLink[] = [
   { title: "TCC e Monografias", href: "/academia/tcc" },
   { title: "Dissertações", href: "/academia/dissertacoes" },
-  { title: "Artigos Científicos", href: "/academia/artigos" },
+  { title: "Artigos Científicos", href: "/biblioteca/artigos" },
 ];
 
 export const projectLinks: ResourceLink[] = [

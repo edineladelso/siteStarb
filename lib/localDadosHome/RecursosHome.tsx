@@ -12,7 +12,7 @@ export const recursosHome = [
     {
     titulo: "Artigos Científicos",
     descricao: "Papers, pesquisas e estudos técnicos comentados e organizados",
-    href: "/artigos",
+    href: "/biblioteca/artigos",
     icon: <AcademicIcon />,
   },
   {
