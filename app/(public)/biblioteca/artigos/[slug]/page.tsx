@@ -1,5 +1,6 @@
 import { ErrorContent } from "@/app/error/ErrorComponent";
 import { localGetBySlug } from "@/lib/actions/local/localArtigo.action";
+import type { ArtigoMidia } from "@/lib/domain/artigo";
 import {
   ArrowLeft,
   Building2,
@@ -56,6 +57,9 @@ export default async function PropertPage({ params }: PageProps) {
     return <ErrorContent conteudo="Artigo" backUrl="/biblioteca/artigos" />;
   }
 
+  const midia = artigo.midia as ArtigoMidia | null;
+  const htmlContent = artigo.html ?? "";
+
   if (!localArtigo) {
     notFound();
   }
@@ -72,7 +76,7 @@ export default async function PropertPage({ params }: PageProps) {
       <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
         <div className="relative h-72 w-full">
           <Image
-            src={artigo.capa}
+            src={artigo.capa ?? "https://placehold.co/1200x720?text=Artigo"}
             alt={artigo.titulo}
             fill
             className="h-full w-full object-cover"
@@ -87,7 +91,10 @@ export default async function PropertPage({ params }: PageProps) {
                 {artigo.leituraMin} min de leitura
               </Badge>
               <Badge className="bg-white/20 text-white backdrop-blur">
-                Atualizado em {artigo.updatedAt}
+                Atualizado em{" "}
+                {new Intl.DateTimeFormat("pt-BR", {
+                  dateStyle: "long",
+                }).format(new Date(artigo.updatedAt))}
               </Badge>
             </div>
             <div className="hidden items-center gap-2 text-sm font-semibold md:flex">
@@ -114,7 +121,7 @@ export default async function PropertPage({ params }: PageProps) {
             <MetaCard
               icon={<Calendar className="h-4 w-4" />}
               label="Ano"
-              value={String(artigo.ano)}
+              value={String(artigo.anoPublicacao ?? "")}
             />
             <MetaCard
               icon={<Building2 className="h-4 w-4" />}
@@ -126,7 +133,7 @@ export default async function PropertPage({ params }: PageProps) {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {artigo.tags.map((tag) => (
+            {(artigo.tags ?? []).map((tag) => (
               <Badge key={tag} variant="secondary">
                 #{tag}
               </Badge>
@@ -136,15 +143,15 @@ export default async function PropertPage({ params }: PageProps) {
           <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6 md:p-8">
             <div className="space-y-5 text-slate-800 [&_blockquote]:border-l-4 [&_blockquote]:border-orange-400 [&_blockquote]:pl-4 [&_blockquote]:text-slate-700 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-slate-900 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-slate-900 [&_li]:ml-4 [&_li]:list-disc [&_p]:leading-relaxed [&_p]:text-slate-700 [&_strong]:text-slate-900 [&_ul]:space-y-2">
               {/* Conteúdo HTML fornecido pelo autor */}
-              <div dangerouslySetInnerHTML={{ __html: artigo.html }} />
+              <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
             </div>
           </div>
 
           <div className="flex flex-wrap gap-3">
-            {artigo.pdfUrl && (
+            {midia?.tipo === "pdf" && midia.pdfUrl && (
               <Button asChild>
                 <a
-                  href={artigo.pdfUrl}
+                  href={midia.pdfUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="gap-2"

@@ -68,9 +68,11 @@ export default function ArtigosPage() {
     artigosFiltrados.find((a) => a.destaque) ||
     artigosFiltrados[0] ||
     artigosBiblioteca[0];
+  const capaDestaque =
+    artigoDestaque?.capa ?? "https://placehold.co/800x480?text=Artigo";
 
   const totalViews = artigosBiblioteca.reduce(
-    (acc, artigo) => acc + artigo.visualizacoes,
+    (acc, artigo) => acc + (artigo.views ?? 0),
     0,
   );
   const totalCitacoes = artigosBiblioteca.reduce(
@@ -115,7 +117,7 @@ export default function ArtigosPage() {
               <StatPill
                 icon={<Sparkles className="h-4 w-4" />}
                 label="Citações"
-                value={totalCitacoes.toLocaleString("pt-BR")}
+                value={totalCitacoes.toLocaleString("pt-PT")}
               />
             </div>
           </div>
@@ -126,7 +128,7 @@ export default function ArtigosPage() {
               className="group relative block overflow-hidden rounded-2xl border border-white/15 bg-white/10 shadow-2xl shadow-black/20"
             >
               <img
-                src={artigoDestaque.capa}
+                src={capaDestaque}
                 alt={artigoDestaque.titulo}
                 className="h-64 w-full object-cover transition duration-700 group-hover:scale-105"
               />

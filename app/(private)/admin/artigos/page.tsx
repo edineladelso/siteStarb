@@ -51,7 +51,10 @@ export default function ArtigosPage() {
   const filteredArtigos = artigos.filter(
     (artigo) =>
       artigo.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      artigo.autores.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (Array.isArray(artigo.autores)
+        ? artigo.autores.join(" ").toLowerCase()
+        : String(artigo.autores).toLowerCase()
+      ).includes(searchTerm.toLowerCase()) ||
       artigo.palavrasChave!.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 

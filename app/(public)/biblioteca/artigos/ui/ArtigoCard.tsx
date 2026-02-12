@@ -1,13 +1,15 @@
-import { createSlug } from "@/lib/utils/createSlug";
-import type { ArtigoBiblioteca } from "../../../../../lib/localDadosHome/dadosArtigos";
-import Link from "next/link";
-import Image from "next/image";
-import { ChevronRight, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import type { Artigo } from "@/lib/types";
+import { createSlug } from "@/lib/utils/createSlug";
+import { ChevronRight, FileText } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import type { CSSProperties } from "react";
 
-export default function ArtigoCard({ artigo }: { artigo: ArtigoBiblioteca }) {
-  const slugPath = createSlug(artigo.slug || artigo.id || artigo.titulo);
+export default function ArtigoCard({ artigo }: { artigo: Artigo }) {
+  const slugPath = createSlug(String(artigo.slug));
+
+  const capa = artigo.capa ?? "https://placehold.co/600x360";
 
   return (
     <Link
@@ -18,7 +20,7 @@ export default function ArtigoCard({ artigo }: { artigo: ArtigoBiblioteca }) {
       <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
         <div className="relative h-48 w-full overflow-hidden">
           <Image
-            src={artigo.capa}
+            src={capa}
             alt={artigo.titulo}
             fill
             className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
@@ -39,7 +41,10 @@ export default function ArtigoCard({ artigo }: { artigo: ArtigoBiblioteca }) {
           <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
             <FileText className="size-4 text-orange-500" />
             <span>
-              {artigo.ano} • {artigo.autores.join(", ")}
+              {(artigo.anoPublicacao ?? "").toString()} •{" "}
+              {Array.isArray(artigo.autores)
+                ? artigo.autores.join(", ")
+                : artigo.autores}
             </span>
           </div>
 
