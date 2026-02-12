@@ -1,6 +1,6 @@
 "use client";
 
-import { ServiceSwitcher } from "@/components/services-switcher";
+import { ServiceSwitcher } from "@/components/layout/aside/services-switcher";
 import {
   Sidebar,
   SidebarContent,

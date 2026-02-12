@@ -16,10 +16,8 @@ import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { artigosBiblioteca } from "./dadosArtigos";
+import { artigosBiblioteca } from "../../../../lib/localDadosHome/dadosArtigos";
 import ArtigoCard, { clampStyle } from "./ui/ArtigoCard";
-
-
 
 function StatPill({
   icon,
@@ -81,9 +79,10 @@ export default function ArtigosPage() {
   );
 
   return (
-    <div className="mx-auto max-w-6xl bg-sidebar space-y-10 px-4 py-10 lg:py-14">
-      <section className="overflow-hidden rounded-3xl border border-slate-200 bg-linear-to-br from-neutral-200 via-neutral-100 to-neutral-200 text-slate-900 shadow-xl">
-        <div className="grid gap-8 p-8 md:p-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
+    <div className="bg-sidebar mx-auto w-full space-y-10">
+      {/* Section Hero */}
+      <section className="xl:[70vh] flex w-full items-center justify-center border border-slate-200 bg-linear-to-br from-neutral-200 via-neutral-100 to-neutral-200 text-slate-900">
+        <div className="grid max-w-6xl gap-8 p-8 md:p-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold tracking-wide text-orange-900 uppercase">
               <Sparkles className="h-4 w-4" /> Biblioteca de Artigos
@@ -97,8 +96,8 @@ export default function ArtigosPage() {
               mergulhe nos detalhes sem sair da plataforma.
             </p>
 
-            <div className="grid gap-3 sm:grid-cols-2 text-black">
-              <StatPill 
+            <div className="grid gap-3 text-black sm:grid-cols-2">
+              <StatPill
                 icon={<FileText className="h-4 w-4" />}
                 label="Artigos publicados"
                 value={`${artigosBiblioteca.length} ativos`}
@@ -159,7 +158,7 @@ export default function ArtigosPage() {
         </div>
       </section>
 
-      <section className="space-y-6">
+      <section className="mx-auto max-w-6xl space-y-6 px-4 py-10 lg:py-14">
         <div className="rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-sm md:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-1 flex-col gap-3 sm:items-center">
@@ -169,8 +168,7 @@ export default function ArtigosPage() {
                   value={busca}
                   onChange={(e) => setBusca(e.target.value)}
                   placeholder="Busque por título, autor ou palavra-chave..."
-                  className="w-full rounded-xl outline-none pl-11 shadow py-8"
-                  
+                  className="w-full rounded-xl py-8 pl-11 shadow outline-none"
                 />
               </div>
               <div className="flex items-center gap-2 text-sm text-slate-500">

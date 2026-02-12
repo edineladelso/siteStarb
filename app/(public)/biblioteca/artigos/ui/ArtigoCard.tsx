@@ -1,5 +1,5 @@
 import { createSlug } from "@/lib/utils/createSlug";
-import type { ArtigoBiblioteca } from "../dadosArtigos";
+import type { ArtigoBiblioteca } from "../../../../../lib/localDadosHome/dadosArtigos";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight, FileText } from "lucide-react";

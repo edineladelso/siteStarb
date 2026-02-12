@@ -123,7 +123,7 @@ export function ErrorContent({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center gap-6 px-4 text-center",
+        "mx-auto flex flex-col items-center justify-center gap-6 px-4 text-center",
         className,
       )}
       style={{ minHeight }}

@@ -6,4 +6,4 @@ export * from "./tipos";
 // export * from "./utilitarios";
 export * from "./configuracao";
 export { cn } from "./utils";
-export * from "./types"
+export * from "./types";

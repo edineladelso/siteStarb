@@ -28,10 +28,10 @@ import {
 } from "lucide-react";
 import * as React from "react";
 
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavUser } from "@/components/nav-user";
-import { ServiceSwitcher } from "@/components/services-switcher";
+import { NavMain } from "@/components/layout/aside/nav-main";
+import { NavProjects } from "@/components/layout/aside/nav-projects";
+import { NavUser } from "@/components/layout/aside/nav-user";
+import { ServiceSwitcher } from "@/components/layout/aside/services-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -48,7 +48,7 @@ import {
   type MacroAreaLivro,
 } from "@/lib/domain/areas";
 import { LABELS_CATEGORIAS } from "@/lib/domain/areasCategoriasPatern";
-import { Separator } from "./ui/separator";
+import { Separator } from "../../ui/separator";
 import { cn } from "@/lib/utils";
 
 const macroAreaIcons: Record<MacroAreaLivro, React.ElementType> = {
@@ -218,10 +218,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <ServiceSwitcher services={data.services} />
       </SidebarHeader>
-      <SidebarContent >
+      <SidebarContent>
         <NavMain
           className1={cn(
-            "overflow-y-scroll",
+            "overflow-y-scroll text-sidebar-foreground/70",
             isCollapsed
               ? "h-[50vh] sm:mt-10 sm:overflow-x-hidden"
               : "sm:max-h-[60vh]",

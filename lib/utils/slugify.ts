@@ -1,7 +1,5 @@
 import { createSlug } from "./createSlug";
 
-export { createSlug };
-
 export type SlugTipo = "livro" | "artigo" | "projeto" | "software";
 
 export async function gerarSlugUnico(titulo: string, tipo: SlugTipo) {

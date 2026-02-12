@@ -1,6 +1,6 @@
-import Footer from "@/app/(public)/ui/footer";
-import Header from "@/app/(public)/ui/header";
-import { AppSidebar } from "@/components/app-sidebar";
+import Footer from "@/app/(public)/ui/layout/footer";
+import Header from "@/app/(public)/ui/layout/header";
+import { AppSidebar } from "@/components/layout/aside/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function PublicLayout({

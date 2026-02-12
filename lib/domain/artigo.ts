@@ -4,9 +4,10 @@ import { ContentBase } from "./content";
 export interface Artigo extends ContentBase {
   tipo: "artigo";
 
-  autores: string;
+  autores: string[];
 
   resumo: string;
+  capa?: string | null;
 
   palavrasChave?: string;
 
@@ -16,7 +17,12 @@ export interface Artigo extends ContentBase {
   areas: AreaLivro[];
   macroAreas?: MacroAreaLivro[];
 
-  midia: ArtigoMidia;
+  midia?: ArtigoMidia | null;
+  html?: string;
+  leituraMin?: number;
+  tags?: string[];
+  destaque?: boolean;
+  citacoes?: number;
 }
 
 export type ArtigoMidia =

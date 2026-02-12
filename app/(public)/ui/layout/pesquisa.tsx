@@ -13,7 +13,7 @@ import {
 import { Search } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../../../components/ui/button";
 
 export default function Pesquisa({ compact = false }: { compact?: boolean }) {
   const [open, setOpen] = React.useState(false);
@@ -36,21 +36,21 @@ export default function Pesquisa({ compact = false }: { compact?: boolean }) {
         variant="outline"
         onClick={() => setOpen(true)}
         size="sm"
-        className={`text-muted-foreground hover:text-foreground flex items-center justify-between gap-2 border-none bg-white shadow shadow-gray-400/55 transition-colors ${
-          compact ? "w-10 justify-center px-2 sm:w-10" : "sm:w-64"
+        className={`text-muted-foreground hover:text-foreground flex items-center justify-between gap-2 border-none bg-white shadow shadow-gray-400/55 transition-colors sm:h-9 ${
+          compact ? "w-10 justify-center px-2 sm:w-10" : "sm:w-64 xl:w-72"
         }`}
         aria-label="Abrir pesquisa"
       >
         <div className="flex items-center gap-2">
           <Search className="h-5 w-5" />
           {!compact && (
-            <span className="hidden text-sm font-medium lg:inline-flex">
+            <span className="hidden text-sm font-medium sm:inline-flex">
               Pesquisar...
             </span>
           )}
         </div>
         {!compact && (
-          <kbd className="pointer-events-none hidden h-5 items-center gap-1 rounded bg-gray-700 px-2 font-mono text-[10px] font-medium text-white lg:inline-flex">
+          <kbd className="pointer-events-none hidden h-5 items-center gap-1 rounded bg-gray-700 px-2 font-mono text-[10px] font-medium text-white sm:inline-flex">
             <span className="text-xs">Ctrl+K</span>
           </kbd>
         )}

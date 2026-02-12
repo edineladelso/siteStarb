@@ -28,11 +28,31 @@ export async function criarArtigo(
     ) as AreaLivro[];
     const macroAreas = toMacroAreas(areas);
 
-    const tipoMidia = formData.get("midia_tipo") as "pdf" | "plataforma";
+    const tipoMidia = formData.get("midia_tipo") as "pdf" | "plataforma" | null;
+    const autoresRaw = (formData.get("autores") as string | null) ?? "";
+    const autores = autoresRaw
+      .split(",")
+      .map((a) => a.trim())
+      .filter(Boolean);
+
     const midia =
       tipoMidia === "pdf"
         ? { tipo: "pdf", pdfUrl: String(formData.get("pdf_url")) }
-        : { tipo: "plataforma", htmlUrl: String(formData.get("html_url")) };
+        : tipoMidia === "plataforma"
+          ? {
+              tipo: "plataforma",
+              htmlUrl: String(formData.get("html_url") ?? ""),
+            }
+          : null;
+
+    const leituraMin = Number(formData.get("leituraMin") || 0);
+    const tags = ((formData.get("tags") as string) || "")
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    const destaque = formData.get("destaque") === "on";
+    const citacoes = Number(formData.get("citacoes") || 0);
+    const html = (formData.get("html") as string) || undefined;
 
     const bruto = {
       titulo,
@@ -40,7 +60,7 @@ export async function criarArtigo(
       categoria: String(formData.get("categoria")),
       descricao: String(formData.get("descricao")),
       status: (formData.get("status") as Status) || "rascunho",
-      autores: String(formData.get("autores")),
+      autores,
       resumo: String(formData.get("resumo")),
       palavrasChave: formData.get("palavrasChave") || null,
       instituicao: formData.get("instituicao") || null,
@@ -50,6 +70,11 @@ export async function criarArtigo(
       areas,
       macroAreas,
       midia,
+      leituraMin,
+      tags,
+      destaque,
+      citacoes,
+      html,
     };
 
     const parsed = insertArtigoSchema.safeParse(bruto);
@@ -82,12 +107,16 @@ export async function listarArtigos() {
 
 export async function getArtigoBySlug(slug: string) {
   if (!slug) return null;
-  const res = await db
-    .select()
-    .from(artigos)
-    .where(eq(artigos.slug, slug))
-    .limit(1);
-  return res[0] || null;
+  try {
+    const res = await db
+      .select()
+      .from(artigos)
+      .where(eq(artigos.slug, slug))
+      .limit(1);
+    return res[0] || null;
+  } catch (error) {
+    console.error("Erro ao buscar artigo pelo slug: ", error);
+  }
 }
 
 export async function getArtigoById(id: number) {
@@ -107,7 +136,7 @@ export async function getArtigoById(id: number) {
   }
 }
 // src/lib/actions/artigos.actions.ts
-
+// Atualizar artigo
 export async function atualizarArtigo(
   id: number,
   formData: FormData,
@@ -118,18 +147,37 @@ export async function atualizarArtigo(
   ) as AreaLivro[];
   const macroAreas = toMacroAreas(areas);
 
-  const tipoMidia = formData.get("midia_tipo") as "pdf" | "plataforma";
+  const tipoMidia = formData.get("midia_tipo") as "pdf" | "plataforma" | null;
+  const autoresRaw = (formData.get("autores") as string | null) ?? "";
+  const autores = autoresRaw
+    .split(",")
+    .map((a) => a.trim())
+    .filter(Boolean);
   const midia =
     tipoMidia === "pdf"
       ? { tipo: "pdf", pdfUrl: String(formData.get("pdf_url")) }
-      : { tipo: "plataforma", htmlUrl: String(formData.get("html_url")) };
+      : tipoMidia === "plataforma"
+        ? {
+            tipo: "plataforma",
+            htmlUrl: String(formData.get("html_url") ?? ""),
+          }
+        : null;
+
+  const leituraMin = Number(formData.get("leituraMin") || 0);
+  const tags = ((formData.get("tags") as string) || "")
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean);
+  const destaque = formData.get("destaque") === "on";
+  const citacoes = Number(formData.get("citacoes") || 0);
+  const html = (formData.get("html") as string) || undefined;
 
   const bruto = {
     titulo: String(formData.get("titulo")),
     categoria: String(formData.get("categoria")),
     descricao: String(formData.get("descricao")),
     status: (formData.get("status") as Status) || "rascunho",
-    autores: String(formData.get("autores")),
+    autores,
     resumo: String(formData.get("resumo")),
     palavrasChave: formData.get("palavrasChave") || null,
     instituicao: formData.get("instituicao") || null,
@@ -139,6 +187,11 @@ export async function atualizarArtigo(
     areas,
     macroAreas,
     midia,
+    leituraMin,
+    tags,
+    destaque,
+    citacoes,
+    html,
   };
 
   const parsed = insertArtigoSchema.safeParse(bruto);

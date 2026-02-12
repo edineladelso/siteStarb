@@ -17,16 +17,17 @@ import {
   quickMenuItems,
 } from "@/lib/localDadosHome/data";
 import Image from "next/image";
+import { cn } from "@/lib";
 
 export function NavbarDesktop() {
   const styleMenuTriger: string =
-    "bg-transparent hover:border-b-1 hover:shadow-xs text-xs sm:text-sm";
+    "bg-transparent p-2 hover:border-b-1 hover:font-bold text-xs sm:text-sm";
 
   return (
     <NavigationMenu>
       <NavigationMenuList className="flex gap-2">
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className={styleMenuTriger}>
+        <NavigationMenuItem className="min-[765px]:hidden  min-[1100px]:block">
+          <NavigationMenuTrigger className={cn(styleMenuTriger, "")}>
             <span>Home</span>
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -65,7 +66,7 @@ export function NavbarDesktop() {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
+        <NavigationMenuItem className="min-[765px]:hidden  min-[1000px]:block">
           <NavigationMenuTrigger className={styleMenuTriger}>
             Biblioteca
           </NavigationMenuTrigger>

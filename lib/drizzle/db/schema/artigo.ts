@@ -6,6 +6,7 @@ import {
   text,
   timestamp,
   numeric,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 import type { AreaLivro, MacroAreaLivro } from "@/lib/domain/areas";
@@ -21,15 +22,16 @@ export const artigos = pgTable("artigos", {
   categoria: text("categoria").notNull(),
   descricao: text("descricao").notNull(),
   status: text("status").$type<Status>().default("rascunho").notNull(),
+  capa: text("capa"),
 
   views: integer("views").default(0).notNull(),
   downloads: integer("downloads").default(0).notNull(),
   avaliacao: numeric("avaliacao").default("0").notNull(),
 
   // Artigo Specific Fields
-  autores: text("autores").notNull(),
+  autores: text("autores").array().notNull(),
   resumo: text("resumo").notNull(),
-  
+
   palavrasChave: text("palavras_chave"),
   anoPublicacao: integer("ano_publicacao"),
   instituicao: text("instituicao"),
@@ -37,7 +39,13 @@ export const artigos = pgTable("artigos", {
   // Arrays e Union (JSONB)
   areas: jsonb("areas").$type<AreaLivro[]>().notNull(),
   macroAreas: jsonb("macro_areas").$type<MacroAreaLivro[]>().notNull(),
-  midia: jsonb("midia").$type<ArtigoMidia>().notNull(),
+  midia: jsonb("midia").$type<ArtigoMidia | null>().default(null),
+
+  leituraMin: integer("leitura_min").default(0).notNull(),
+  tags: text("tags").array().notNull().default([]),
+  destaque: boolean("destaque").default(false).notNull(),
+  citacoes: integer("citacoes").default(0).notNull(),
+  html: text("html"),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

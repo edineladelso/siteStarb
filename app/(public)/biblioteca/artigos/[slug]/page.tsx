@@ -1,27 +1,26 @@
+import { ErrorContent } from "@/app/error/ErrorComponent";
+import { localGetBySlug } from "@/lib/actions/local/localArtigo.action";
+import {
+  ArrowLeft,
+  Building2,
+  Calendar,
+  Clock,
+  Download,
+  FileText,
+  Share2,
+  Tag,
+} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
-import {
-  ArrowLeft,
-  Download,
-  Share2,
-  Clock,
-  FileText,
-  Building2,
-  Calendar,
-  Tag,
-} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  artigosBiblioteca,
-  type ArtigoBiblioteca,
-  getArtigoBySlug,
-} from "../dadosArtigos";
-import { createSlug } from "@/lib/utils/createSlug";
-import { ErrorContent } from "@/app/error/ErrorComponent";
-import Image from "next/image";
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
 
 function MetaCard({
   icon,
@@ -47,29 +46,19 @@ function MetaCard({
   );
 }
 
-export async function generateStaticParams() {
-  return artigosBiblioteca.map((artigo) => ({
-    slug: createSlug(artigo.slug || artigo.id || artigo.titulo),
-  }));
-}
+export default async function PropertPage({ params }: PageProps) {
+  const { slug } = await params;
+  // const servidorArtigo = await getArtigoBySlug(slug);
+  const localArtigo = await localGetBySlug(slug);
 
-export default function ArtigoDetalhe({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const slugParam = createSlug(decodeURIComponent(params.slug));
-  const artigo : ArtigoBiblioteca  = getArtigoBySlug(slugParam) as ArtigoBiblioteca;
-
+  const artigo = localArtigo;
   if (!artigo) {
-    return <ErrorContent conteudo="artigo" backUrl="/biblioteca/artigos" />;
+    return <ErrorContent conteudo="Artigo" backUrl="/biblioteca/artigos" />;
   }
 
-  const artigoSlug = createSlug(artigo.slug || artigo.id || artigo!.titulo);
-  const dataAtualizada = new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "long",
-  }).format(new Date(artigo.updatedAt));
-
+  if (!localArtigo) {
+    notFound();
+  }
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 lg:py-14">
       <Link
@@ -98,7 +87,7 @@ export default function ArtigoDetalhe({
                 {artigo.leituraMin} min de leitura
               </Badge>
               <Badge className="bg-white/20 text-white backdrop-blur">
-                Atualizado em {dataAtualizada}
+                Atualizado em {artigo.updatedAt}
               </Badge>
             </div>
             <div className="hidden items-center gap-2 text-sm font-semibold md:flex">
@@ -167,7 +156,7 @@ export default function ArtigoDetalhe({
             )}
             <Button variant="outline" asChild>
               <a
-                href={`/biblioteca/artigos/${artigoSlug}`}
+                href={`/biblioteca/artigos/${artigo.slug}`}
                 target="_blank"
                 rel="noreferrer"
                 className="gap-2"
