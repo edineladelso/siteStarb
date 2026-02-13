@@ -45,7 +45,7 @@ export function LoadingContent({
 
   return (
     <div
-      className={cn("flex items-center justify-center", className)}
+      className={cn("mx-auto flex items-center justify-center", className)}
       style={{ minHeight }}
       role="status"
       aria-live="polite"
@@ -127,6 +127,114 @@ export function LoadingContent({
         {/* Screen reader only text */}
         <span className="sr-only">
           Por favor aguarde, carregando dados do {conteudo}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function LoadingVariant({
+  conteudo,
+  size = "default",
+  className,
+  minHeight = "100vh",
+}: LoadingContentProps) {
+  const sizeClasses = {
+    sm: "h-8 w-8",
+    default: "h-16 w-16",
+    lg: "h-24 w-24",
+  };
+
+  const textSizeClasses = {
+    sm: "text-xs",
+    default: "text-sm",
+    lg: "text-base",
+  };
+
+  return (
+    <div
+      className={cn("mx-auto flex items-center justify-center", className)}
+      style={{ minHeight }}
+      role="status"
+      aria-live="polite"
+      aria-label={`Carregando ${conteudo}`}
+    >
+      <div className="space-y-4 text-center">
+        {/* Container do spinner com shadow */}
+        <div className="relative inline-flex items-center justify-center">
+          {/* Background blur effect */}
+          <div
+            className={cn(
+              "absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500/20 to-purple-500/20 blur-xl",
+              sizeClasses[size],
+            )}
+            aria-hidden="true"
+          />
+
+          {/* Spinner principal */}
+          <div
+            className={cn(
+              "relative rounded-full border-4 border-slate-200/50 dark:border-slate-800/50",
+              "shadow-lg shadow-blue-500/20 dark:shadow-blue-500/30",
+              sizeClasses[size],
+            )}
+            aria-hidden="true"
+          >
+            <div
+              className={cn(
+                "absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 dark:border-t-blue-400",
+                "animate-spin",
+              )}
+            />
+          </div>
+
+          {/* Alternativa com ícone Lucide (comentado, pode descomentar se preferir) */}
+          {/* <Loader2 
+            className={cn(
+              "animate-spin text-blue-600 dark:text-blue-400",
+              sizeClasses[size]
+            )}
+            aria-hidden="true"
+          /> */}
+        </div>
+
+        {/* Texto */}
+        <div className="space-y-2">
+          <p
+            className={cn(
+              "font-medium text-slate-700 dark:text-slate-300",
+              "animate-pulse",
+              textSizeClasses[size],
+            )}
+          >
+            Carregando {conteudo && ` ${conteudo}`}...
+          </p>
+
+          {/* Dots animados para feedback visual adicional */}
+          <div
+            className="flex items-center justify-center gap-1.5"
+            aria-hidden="true"
+          >
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className={cn(
+                  "rounded-full bg-blue-600/60 dark:bg-blue-400/60",
+                  size === "sm" ? "h-1.5 w-1.5" : "h-2 w-2",
+                  "animate-bounce shadow-sm shadow-blue-500/50",
+                )}
+                style={{
+                  animationDelay: `${i * 0.15}s`,
+                  animationDuration: "1s",
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Screen reader only text */}
+        <span className="sr-only">
+          Por favor aguarde, carregando {conteudo}
         </span>
       </div>
     </div>

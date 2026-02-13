@@ -48,18 +48,21 @@ export default function ArtigosPage() {
     }
   };
 
-  const filteredArtigos = artigos.filter(
-    (artigo) =>
-      artigo.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (Array.isArray(artigo.autores)
-        ? artigo.autores.join(" ").toLowerCase()
-        : String(artigo.autores).toLowerCase()
-      ).includes(searchTerm.toLowerCase()) ||
-      artigo.palavrasChave!.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredArtigos = artigos.filter((artigo) => {
+    const termo = searchTerm.toLowerCase();
+    const autores = Array.isArray(artigo.autores)
+      ? artigo.autores.join(" ").toLowerCase()
+      : String(artigo.autores).toLowerCase();
+    const palavras = (artigo.palavrasChave ?? "").toLowerCase();
+    return (
+      artigo.titulo.toLowerCase().includes(termo) ||
+      autores.includes(termo) ||
+      palavras.includes(termo)
+    );
+  });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-4 sm:px-0">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -181,63 +184,110 @@ export default function ArtigosPage() {
         </div>
       </div>
 
-      {/* Table */}
-      <DataTable
-        data={filteredArtigos}
-        loading={loading}
-        columns={[
-          { key: "titulo", label: "Título" },
-          { key: "autores", label: "Autores" },
-          { key: "categoria", label: "Categoria" },
-          { key: "anoPublicacao", label: "Ano" },
-          { key: "status", label: "Status" },
-          { key: "views", label: "Views" },
-          { key: "downloads", label: "Downloads" },
-        ]}
-        renderRow={(artigo) => (
-          <>
-            <td className="px-6 py-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-br from-orange-500 to-red-600 text-white">
-                  <FileText className="h-6 w-6" />
+      {/* Table - desktop */}
+      <div className="hidden sm:block">
+        <DataTable
+          data={filteredArtigos}
+          loading={loading}
+          columns={[
+            { key: "titulo", label: "Título" },
+            { key: "autores", label: "Autores" },
+            { key: "categoria", label: "Categoria" },
+            { key: "anoPublicacao", label: "Ano" },
+            { key: "status", label: "Status" },
+            { key: "views", label: "Views" },
+            { key: "downloads", label: "Downloads" },
+          ]}
+          renderRow={(artigo) => (
+            <>
+              <td className="px-6 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-br from-orange-500 to-red-600 text-white">
+                    <FileText className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">
+                      {artigo.titulo}
+                    </p>
+                    <p className="text-sm text-slate-500">
+                      {artigo.instituicao || "—"}
+                    </p>
+                  </div>
                 </div>
-                <div>
+              </td>
+              <td className="px-6 py-4 text-slate-700">
+                {Array.isArray(artigo.autores)
+                  ? artigo.autores.join(", ")
+                  : artigo.autores}
+              </td>
+              <td className="px-6 py-4">
+                <Badge variant="outline">{artigo.categoria}</Badge>
+              </td>
+              <td className="px-6 py-4 text-slate-700">
+                {artigo.anoPublicacao || "—"}
+              </td>
+              <td className="px-6 py-4">
+                <StatusBadge status={artigo.status as ContentStatus} />
+              </td>
+              <td className="px-6 py-4 text-slate-700">
+                {artigo.views.toLocaleString("pt-BR")}
+              </td>
+              <td className="px-6 py-4 text-slate-700">
+                {artigo.downloads.toLocaleString("pt-BR")}
+              </td>
+              <td className="px-6 py-4">
+                <ActionMenu
+                  onEdit={() => router.push(`/admin/artigos/${artigo.id}/editar`)}
+                  onDelete={() => setDeleteId(artigo.id)}
+                />
+              </td>
+            </>
+          )}
+          emptyMessage="Nenhum artigo cadastrado"
+          emptyDescription="Clique em 'Adicionar Artigo' para começar"
+        />
+      </div>
+
+      {/* Cards - mobile */}
+      <div className="space-y-3 sm:hidden">
+        {filteredArtigos.map((artigo) => (
+          <div
+            key={artigo.id}
+            className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm"
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-br from-orange-500 to-red-600 text-white">
+                <FileText className="h-6 w-6" />
+              </div>
+              <div className="flex-1 space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <p className="font-semibold text-slate-900">
                     {artigo.titulo}
                   </p>
-                  <p className="text-sm text-slate-500">
-                    {artigo.instituicao || "—"}
-                  </p>
+                  <Badge variant="outline">{artigo.categoria}</Badge>
                 </div>
+                <p className="text-sm text-slate-600">
+                  {Array.isArray(artigo.autores)
+                    ? artigo.autores.join(", ")
+                    : artigo.autores}
+                </p>
+                <div className="flex flex-wrap gap-3 text-xs text-slate-600">
+                  <span>Ano: {artigo.anoPublicacao || "—"}</span>
+                  <span>Views: {artigo.views.toLocaleString("pt-BR")}</span>
+                  <span>
+                    Downloads: {artigo.downloads.toLocaleString("pt-BR")}
+                  </span>
+                </div>
+                <StatusBadge status={artigo.status as ContentStatus} />
               </div>
-            </td>
-            <td className="px-6 py-4 text-slate-700">{artigo.autores}</td>
-            <td className="px-6 py-4">
-              <Badge variant="outline">{artigo.categoria}</Badge>
-            </td>
-            <td className="px-6 py-4 text-slate-700">
-              {artigo.anoPublicacao || "—"}
-            </td>
-            <td className="px-6 py-4">
-              <StatusBadge status={artigo.status as ContentStatus} />
-            </td>
-            <td className="px-6 py-4 text-slate-700">
-              {artigo.views.toLocaleString("pt-BR")}
-            </td>
-            <td className="px-6 py-4 text-slate-700">
-              {artigo.downloads.toLocaleString("pt-BR")}
-            </td>
-            <td className="px-6 py-4">
               <ActionMenu
                 onEdit={() => router.push(`/admin/artigos/${artigo.id}/editar`)}
                 onDelete={() => setDeleteId(artigo.id)}
               />
-            </td>
-          </>
-        )}
-        emptyMessage="Nenhum artigo cadastrado"
-        emptyDescription="Clique em 'Adicionar Artigo' para começar"
-      />
+            </div>
+          </div>
+        ))}
+      </div>
 
       <ConfirmationDialog
         open={deleteId !== null}

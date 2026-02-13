@@ -3,7 +3,9 @@ import { z } from "zod";
 import { artigos } from "../db/schema/artigo";
 import { areaLivroValues, macroAreaLivroValues } from "@/lib/domain/areas";
 
-export const insertArtigoSchema = createInsertSchema(artigos, {
+// Construímos primeiro o schema base e fazemos o omit antes dos refinements,
+// pois Zod v4 não permite chamar .omit() após superRefine.
+const insertArtigoBaseSchema = createInsertSchema(artigos, {
   titulo: z.string().min(3).max(200),
   slug: z.string().min(3),
   categoria: z.string().min(2),
@@ -40,23 +42,23 @@ export const insertArtigoSchema = createInsertSchema(artigos, {
     ])
     .optional()
     .nullable(),
-})
-  .superRefine((data, ctx) => {
-    if (!data.midia && !data.html) {
-      ctx.addIssue({
-        path: ["html"],
-        code: "custom",
-        message: "Forneça o HTML do artigo ou anexe uma mídia.",
-      });
-    }
-  })
-  .omit({
+}).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
   views: true,
   downloads: true,
   avaliacao: true,
+});
+
+export const insertArtigoSchema = insertArtigoBaseSchema.superRefine((data, ctx) => {
+  if (!data.midia && !data.html) {
+    ctx.addIssue({
+      path: ["html"],
+      code: "custom",
+      message: "Forneça o HTML do artigo ou anexe uma mídia.",
+    });
+  }
 });
 
 export const selectArtigoSchema = createSelectSchema(artigos);

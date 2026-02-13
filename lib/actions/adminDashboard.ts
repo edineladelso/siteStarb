@@ -93,30 +93,50 @@ export async function getDashboardStats() {
 
 export async function getRecentContent(limit: number = 10) {
   try {
-    // Buscar conteúdo recente de cada tipo
-    const recentLivros = await db
+    // Buscar conteúdo recente de cada tipo com metadados normalizados
+    const recentLivros = (await db
       .select()
       .from(livros)
       .orderBy(desc(livros.createdAt))
-      .limit(limit);
+      .limit(limit)).map((item) => ({
+        id: item.id,
+        titulo: item.titulo,
+        createdAt: item.createdAt,
+        tipo: "livro" as const,
+      }));
 
-    const recentSoftwares = await db
+    const recentSoftwares = (await db
       .select()
       .from(softwares)
       .orderBy(desc(softwares.createdAt))
-      .limit(limit);
+      .limit(limit)).map((item) => ({
+        id: item.id,
+        titulo: item.titulo,
+        createdAt: item.createdAt,
+        tipo: "software" as const,
+      }));
 
-    const recentProjetos = await db
+    const recentProjetos = (await db
       .select()
       .from(projetos)
       .orderBy(desc(projetos.createdAt))
-      .limit(limit);
+      .limit(limit)).map((item) => ({
+        id: item.id,
+        titulo: item.titulo,
+        createdAt: item.createdAt,
+        tipo: "projeto" as const,
+      }));
 
-    const recentArtigos = await db
+    const recentArtigos = (await db
       .select()
       .from(artigos)
       .orderBy(desc(artigos.createdAt))
-      .limit(limit);
+      .limit(limit)).map((item) => ({
+        id: item.id,
+        titulo: item.titulo,
+        createdAt: item.createdAt,
+        tipo: "artigo" as const,
+      }));
 
     // Combinar e ordenar
     const allContent = [

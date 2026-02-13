@@ -1,31 +1,35 @@
+CREATE TYPE "public"."tabela" AS ENUM('artigos', 'livros', 'projetos', 'softwares', 'profiles');--> statement-breakpoint
 CREATE TYPE "public"."tipo" AS ENUM('livro', 'software', 'projeto', 'artigo');--> statement-breakpoint
-CREATE TABLE "livros" (
+CREATE TABLE "artigos" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"titulo" text NOT NULL,
 	"slug" text NOT NULL,
 	"categoria" text NOT NULL,
 	"descricao" text NOT NULL,
 	"status" text DEFAULT 'rascunho' NOT NULL,
-	"views" integer DEFAULT 0,
-	"downloads" integer DEFAULT 0,
-	"avaliacao" numeric DEFAULT '0',
-	"autor" text NOT NULL,
-	"isbn" text,
+	"capa" text,
+	"views" integer DEFAULT 0 NOT NULL,
+	"downloads" integer DEFAULT 0 NOT NULL,
+	"avaliacao" numeric DEFAULT '0' NOT NULL,
+	"autores" text[] NOT NULL,
+	"resumo" text NOT NULL,
+	"palavras_chave" text,
 	"ano_publicacao" integer,
-	"editora" text,
-	"idioma" text,
-	"numero_paginas" integer,
-	"detalhes" jsonb NOT NULL,
-	"midia" jsonb NOT NULL,
+	"instituicao" text,
 	"areas" jsonb NOT NULL,
 	"macro_areas" jsonb NOT NULL,
-	"tags" jsonb DEFAULT '[]'::jsonb NOT NULL,
+	"midia" jsonb DEFAULT 'null'::jsonb,
+	"leitura_min" integer DEFAULT 0 NOT NULL,
+	"tags" text[] DEFAULT '{}' NOT NULL,
+	"destaque" boolean DEFAULT false NOT NULL,
+	"citacoes" integer DEFAULT 0 NOT NULL,
+	"html" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "livros_slug_unique" UNIQUE("slug")
+	CONSTRAINT "artigos_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
-CREATE TABLE "softwares" (
+CREATE TABLE "livros" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"titulo" text NOT NULL,
 	"slug" text NOT NULL,
@@ -35,16 +39,32 @@ CREATE TABLE "softwares" (
 	"views" integer DEFAULT 0 NOT NULL,
 	"downloads" integer DEFAULT 0 NOT NULL,
 	"avaliacao" numeric DEFAULT '0' NOT NULL,
-	"site_oficial" text NOT NULL,
-	"funcionalidades" text,
-	"requisitos" text,
-	"preco" text NOT NULL,
-	"plataformas" jsonb NOT NULL,
-	"screenshots" jsonb DEFAULT '[]'::jsonb NOT NULL,
-	"tutorial_url" text,
+	"autor" text NOT NULL,
+	"ano_publicacao" integer,
+	"idioma" text,
+	"detalhes" jsonb NOT NULL,
+	"midia" jsonb NOT NULL,
+	"areas" jsonb NOT NULL,
+	"macro_areas" jsonb NOT NULL,
+	"tags" jsonb DEFAULT '[]'::jsonb NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "softwares_slug_unique" UNIQUE("slug")
+	"novo" boolean DEFAULT true,
+	"popular" boolean DEFAULT false,
+	CONSTRAINT "livros_slug_unique" UNIQUE("slug")
+);
+--> statement-breakpoint
+CREATE TABLE "profiles" (
+	"id" uuid PRIMARY KEY NOT NULL,
+	"email" text NOT NULL,
+	"nome" text NOT NULL,
+	"apelido" text,
+	"avatar_url" text,
+	"role" text DEFAULT 'user' NOT NULL,
+	"provider" text DEFAULT 'email' NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "profiles_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
 CREATE TABLE "projetos" (
@@ -70,7 +90,7 @@ CREATE TABLE "projetos" (
 	CONSTRAINT "projetos_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
-CREATE TABLE "artigos" (
+CREATE TABLE "softwares" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"titulo" text NOT NULL,
 	"slug" text NOT NULL,
@@ -80,15 +100,14 @@ CREATE TABLE "artigos" (
 	"views" integer DEFAULT 0 NOT NULL,
 	"downloads" integer DEFAULT 0 NOT NULL,
 	"avaliacao" numeric DEFAULT '0' NOT NULL,
-	"autores" text NOT NULL,
-	"resumo" text NOT NULL,
-	"palavras_chave" text,
-	"ano_publicacao" integer,
-	"instituicao" text,
-	"areas" jsonb NOT NULL,
-	"macro_areas" jsonb NOT NULL,
-	"midia" jsonb NOT NULL,
+	"site_oficial" text NOT NULL,
+	"funcionalidades" text,
+	"requisitos" text,
+	"preco" text NOT NULL,
+	"plataformas" jsonb NOT NULL,
+	"screenshots" jsonb DEFAULT '[]'::jsonb NOT NULL,
+	"tutorial_url" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "artigos_slug_unique" UNIQUE("slug")
+	CONSTRAINT "softwares_slug_unique" UNIQUE("slug")
 );

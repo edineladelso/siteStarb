@@ -34,52 +34,12 @@ import { usePathname } from "next/navigation";
 import type { ReactElement } from "react";
 
 // ==================== ADMIN SIDEBAR ====================
-const menuItems: {
-  title: string;
-  href: string;
-  icon: ReactElement;
-  badge?: string;
-}[] = [
-  {
-    title: "Dashboard",
-    href: "/admin",
-    icon: <LayoutDashboard />,
-  },
-  {
-    title: "Home",
-    href: "/",
-    icon: <Home />,
-  },
-  {
-    title: "Livros",
-    href: "/admin/livros",
-    icon: <BookIcon />,
-    badge: "45",
-  },
-  {
-    title: "Softwares",
-    href: "/admin/softwares",
-    icon: <Computer />,
-    badge: "12",
-  },
-  {
-    title: "Projetos",
-    href: "/admin/projetos",
-    icon: <ProjectIcon />,
-    badge: "8",
-  },
-  {
-    title: "Artigos",
-    href: "/admin/artigos",
-    icon: <ArticleIcon />,
-    badge: "23",
-  },
-  {
-    title: "Analytics",
-    href: "/admin/analytics",
-    icon: <AnalyticsIcon />,
-  },
-];
+type SidebarCounts = {
+  livros?: number;
+  softwares?: number;
+  projetos?: number;
+  artigos?: number;
+};
 
 const settingsItems = [
   {
@@ -104,11 +64,59 @@ const services = [
 ];
 
 export function AdminSidebar({
+  counts,
   ...props
-}: React.ComponentProps<typeof Sidebar>) {
+}: React.ComponentProps<typeof Sidebar> & { counts?: SidebarCounts }) {
   const pathname = usePathname();
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+
+  const menuItems: {
+    title: string;
+    href: string;
+    icon: ReactElement;
+    badge?: string;
+  }[] = [
+    {
+      title: "Dashboard",
+      href: "/admin",
+      icon: <LayoutDashboard />,
+    },
+    {
+      title: "Home",
+      href: "/",
+      icon: <Home />,
+    },
+    {
+      title: "Livros",
+      href: "/admin/livros",
+      icon: <BookIcon />,
+      badge: counts?.livros ? String(counts.livros) : "0",
+    },
+    {
+      title: "Softwares",
+      href: "/admin/softwares",
+      icon: <Computer />,
+      badge: counts?.softwares ? String(counts.softwares) : "0",
+    },
+    {
+      title: "Projetos",
+      href: "/admin/projetos",
+      icon: <ProjectIcon />,
+      badge: counts?.projetos ? String(counts.projetos) : "0",
+    },
+    {
+      title: "Artigos",
+      href: "/admin/artigos",
+      icon: <ArticleIcon />,
+      badge: counts?.artigos ? String(counts.artigos) : "0",
+    },
+    {
+      title: "Analytics",
+      href: "/admin/analytics",
+      icon: <AnalyticsIcon />,
+    },
+  ];
 
   return (
     <Sidebar collapsible="icon" {...props}>

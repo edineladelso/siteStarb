@@ -6,7 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { SoftwareForm } from "@/components/admin/forms/SoftwareForm";
 import { getSoftwareById } from "@/lib/actions";
 import type { Software } from "@/lib/types";
-import { LoadingContent } from "../../../ui/Loading";
+import { LoadingContent } from "../../../../../loading/Loading";
 import { ErrorContent } from "@/app/error/ErrorComponent";
 
 export default function EditarSoftwarePage() {

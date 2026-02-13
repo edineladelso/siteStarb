@@ -6,7 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { ProjetoForm } from "@/components/admin/forms/ProjetoForm";
 import { getProjetoById } from "@/lib/actions";
 import type { Projeto } from "@/lib/types";
-import { LoadingContent } from "../../../ui/Loading";
+import { LoadingContent } from "../../../../../loading/Loading";
 import { ErrorContent } from "@/app/error/ErrorComponent";
 
 export default function EditarProjetoPage() {
@@ -35,26 +35,26 @@ export default function EditarProjetoPage() {
     }
   };
 
-   useEffect(() => {
+  useEffect(() => {
     if (params?.id) {
       loadProjet(Number(params.id));
     }
   }, [params.id]);
 
   if (loading) {
-    return (
-      <LoadingContent conteudo="projetos" />
-    );
+    return <LoadingContent conteudo="projetos" />;
   }
 
   if (error || !projeto) {
     return (
-      <ErrorContent conteudo="Projeto"
+      <ErrorContent
+        conteudo="Projeto"
         backUrl="/admin/projetos"
         secondaryAction={{
           label: "Criar novo Projeto",
           onClick: () => router.push("/admin/projetos/novo"),
-        }}/>
+        }}
+      />
     );
   }
 

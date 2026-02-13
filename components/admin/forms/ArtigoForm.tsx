@@ -42,8 +42,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import CloudinaryUpload from "../CloudinaryUpload";
 import { criarArtigo, atualizarArtigo } from "@/lib/actions/artigos.actions";
 import { CATEGORIAS, type Artigo } from "@/lib/types";
-import { areaLivroValues, macroAreaLivroValues, toMacroAreas, type AreaLivro } from "@/lib/domain/areas";
-import { insertArtigoSchema } from "@/lib/drizzle/validations/artigo.schema";
+import { areaLivroValues, type AreaLivro } from "@/lib/domain/areas";
 import {
   FileText,
   Users,
@@ -57,6 +56,8 @@ import {
   Check,
   Grid3x3,
   Loader2,
+  Maximize,
+  Maximize2Icon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -66,60 +67,77 @@ interface ArtigoFormProps {
 }
 
 // Schema dedicado para o formulário - não usar omit() para evitar conflitos de tipo
-const formSchema = z.object({
-  titulo: z.string().min(3, "Título deve ter no mínimo 3 caracteres").max(200),
-  categoria: z.string().min(2, "Selecione uma categoria"),
-  descricao: z.string().min(10, "Descrição deve ter no mínimo 10 caracteres"),
-  status: z.enum(["ativo", "rascunho", "arquivado", "pendente", "publicado"]),
-  autores: z.array(z.string().min(2)).min(1, "Adicione pelo menos um autor"),
-  resumo: z.string().min(10, "Resumo deve ter no mínimo 10 caracteres"),
-  palavrasChave: z.string().nullable().optional(),
-  instituicao: z.string().nullable().optional(),
-  anoPublicacao: z.number().int().nullable().optional(),
-  areas: z.array(z.enum(areaLivroValues)).min(1, "Selecione pelo menos uma área"),
-  midia: z.discriminatedUnion("tipo", [
-    z.object({
-      tipo: z.literal("pdf"),
-      pdfUrl: z.string().url("URL do PDF inválida"),
-    }),
-    z.object({
-      tipo: z.literal("plataforma"),
-      htmlUrl: z.string().url("URL HTML inválida"),
-    }),
-  ]).nullable().optional(),
-  leituraMin: z.number().int().min(0).default(0),
-  tags: z.array(z.string().min(1)).default([]),
-  destaque: z.boolean().default(false),
-  citacoes: z.number().int().min(0).default(0),
-  html: z.string().optional(),
-}).superRefine((data, ctx) => {
-  if (!data.midia && !data.html) {
-    ctx.addIssue({
-      path: ["html"],
-      code: "custom",
-      message: "Forneça o HTML do artigo ou anexe uma mídia.",
-    });
-  }
-});
+const formSchema = z
+  .object({
+    titulo: z
+      .string()
+      .min(3, "Título deve ter no mínimo 3 caracteres")
+      .max(200),
+    categoria: z.string().min(2, "Selecione uma categoria"),
+    descricao: z.string().min(10, "Descrição deve ter no mínimo 10 caracteres"),
+    status: z.enum(["ativo", "rascunho", "arquivado", "pendente", "publicado"]),
+    autores: z.array(z.string().min(2)).min(1, "Adicione pelo menos um autor"),
+    resumo: z.string().min(10, "Resumo deve ter no mínimo 10 caracteres"),
+    palavrasChave: z.string().nullable().optional(),
+    instituicao: z.string().nullable().optional(),
+    anoPublicacao: z.number().int().nullable().optional(),
+    areas: z
+      .array(z.enum(areaLivroValues))
+      .min(1, "Selecione pelo menos uma área"),
+    midia: z
+      .discriminatedUnion("tipo", [
+        z.object({
+          tipo: z.literal("pdf"),
+          pdfUrl: z.string().url("URL do PDF inválida"),
+        }),
+        z.object({
+          tipo: z.literal("plataforma"),
+          htmlUrl: z.string().url("URL HTML inválida"),
+        }),
+      ])
+      .nullable()
+      .optional(),
+    leituraMin: z.number().int().min(0).default(0),
+    tags: z.array(z.string().min(1)).default([]),
+    destaque: z.boolean().default(false),
+    citacoes: z.number().int().min(0).default(0),
+    html: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.midia && !data.html) {
+      ctx.addIssue({
+        path: ["html"],
+        code: "custom",
+        message: "Forneça o HTML do artigo ou anexe uma mídia.",
+      });
+    }
+  });
 
-type FormValues = z.infer<typeof formSchema>;
+// Usamos z.input para alinhar o tipo do useForm com o zodResolver (RHF espera o tipo de entrada)
+type FormValues = z.input<typeof formSchema>;
 
 // Helper para transformar mídia inicial no formato correto
-function normalizarMidiaInicial(
-  midia: any
-): { tipo: "pdf"; pdfUrl: string } | { tipo: "plataforma"; htmlUrl: string } | null {
+function normalizarMidiaInicial(midia: unknown): FormValues["midia"] {
   if (!midia || typeof midia !== "object") return null;
-  
-  const tipo = midia.tipo;
-  
-  if (tipo === "pdf" && typeof midia.pdfUrl === "string" && midia.pdfUrl.length > 0) {
-    return { tipo: "pdf", pdfUrl: midia.pdfUrl };
+
+  const tipo = (midia as any).tipo;
+
+  if (
+    tipo === "pdf" &&
+    typeof (midia as any).pdfUrl === "string" &&
+    (midia as any).pdfUrl.length > 0
+  ) {
+    return { tipo: "pdf", pdfUrl: (midia as any).pdfUrl };
   }
-  
-  if (tipo === "plataforma" && typeof midia.htmlUrl === "string" && midia.htmlUrl.length > 0) {
-    return { tipo: "plataforma", htmlUrl: midia.htmlUrl };
+
+  if (
+    tipo === "plataforma" &&
+    typeof (midia as any).htmlUrl === "string" &&
+    (midia as any).htmlUrl.length > 0
+  ) {
+    return { tipo: "plataforma", htmlUrl: (midia as any).htmlUrl };
   }
-  
+
   return null;
 }
 
@@ -127,8 +145,9 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
   const [isAreasDialogOpen, setIsAreasDialogOpen] = useState(false);
+  const [isHtmlDialogOpen, setIsHtmlDialogOpen] = useState(false);
   const [selectedAreas, setSelectedAreas] = useState<AreaLivro[]>(
-    (initialData?.areas as AreaLivro[]) || []
+    (initialData?.areas as AreaLivro[]) || [],
   );
 
   // Preparar valores iniciais normalizados
@@ -137,9 +156,9 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
     categoria: initialData?.categoria || "",
     descricao: initialData?.resumo || "",
     status: (initialData?.status as FormValues["status"]) || "rascunho",
-    autores: Array.isArray(initialData?.autores) 
-      ? initialData.autores 
-      : initialData?.autores 
+    autores: Array.isArray(initialData?.autores)
+      ? initialData.autores
+      : initialData?.autores
         ? [String(initialData.autores)]
         : [],
     resumo: initialData?.resumo || "",
@@ -155,6 +174,11 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
     html: initialData?.html || "",
   };
 
+  // Entrada livre para autores (texto) - só parseamos vírgulas na submissão/blur
+  const [autoresInput, setAutoresInput] = useState(
+    () => defaultValues.autores.join(", ")
+  );
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues,
@@ -165,14 +189,30 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
   const midiaAtual = watch("midia");
   const midiaTipo = midiaAtual?.tipo;
   const currentAreas = watch("areas");
-  const currentTags = watch("tags");
+  const currentTags: string[] = watch("tags") ?? [];
+  const resumoAtual = watch("resumo");
 
   // Sincronizar áreas selecionadas com o form
   useEffect(() => {
     setValue("areas", selectedAreas);
   }, [selectedAreas, setValue]);
 
+  // Manter descricao em sincronia com o resumo para satisfazer a validação
+  useEffect(() => {
+    setValue("descricao", resumoAtual || "");
+  }, [resumoAtual, setValue]);
+
+  const parseAutores = (raw: string) =>
+    raw
+      .split(",")
+      .map((a) => a.trim())
+      .filter(Boolean);
+
   async function onSubmit(values: FormValues) {
+    // Garantir que autores estão sincronizados com o texto digitado
+    const autoresParsed = parseAutores(autoresInput);
+    values = { ...values, autores: autoresParsed };
+
     setIsPending(true);
     try {
       const formData = new FormData();
@@ -183,30 +223,36 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
       formData.set("descricao", values.descricao);
       formData.set("status", values.status);
       formData.set("resumo", values.resumo);
-      formData.set("autores", values.autores.join(", "));
-      
+      formData.set("autores", autoresParsed.join(", "));
+
       // Campos opcionais
-      if (values.palavrasChave) formData.set("palavrasChave", values.palavrasChave);
+      if (values.palavrasChave)
+        formData.set("palavrasChave", values.palavrasChave);
       if (values.instituicao) formData.set("instituicao", values.instituicao);
-      if (values.anoPublicacao) formData.set("anoPublicacao", String(values.anoPublicacao));
-      
+      if (values.anoPublicacao)
+        formData.set("anoPublicacao", String(values.anoPublicacao));
+
       // Áreas
       formData.set("areas", values.areas.join(","));
-      
+
       // Mídia
       if (values.midia) {
         formData.set("midia_tipo", values.midia.tipo);
         if (values.midia.tipo === "pdf" && "pdfUrl" in values.midia) {
           formData.set("pdf_url", values.midia.pdfUrl);
-        } else if (values.midia.tipo === "plataforma" && "htmlUrl" in values.midia) {
+        } else if (
+          values.midia.tipo === "plataforma" &&
+          "htmlUrl" in values.midia
+        ) {
           formData.set("html_url", values.midia.htmlUrl);
         }
       }
-      
+
       // Metadados
       formData.set("leituraMin", String(values.leituraMin));
       formData.set("citacoes", String(values.citacoes));
-      formData.set("tags", values.tags.join(","));
+      const tags = values.tags ?? [];
+      formData.set("tags", tags.join(","));
       if (values.destaque) formData.set("destaque", "on");
       if (values.html) formData.set("html", values.html);
 
@@ -237,11 +283,14 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setValue("tags", currentTags.filter((tag) => tag !== tagToRemove));
+    setValue(
+      "tags",
+      currentTags.filter((tag) => tag !== tagToRemove),
+    );
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 py-8 px-4 sm:px-6">
+    <div className="bg-sidebar mx-auto max-w-6xl space-y-6 rounded-3xl py-8 shadow-gray-400 sm:px-16 sm:py-10 sm:shadow">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
@@ -252,9 +301,9 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
             Gestão de publicações científicas e técnicas
           </p>
         </div>
-        <Button 
-          variant="outline" 
-          onClick={onCancel} 
+        <Button
+          variant="outline"
+          onClick={onCancel}
           type="button"
           className="shadow-sm"
         >
@@ -263,13 +312,18 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
           {/* Dados Principais */}
-          <Card className="shadow-md border-slate-200">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-slate-50">
-              <div className="flex items-center gap-2">
+          <Card className="bg-accent border-slate-300 shadow-md">
+            <CardHeader className="m-0 p-0">
+              <div className="flex w-full items-center gap-2 border-b py-2 pl-5">
                 <FileText className="h-5 w-5 text-blue-600" />
-                <CardTitle className="text-lg">Informações Principais</CardTitle>
+                <CardTitle className="text-base">
+                  Informações Principais
+                </CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
@@ -284,7 +338,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                     <FormControl>
                       <Input
                         placeholder="Ex: Impacto da IA na Engenharia Civil"
-                        className="shadow-sm"
+                        className="shadow-sm text-sm"
                         {...field}
                       />
                     </FormControl>
@@ -364,7 +418,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                     <FormControl>
                       <Textarea
                         placeholder="Descreva brevemente o conteúdo do artigo..."
-                        className="min-h-[120px] shadow-sm resize-none"
+                        className="min-h-[120px] resize-none shadow-sm"
                         {...field}
                       />
                     </FormControl>
@@ -379,11 +433,13 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
           </Card>
 
           {/* Autoria e Publicação */}
-          <Card className="shadow-md border-slate-200">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-slate-50">
-              <div className="flex items-center gap-2">
+          <Card className="bg-accent border-slate-300 shadow-md">
+            <CardHeader className="m-0 p-0">
+              <div className="flex w-full items-center gap-2 border-b py-2 pl-5">
                 <Users className="h-5 w-5 text-purple-600" />
-                <CardTitle className="text-lg">Autoria e Publicação</CardTitle>
+                <CardTitle className="text-base">
+                  Autoria e Publicação
+                </CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
@@ -399,13 +455,13 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                       <Input
                         placeholder="Nome dos autores (separados por vírgula)"
                         className="shadow-sm"
-                        value={field.value.join(", ")}
+                        value={autoresInput}
                         onChange={(e) => {
-                          const autores = e.target.value
-                            .split(",")
-                            .map((a) => a.trim())
-                            .filter(Boolean);
-                          field.onChange(autores);
+                          setAutoresInput(e.target.value);
+                        }}
+                        onBlur={() => {
+                          const autores = parseAutores(autoresInput);
+                          setValue("autores", autores, { shouldValidate: true });
                         }}
                       />
                     </FormControl>
@@ -469,11 +525,11 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
           </Card>
 
           {/* Conteúdo e Mídia */}
-          <Card className="shadow-md border-slate-200">
-            <CardHeader className="bg-gradient-to-r from-green-50 to-slate-50">
-              <div className="flex items-center gap-2">
+          <Card className="bg-accent border-slate-300 shadow-md">
+            <CardHeader className="m-0 p-0">
+              <div className="flex w-full items-center gap-2 border-b py-2 pl-5">
                 <Upload className="h-5 w-5 text-green-600" />
-                <CardTitle className="text-lg">Conteúdo e Mídia</CardTitle>
+                <CardTitle className="text-base">Conteúdo e Mídia</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
@@ -481,29 +537,32 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                 <FormLabel className="text-sm font-semibold">
                   Tipo de Mídia
                 </FormLabel>
-                <div className="grid gap-3 sm:grid-cols-3">
+                <div className="grid grid-cols-3 gap-2">
                   <Button
                     type="button"
                     variant={midiaTipo === "plataforma" ? "default" : "outline"}
                     className={cn(
-                      "h-auto flex-col gap-2 py-4 shadow-sm",
-                      midiaTipo === "plataforma" && "bg-blue-600 hover:bg-blue-700"
+                      "bg-sidebar h-auto flex-col gap-2 py-2 shadow-sm sm:py-4",
+                      midiaTipo === "plataforma" &&
+                        "bg-blue-600 hover:bg-blue-700",
                     )}
                     onClick={() =>
                       setValue("midia", { tipo: "plataforma", htmlUrl: "" })
                     }
                   >
                     <BookOpen className="h-5 w-5" />
-                    <span className="text-xs">Plataforma (HTML)</span>
+                    <span className="text-xs text-wrap">Plataforma (HTML)</span>
                   </Button>
                   <Button
                     type="button"
                     variant={midiaTipo === "pdf" ? "default" : "outline"}
                     className={cn(
-                      "h-auto flex-col gap-2 py-4 shadow-sm",
-                      midiaTipo === "pdf" && "bg-blue-600 hover:bg-blue-700"
+                      "bg-sidebar h-auto flex-col gap-2 py-2 shadow-sm sm:py-4",
+                      midiaTipo === "pdf" && "bg-blue-600 hover:bg-blue-700",
                     )}
-                    onClick={() => setValue("midia", { tipo: "pdf", pdfUrl: "" })}
+                    onClick={() =>
+                      setValue("midia", { tipo: "pdf", pdfUrl: "" })
+                    }
                   >
                     <FileText className="h-5 w-5" />
                     <span className="text-xs">PDF</span>
@@ -512,13 +571,13 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                     type="button"
                     variant={!midiaTipo ? "default" : "outline"}
                     className={cn(
-                      "h-auto flex-col gap-2 py-4 shadow-sm",
-                      !midiaTipo && "bg-blue-600 hover:bg-blue-700"
+                      "bg-sidebar h-auto flex-col gap-2 py-2 shadow-sm sm:py-4",
+                      !midiaTipo && "bg-blue-600 hover:bg-blue-700",
                     )}
                     onClick={() => setValue("midia", null)}
                   >
                     <FileText className="h-5 w-5" />
-                    <span className="text-xs">Somente HTML</span>
+                    <span className="text-xs text-wrap">Somente HTML</span>
                   </Button>
                 </div>
               </div>
@@ -535,14 +594,16 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                       setValue("midia", { tipo: "pdf", pdfUrl: files[0].url });
                     }}
                   />
-                  {midiaAtual && midiaAtual.tipo === "pdf" && midiaAtual.pdfUrl && (
-                    <div className="flex items-center gap-2 rounded-md bg-green-100 px-3 py-2">
-                      <Check className="h-4 w-4 text-green-700" />
-                      <p className="text-xs font-medium text-green-700">
-                        PDF carregado: {midiaAtual.pdfUrl.split("/").pop()}
-                      </p>
-                    </div>
-                  )}
+                  {midiaAtual &&
+                    midiaAtual.tipo === "pdf" &&
+                    midiaAtual.pdfUrl && (
+                      <div className="flex items-center gap-2 rounded-md bg-green-100 px-3 py-2">
+                        <Check className="h-4 w-4 text-green-700" />
+                        <p className="text-xs font-medium text-green-700">
+                          PDF carregado: {midiaAtual.pdfUrl.split("/").pop()}
+                        </p>
+                      </div>
+                    )}
                 </div>
               )}
 
@@ -551,20 +612,59 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                 name="html"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-semibold">
-                      Conteúdo HTML
-                    </FormLabel>
+                    <div className="flex items-center justify-between">
+                      <FormLabel className="text-sm font-semibold">
+                        Conteúdo HTML
+                      </FormLabel>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setIsHtmlDialogOpen(true)}
+                        className="h-8"
+                      >
+                        <Maximize />
+                      </Button>
+                    </div>
                     <FormControl>
                       <Textarea
                         placeholder="<h1>Título</h1><p>Conteúdo do artigo...</p>"
-                        className="min-h-[200px] font-mono text-xs shadow-sm resize-none"
+                        className="min-h-[200px] resize-none font-mono text-xs shadow-sm"
                         {...field}
                       />
                     </FormControl>
                     <FormDescription className="text-xs">
-                      HTML renderizado na plataforma. Obrigatório se não houver PDF.
+                      HTML renderizado na plataforma. Obrigatório se não houver
+                      PDF.
                     </FormDescription>
                     <FormMessage />
+
+                    <Dialog
+                      open={isHtmlDialogOpen}
+                      onOpenChange={setIsHtmlDialogOpen}
+                    >
+                      <DialogContent
+                        className="flex h-[calc(100%-1rem)] sm:max-h-[90vh] w-[calc(100%-1rem)] flex-col gap-3 p-4 sm:h-[95vh] sm:w-[90vw] sm:max-w-5xl sm:p-6 lg:h-[80vh] lg:w-[80vw]"
+
+                        classNameX="top-1 sm:top-3 right-1 sm:right-3 p-1 border rounded-lg border-gray-600"
+                        size={5}
+                      >
+                        <DialogHeader className="m-0 p-0">
+                          <DialogTitle>Editar Conteúdo HTML</DialogTitle>
+                        </DialogHeader>
+                        <div className="flex-1 w-full">
+                          <Textarea
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="<h1>Título</h1><p>Conteúdo do artigo...</p>"
+                            className="h-full w-full resize-none font-mono text-xs sm:text-sm shadow-sm "
+                          />
+                        </div>
+                        <DialogFooter className="m-0 p-0 text-xs">
+                          O conteúdo salva automaticamente no form.
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </FormItem>
                 )}
               />
@@ -572,11 +672,13 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
           </Card>
 
           {/* Metadados */}
-          <Card className="shadow-md border-slate-200">
-            <CardHeader className="bg-gradient-to-r from-orange-50 to-slate-50">
-              <div className="flex items-center gap-2">
+          <Card className="bg-accent border-slate-300 shadow-md">
+            <CardHeader className="m-0 p-0">
+              <div className="flex w-full items-center gap-2 border-b py-2 pl-5">
                 <Settings className="h-5 w-5 text-orange-600" />
-                <CardTitle className="text-lg">Metadados e Configurações</CardTitle>
+                <CardTitle className="text-lg">
+                  Metadados e Configurações
+                </CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
@@ -598,7 +700,9 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                           min={0}
                           className="shadow-sm"
                           {...field}
-                          onChange={(e) => field.onChange(Number(e.target.value))}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -623,7 +727,9 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                           min={0}
                           className="shadow-sm"
                           {...field}
-                          onChange={(e) => field.onChange(Number(e.target.value))}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -645,7 +751,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                         </FormControl>
                         <div className="flex items-center gap-1.5">
                           <Sparkles className="h-4 w-4 text-amber-600" />
-                          <FormLabel className="text-sm font-semibold cursor-pointer">
+                          <FormLabel className="cursor-pointer text-sm font-semibold">
                             Destacar
                           </FormLabel>
                         </div>
@@ -659,7 +765,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
 
               {/* Tags */}
               <div className="space-y-3">
-                <FormLabel className="text-sm font-semibold flex items-center gap-1.5">
+                <FormLabel className="flex items-center gap-1.5 text-sm font-semibold">
                   <Tag className="h-4 w-4" />
                   Tags
                 </FormLabel>
@@ -689,7 +795,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                         <button
                           type="button"
                           onClick={() => handleRemoveTag(tag)}
-                          className="ml-1 hover:text-destructive"
+                          className="hover:text-destructive ml-1"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -703,11 +809,14 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
 
               {/* Áreas de Conhecimento */}
               <div className="space-y-3">
-                <FormLabel className="text-sm font-semibold flex items-center gap-1.5">
+                <FormLabel className="flex items-center gap-1.5 text-sm font-semibold">
                   <Grid3x3 className="h-4 w-4" />
                   Áreas de Conhecimento *
                 </FormLabel>
-                <Dialog open={isAreasDialogOpen} onOpenChange={setIsAreasDialogOpen}>
+                <Dialog
+                  open={isAreasDialogOpen}
+                  onOpenChange={setIsAreasDialogOpen}
+                >
                   <DialogTrigger asChild>
                     <Button
                       type="button"
@@ -719,7 +828,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                         : "Selecionar áreas"}
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-2xl max-h-[80vh]">
+                  <DialogContent className="max-h-[80vh] max-w-2xl">
                     <DialogHeader>
                       <DialogTitle>Áreas de Conhecimento</DialogTitle>
                       <DialogDescription>
@@ -732,10 +841,10 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                           <label
                             key={area}
                             className={cn(
-                              "flex items-center gap-2 rounded-lg border-2 p-3 cursor-pointer transition-all hover:bg-slate-50",
+                              "flex cursor-pointer items-center gap-2 rounded-lg border-2 p-3 transition-all hover:bg-slate-50",
                               selectedAreas.includes(area)
                                 ? "border-blue-500 bg-blue-50"
-                                : "border-slate-200"
+                                : "border-slate-200",
                             )}
                           >
                             <Checkbox
@@ -745,7 +854,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                                   setSelectedAreas([...selectedAreas, area]);
                                 } else {
                                   setSelectedAreas(
-                                    selectedAreas.filter((a) => a !== area)
+                                    selectedAreas.filter((a) => a !== area),
                                   );
                                 }
                               }}
@@ -777,7 +886,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                   </div>
                 )}
                 {form.formState.errors.areas && (
-                  <p className="text-sm font-medium text-destructive">
+                  <p className="text-destructive text-sm font-medium">
                     {form.formState.errors.areas.message}
                   </p>
                 )}
@@ -823,7 +932,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
             <Button
               type="submit"
               disabled={isPending}
-              className="bg-blue-600 hover:bg-blue-700 shadow-md"
+              className="bg-blue-600 shadow-md hover:bg-blue-700"
             >
               {isPending ? (
                 <>

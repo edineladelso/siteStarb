@@ -11,13 +11,16 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { artigosBiblioteca } from "../../../../lib/localDadosHome/dadosArtigos";
 import ArtigoCard, { clampStyle } from "./ui/ArtigoCard";
+import { listarArtigos } from "@/lib/actions";
+import type { Artigo } from "@/lib";
+import { LoadingContent, LoadingVariant } from "@/app/loading/Loading";
 
 function StatPill({
   icon,
@@ -44,38 +47,65 @@ function StatPill({
 export default function ArtigosPage() {
   const [busca, setBusca] = useState("");
   const [tagAtiva, setTagAtiva] = useState<string | null>(null);
+  const [arigosItems, setArtigosItems] = useState<Artigo[] | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchArtigos() {
+      try {
+        const artigosServidor = await listarArtigos();
+        // Mesmo que venha vazio do servidor, respeitamos o retorno (pode não haver dados)
+        setArtigosItems(artigosServidor);
+      } catch (err) {
+        console.error("Erro ao buscar Artigos: ", err);
+        // Fallback já é garantido por artigosFrontend (usa dados locais)
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchArtigos();
+  }, []);
+
+  const artigosFrontend = arigosItems ?? artigosBiblioteca;
 
   const todasTags = useMemo(
-    () => Array.from(new Set(artigosBiblioteca.flatMap((a) => a.tags))),
-    [],
+    () =>
+      Array.from(
+        new Set(artigosFrontend.flatMap((a) => a.tags ?? []).filter(Boolean)),
+      ),
+    [artigosFrontend],
   );
 
   const artigosFiltrados = useMemo(() => {
     const termo = busca.trim().toLowerCase();
-    return artigosBiblioteca.filter((artigo) => {
+    return artigosFrontend.filter((artigo) => {
       const atendeBusca =
         !termo ||
         artigo.titulo.toLowerCase().includes(termo) ||
         artigo.resumo.toLowerCase().includes(termo) ||
         artigo.autores.some((autor) => autor.toLowerCase().includes(termo));
 
-      const atendeTag = !tagAtiva || artigo.tags.includes(tagAtiva);
+      const atendeTag = !tagAtiva || (artigo.tags ?? []).includes(tagAtiva);
       return atendeBusca && atendeTag;
     });
-  }, [busca, tagAtiva]);
+  }, [busca, tagAtiva, artigosFrontend]);
+
+  if (loading) {
+    return <LoadingVariant conteudo="Artigos" />;
+  }
 
   const artigoDestaque =
     artigosFiltrados.find((a) => a.destaque) ||
     artigosFiltrados[0] ||
-    artigosBiblioteca[0];
+    artigosFrontend[0];
   const capaDestaque =
     artigoDestaque?.capa ?? "https://placehold.co/800x480?text=Artigo";
 
-  const totalViews = artigosBiblioteca.reduce(
+  const totalViews = artigosFrontend.reduce(
     (acc, artigo) => acc + (artigo.views ?? 0),
     0,
   );
-  const totalCitacoes = artigosBiblioteca.reduce(
+  const totalCitacoes = artigosFrontend.reduce(
     (acc, artigo) => acc + artigo.citacoes,
     0,
   );
@@ -102,7 +132,7 @@ export default function ArtigosPage() {
               <StatPill
                 icon={<FileText className="h-4 w-4" />}
                 label="Artigos publicados"
-                value={`${artigosBiblioteca.length} ativos`}
+                value={`${artigosFrontend.length} ativos`}
               />
               <StatPill
                 icon={<BarChart3 className="h-4 w-4" />}

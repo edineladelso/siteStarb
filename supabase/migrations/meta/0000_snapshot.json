@@ -1,9 +1,191 @@
 {
-  "id": "13f585e9-a90e-48bb-8fec-e6a760e2276a",
+  "id": "adecfce6-193f-41ce-bec9-d8656fe03e77",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.artigos": {
+      "name": "artigos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "categoria": {
+          "name": "categoria",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'rascunho'"
+        },
+        "capa": {
+          "name": "capa",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "views": {
+          "name": "views",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "downloads": {
+          "name": "downloads",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "avaliacao": {
+          "name": "avaliacao",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "autores": {
+          "name": "autores",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resumo": {
+          "name": "resumo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "palavras_chave": {
+          "name": "palavras_chave",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ano_publicacao": {
+          "name": "ano_publicacao",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instituicao": {
+          "name": "instituicao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "areas": {
+          "name": "areas",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "macro_areas": {
+          "name": "macro_areas",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "midia": {
+          "name": "midia",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'null'::jsonb"
+        },
+        "leitura_min": {
+          "name": "leitura_min",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "tags": {
+          "name": "tags",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
+        },
+        "destaque": {
+          "name": "destaque",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "citacoes": {
+          "name": "citacoes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "html": {
+          "name": "html",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "artigos_slug_unique": {
+          "name": "artigos_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slug"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.livros": {
       "name": "livros",
       "schema": "",
@@ -49,21 +231,21 @@
           "name": "views",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": 0
         },
         "downloads": {
           "name": "downloads",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": 0
         },
         "avaliacao": {
           "name": "avaliacao",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "'0'"
         },
         "autor": {
@@ -72,33 +254,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "isbn": {
-          "name": "isbn",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
         "ano_publicacao": {
           "name": "ano_publicacao",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "editora": {
-          "name": "editora",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
         "idioma": {
           "name": "idioma",
           "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "numero_paginas": {
-          "name": "numero_paginas",
-          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -146,6 +310,20 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "novo": {
+          "name": "novo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "popular": {
+          "name": "popular",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         }
       },
       "indexes": {},
@@ -164,110 +342,53 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.softwares": {
-      "name": "softwares",
+    "public.profiles": {
+      "name": "profiles",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true
         },
-        "titulo": {
-          "name": "titulo",
+        "email": {
+          "name": "email",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "slug": {
-          "name": "slug",
+        "nome": {
+          "name": "nome",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "categoria": {
-          "name": "categoria",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "descricao": {
-          "name": "descricao",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'rascunho'"
-        },
-        "views": {
-          "name": "views",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "downloads": {
-          "name": "downloads",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "avaliacao": {
-          "name": "avaliacao",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'0'"
-        },
-        "site_oficial": {
-          "name": "site_oficial",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "funcionalidades": {
-          "name": "funcionalidades",
+        "apelido": {
+          "name": "apelido",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "requisitos": {
-          "name": "requisitos",
+        "avatar_url": {
+          "name": "avatar_url",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "preco": {
-          "name": "preco",
+        "role": {
+          "name": "role",
           "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "plataformas": {
-          "name": "plataformas",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "screenshots": {
-          "name": "screenshots",
-          "type": "jsonb",
           "primaryKey": false,
           "notNull": true,
-          "default": "'[]'::jsonb"
+          "default": "'user'"
         },
-        "tutorial_url": {
-          "name": "tutorial_url",
+        "provider": {
+          "name": "provider",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "'email'"
         },
         "created_at": {
           "name": "created_at",
@@ -288,11 +409,11 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "softwares_slug_unique": {
-          "name": "softwares_slug_unique",
+        "profiles_email_unique": {
+          "name": "profiles_email_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "slug"
+            "email"
           ]
         }
       },
@@ -442,8 +563,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.artigos": {
-      "name": "artigos",
+    "public.softwares": {
+      "name": "softwares",
       "schema": "",
       "columns": {
         "id": {
@@ -504,53 +625,48 @@
           "notNull": true,
           "default": "'0'"
         },
-        "autores": {
-          "name": "autores",
+        "site_oficial": {
+          "name": "site_oficial",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "resumo": {
-          "name": "resumo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "palavras_chave": {
-          "name": "palavras_chave",
+        "funcionalidades": {
+          "name": "funcionalidades",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "ano_publicacao": {
-          "name": "ano_publicacao",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "instituicao": {
-          "name": "instituicao",
+        "requisitos": {
+          "name": "requisitos",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "areas": {
-          "name": "areas",
+        "preco": {
+          "name": "preco",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plataformas": {
+          "name": "plataformas",
           "type": "jsonb",
           "primaryKey": false,
           "notNull": true
         },
-        "macro_areas": {
-          "name": "macro_areas",
+        "screenshots": {
+          "name": "screenshots",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'[]'::jsonb"
         },
-        "midia": {
-          "name": "midia",
-          "type": "jsonb",
+        "tutorial_url": {
+          "name": "tutorial_url",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -571,8 +687,8 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "artigos_slug_unique": {
-          "name": "artigos_slug_unique",
+        "softwares_slug_unique": {
+          "name": "softwares_slug_unique",
           "nullsNotDistinct": false,
           "columns": [
             "slug"
@@ -585,6 +701,17 @@
     }
   },
   "enums": {
+    "public.tabela": {
+      "name": "tabela",
+      "schema": "public",
+      "values": [
+        "artigos",
+        "livros",
+        "projetos",
+        "softwares",
+        "profiles"
+      ]
+    },
     "public.tipo": {
       "name": "tipo",
       "schema": "public",

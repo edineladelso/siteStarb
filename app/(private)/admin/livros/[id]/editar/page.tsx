@@ -6,7 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { LivroForm } from "@/components/admin/forms/LivroForm";
 import { getLivroById } from "@/lib/actions";
 import type { Livro } from "@/lib/types";
-import { LoadingContent } from "../../../ui/Loading";
+import { LoadingContent } from "../../../../../loading/Loading";
 import { ErrorContent } from "../../../../../error/ErrorComponent";
 
 export default function EditarLivroPage() {

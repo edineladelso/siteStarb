@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1770330813914,
-      "tag": "0000_eminent_red_shift",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1770390581614,
-      "tag": "0001_steep_moon_knight",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1770504576579,
-      "tag": "0002_old_photon",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1770510873251,
-      "tag": "0003_parallel_dark_phoenix",
+      "when": 1770928881200,
+      "tag": "0000_tense_arclight",
       "breakpoints": true
     }
   ]

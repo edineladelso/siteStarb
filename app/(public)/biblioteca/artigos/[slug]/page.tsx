@@ -1,4 +1,3 @@
-import { ErrorContent } from "@/app/error/ErrorComponent";
 import { localGetBySlug } from "@/lib/actions/local/localArtigo.action";
 import type { ArtigoMidia } from "@/lib/domain/artigo";
 import {
@@ -13,14 +12,15 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { ErrorContent } from "@/app/error/ErrorComponent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getArtigoBySlug } from "@/lib/actions";
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }
 
 function MetaCard({
@@ -51,20 +51,17 @@ export default async function PropertPage({ params }: PageProps) {
   const { slug } = await params;
   // const servidorArtigo = await getArtigoBySlug(slug);
   const localArtigo = await localGetBySlug(slug);
+  const servidorArtigo = await getArtigoBySlug(slug);
 
-  const artigo = localArtigo;
+  const artigo = servidorArtigo ? servidorArtigo : localArtigo;
   if (!artigo) {
     return <ErrorContent conteudo="Artigo" backUrl="/biblioteca/artigos" />;
   }
 
   const midia = artigo.midia as ArtigoMidia | null;
   const htmlContent = artigo.html ?? "";
-
-  if (!localArtigo) {
-    notFound();
-  }
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 lg:py-14">
+    <div className="mx-auto w-full max-w-6xl px-4 py-10 lg:py-14">
       <Link
         href="/biblioteca/artigos"
         className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-orange-600"

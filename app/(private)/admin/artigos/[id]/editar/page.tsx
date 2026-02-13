@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { ArtigoForm } from "@/components/admin/forms/ArtigoForm"; // Ajuste o path se necessário
 import { getArtigoById } from "@/lib/actions/artigos.actions"; // Importação direta da action
 import type { Artigo } from "@/lib/types";
-import { LoadingContent } from "../../../ui/Loading";
+import { LoadingContent } from "../../../../../loading/Loading";
 import { ErrorContent } from "../../../../../error/ErrorComponent";
 
 export default function EditarArtigoPage() {
