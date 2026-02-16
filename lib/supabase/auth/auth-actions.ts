@@ -1,7 +1,7 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { createSSClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export async function registrarComEmail(formData: FormData) {
   const email = String(formData.get("email") || "");

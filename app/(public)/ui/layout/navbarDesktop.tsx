@@ -10,6 +10,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { cn } from "@/lib";
 import {
   conteudoBiblioteca,
   documentationLinks,
@@ -17,7 +18,6 @@ import {
   quickMenuItems,
 } from "@/lib/localDadosHome/data";
 import Image from "next/image";
-import { cn } from "@/lib";
 
 export function NavbarDesktop() {
   const styleMenuTriger: string =
@@ -25,7 +25,7 @@ export function NavbarDesktop() {
 
   return (
     <NavigationMenu>
-      <NavigationMenuList className="flex gap-2  sm:gap-3 lg:gap-8">
+      <NavigationMenuList className="flex gap-2 sm:gap-3 lg:gap-8">
         <NavigationMenuItem className="min-[765px]:hidden min-[1100px]:block">
           <NavigationMenuTrigger className={cn(styleMenuTriger, "")}>
             <span>Home</span>

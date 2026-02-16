@@ -7,6 +7,7 @@ import { db } from "@/lib/drizzle/db";
 import { artigos } from "@/lib/drizzle/db/schema/artigo";
 import {
   insertArtigoSchema,
+  updateArtigoSchema,
   selectArtigoSchema,
 } from "@/lib/drizzle/validations/artigo.schema";
 import { gerarSlugUnico } from "@/lib/utils/slugify";
@@ -136,10 +137,9 @@ export async function getArtigoById(id: number) {
     return null;
   }
 }
-// src/lib/actions/artigos.actions.ts
 // Atualizar artigo
 export async function atualizarArtigo(
-  id: number,
+  slug: string,
   formData: FormData,
 ): Promise<ActionResult<Artigo>> {
   const areasRaw = formData.get("areas") as string | null;
@@ -195,16 +195,26 @@ export async function atualizarArtigo(
     html,
   };
 
-  const parsed = insertArtigoSchema.safeParse(bruto);
+  const parsed = updateArtigoSchema.safeParse(bruto);
 
-  if (!parsed.success) return { success: false, error: "Validação falhou" };
+  if (!parsed.success) {
+    console.error(
+      "Erro de validação ao atualizar artigo:",
+      parsed.error.flatten().fieldErrors,
+    );
+    return { success: false, error: "Validação falhou" };
+  }
 
   try {
     const [atualizado] = await db
       .update(artigos)
       .set({ ...parsed.data, updatedAt: new Date() })
-      .where(eq(artigos.id, id))
+      .where(eq(artigos.slug, slug))
       .returning();
+
+    if (!atualizado) {
+      return { success: false, error: "Artigo não encontrado" };
+    }
 
     revalidatePath("/biblioteca/artigos");
     return { success: true, data: atualizado };

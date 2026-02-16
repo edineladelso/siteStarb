@@ -9,7 +9,10 @@ import type { CSSProperties } from "react";
 export default function ArtigoCard({ artigo }: { artigo: Artigo }) {
   const slugPath = createSlug(String(artigo.slug));
 
-  const capa = artigo.capa ?? "https://placehold.co/600x360";
+  const capa =
+    artigo.capa && artigo.capa.trim()
+      ? artigo.capa
+      : "https://placehold.co/600x360?text=Artigo";
 
   return (
     <Link

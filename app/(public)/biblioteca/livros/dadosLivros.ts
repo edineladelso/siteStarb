@@ -294,8 +294,8 @@ export const fakeSelectLivros: Livro[] = [
       numeroPaginas: 180,
       autor: "Prof. Alberto Einstein",
     },
+    capa: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
     midia: {
-      capa: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
     },
     areas: ["fisica_moderna"],
     macroAreas: ["Fisica"],

@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
-import { createSSClient } from "@/lib/supabase/server";
 import { db, profiles } from "@/lib/drizzle/db";
+import { createSSClient } from "@/lib/supabase/server";
 import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import { AdminSetupForm } from "./AdminSetupForm";
 
 export default async function AdminSetupPage() {

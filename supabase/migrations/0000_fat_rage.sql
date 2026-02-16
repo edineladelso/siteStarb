@@ -42,6 +42,7 @@ CREATE TABLE "livros" (
 	"autor" text NOT NULL,
 	"ano_publicacao" integer,
 	"idioma" text,
+	"capa" text NOT NULL,
 	"detalhes" jsonb NOT NULL,
 	"midia" jsonb NOT NULL,
 	"areas" jsonb NOT NULL,

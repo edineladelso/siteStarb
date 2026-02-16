@@ -99,7 +99,9 @@ export default function ArtigosPage() {
     artigosFiltrados[0] ||
     artigosFrontend[0];
   const capaDestaque =
-    artigoDestaque?.capa ?? "https://placehold.co/800x480?text=Artigo";
+    artigoDestaque?.capa && artigoDestaque.capa.trim()
+      ? artigoDestaque.capa
+      : "https://placehold.co/800x480?text=Artigo";
 
   const totalViews = artigosFrontend.reduce(
     (acc, artigo) => acc + (artigo.views ?? 0),

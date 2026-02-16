@@ -10,12 +10,12 @@ export function BtnHome() {
     <Link
       href="/"
       className={cn(
-        buttonVariants({ variant: "outline" }),
-        "border-gray-600 border p-3 text-xs max-sm:text-base md:py-5 md:text-lg",
+        buttonVariants({ variant: "default" }),
+        "bg-linear-to-br from-[#0c0516] to-[#0f083b] p-3 px-8 text-xs font-semibold hover:via-[#5416b5]/60 max-sm:text-base md:py-5 md:text-lg text-white/70",
       )}
     >
-      <span className="hidden sm:block sm:px-7 font-bold">Voltar à Home</span>{" "}
-      <Home className="sm:hidden" />
+      <span className="hidden font-bold sm:block sm:px-7">Voltar à Home</span>{" "}
+      <Home className="sm:hidden text-white font-black" />
     </Link>
   );
 }

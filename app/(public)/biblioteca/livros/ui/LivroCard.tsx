@@ -1,31 +1,23 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import Image from "next/image";
 import {
-  Heart,
+  BookOpen,
   Download,
   Eye,
-  Info,
-  Star,
-  User,
-  Tag,
   FileText,
-  BookOpen,
-  Sparkles,
-  TrendingUp,
   Globe,
+  Heart,
+  Info,
+  Sparkles,
+  Star,
+  Tag,
+  TrendingUp,
+  User,
 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,21 +28,30 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { Livro } from "@/lib/types";
-import {
-  getCategoriaNome,
-  getCategoriaIcon,
-} from "@/lib/domain/areasCategoriasPatern";
-import type { MacroAreaLivro } from "@/lib/domain/areas";
 import { cn } from "@/lib";
+import type { MacroAreaLivro } from "@/lib/domain/areas";
+import {
+  getCategoriaIcon,
+  getCategoriaNome,
+} from "@/lib/domain/areasCategoriasPatern";
+import type { Livro } from "@/lib/types";
 
 // Mapeamento de cores por MacroArea para gradientes
 const CATEGORIA_GRADIENTS: Record<MacroAreaLivro, string> = {
@@ -82,7 +83,8 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
   const [favorito, setFavorito] = useState(false);
 
   // Pega a primeira MacroArea como categoria principal
-  const categoriaPrincipal = livro.macroAreas[0];
+  const categoriaPrincipal: MacroAreaLivro =
+    livro.macroAreas?.[0] ?? "Engenharia";
   const categoriaLabel = getCategoriaNome(categoriaPrincipal);
   const gradientClasses = CATEGORIA_GRADIENTS[categoriaPrincipal];
 
@@ -111,7 +113,13 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
   };
 
   return (
-    <Card className={cn("group relative overflow-hidden bg-white shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:-translate-y-3 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20", compact && "hover:-translate-y-6 group-focus-visible:translate-y-6 hover:scale-x-115 hover:scale-y-109")}>
+    <Card
+      className={cn(
+        "group relative overflow-hidden bg-white shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:-translate-y-3 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20",
+        compact &&
+          "group-focus-visible:translate-y-6 hover:-translate-y-6 hover:scale-x-115 hover:scale-y-109",
+      )}
+    >
       {/* Badges de Status */}
       <div
         className="absolute top-2 left-2 z-20 flex flex-wrap gap-1.5"
@@ -241,7 +249,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
         </div>
 
         {/* Estatísticas */}
-        <div className="flex items-center gap justify-between border-t border-slate-100 py-2">
+        <div className="gap flex items-center justify-between border-t border-slate-100 py-2">
           <div
             className="flex items-center gap-1"
             title={`Avaliação: ${livro.avaliacao}`}
@@ -368,7 +376,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
                           className="mt-0.5 text-lg text-blue-950"
                           aria-hidden="true"
                         >
-                          <Globe className="size-5"/>
+                          <Globe className="size-5" />
                         </span>
                         <div>
                           <strong className="text-slate-900">Idioma:</strong>
@@ -414,11 +422,14 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
         {/* Botão Ver/Ler */}
         <Button
           size="sm"
+          asChild
           className="flex-1 gap-1.5 bg-slate-700 text-xs shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           aria-label={`Ler ${livro.titulo}`}
         >
-          <Eye className="h-3.5 w-3.5" aria-hidden="true" />
-          <span className="hidden sm:inline">Ler</span>
+          <Link href={`/biblioteca/livros/${livro.slug}`}>
+            <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+            <span className="hidden sm:inline">Ler</span>
+          </Link>
         </Button>
 
         {/* Menu de Download */}
@@ -428,7 +439,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
               <Button
                 size="sm"
                 variant="outline"
-                className="gap-1.5 px-3 flex-1 hover:bg-slate-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="flex-1 gap-1.5 px-3 hover:bg-slate-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 aria-label="Opções de download"
               >
                 <Download className="h-3.5 w-3.5" aria-hidden="true" />
@@ -449,7 +460,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
                 <DropdownMenuItem
                   key={formato.tipo}
                   onClick={() => handleDownload(formato.url, formato.tipo)}
-                  className="cursor-pointer top-0 gap-2 text-sm focus:bg-blue-50 focus:text-blue-700"
+                  className="top-0 cursor-pointer gap-2 text-sm focus:bg-blue-50 focus:text-blue-700"
                 >
                   <FileText className="h-4 w-4" aria-hidden="true" />
                   {formato.tipo}

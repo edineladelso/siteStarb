@@ -1,7 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-export async function createSSClient() { // SSClient = Supabase server client
+export async function createSSClient() {
+  // SSClient = Supabase server client
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -15,13 +16,13 @@ export async function createSSClient() { // SSClient = Supabase server client
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, options),
             );
           } catch {
             // Opcional: Tratar se for chamado em Server Component estático
           }
         },
       },
-    }
+    },
   );
 }

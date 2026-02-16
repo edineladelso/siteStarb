@@ -84,6 +84,7 @@ const formSchema = z
     areas: z
       .array(z.enum(areaLivroValues))
       .min(1, "Selecione pelo menos uma área"),
+    capa: z.string().url("URL da capa inválida").optional().nullable(),
     midia: z
       .discriminatedUnion("tipo", [
         z.object({
@@ -166,6 +167,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
     instituicao: initialData?.instituicao || null,
     anoPublicacao: initialData?.anoPublicacao || null,
     areas: (initialData?.areas as AreaLivro[]) || [],
+    capa: initialData?.capa ?? null,
     midia: normalizarMidiaInicial(initialData?.midia),
     leituraMin: initialData?.leituraMin ?? 0,
     tags: Array.isArray(initialData?.tags) ? initialData.tags : [],
@@ -221,6 +223,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
       formData.set("titulo", values.titulo);
       formData.set("categoria", values.categoria);
       formData.set("descricao", values.descricao);
+      if (values.capa) formData.set("capa", values.capa);
       formData.set("status", values.status);
       formData.set("resumo", values.resumo);
       formData.set("autores", autoresParsed.join(", "));
@@ -258,7 +261,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
 
       let result;
       if (initialData?.id) {
-        result = await atualizarArtigo(Number(initialData.id), formData);
+        result = await atualizarArtigo(String(initialData.slug), formData);
       } else {
         result = await criarArtigo(formData);
       }
@@ -377,27 +380,27 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
 
                 <FormField
                   control={form.control}
-                  name="status"
+                  name="capa"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-sm font-semibold">
-                        Status
+                        Capa
                       </FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="shadow-sm">
-                            <SelectValue placeholder="Status" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="rascunho">Rascunho</SelectItem>
-                          <SelectItem value="publicado">Publicado</SelectItem>
-                          <SelectItem value="arquivado">Arquivado</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <FormControl>
+                        <Input
+                          placeholder="URL da capa do artigo"
+                          className="shadow-sm"
+                          name={field.name}
+                          ref={field.ref}
+                          onBlur={field.onBlur}
+                          value={field.value ?? ""}
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.value.trim() ? e.target.value.trim() : null,
+                            )
+                          }
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -924,14 +927,12 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex gap-2 rounded-md border pl-2">
-                    <FormLabel className="text-sm font-bold">
-                      Status
-                    </FormLabel>
+                    <FormLabel className="text-sm font-bold">Status</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <FormControl className="border-l border-y-0 border-r-0 shadow-none">
+                      <FormControl className="border-y-0 border-r-0 border-l shadow-none">
                         <SelectTrigger className="">
                           <SelectValue placeholder="Status" />
                         </SelectTrigger>

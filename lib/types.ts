@@ -1,37 +1,28 @@
 // ==================== lib/types.ts ====================
 
 // 1. Importação dos Tipos do Domínio (Enums)
-import type { 
-  Status as ContentStatus, 
-  Dificuldade, 
-  TipoConteudo as ContentType 
+import type {
+  Status as ContentStatus,
+  TipoConteudo as ContentType,
+  Dificuldade,
 } from "@/lib/domain/enums";
 
 // 2. Importação dos Tipos do Zod (Validations) - Fonte da Verdade
-import type { 
-  SelectArtigo as Artigo, 
+import type {
+  SelectArtigo as Artigo,
+  SelectLivro as Livro,
   InsertArtigo as NewArtigo,
-
-  SelectLivro as Livro, 
-  InsertLivro as NewLivro, 
-
-  SelectProjeto as Projeto, 
-  InsertProjeto as NewProjeto, 
-
-  SelectSoftware as Software, 
-  InsertSoftware as NewSoftware 
+  InsertLivro as NewLivro,
+  InsertProjeto as NewProjeto,
+  InsertSoftware as NewSoftware,
+  SelectProjeto as Projeto,
+  SelectSoftware as Software,
 } from "@/lib/drizzle/validations/index";
 import { macroAreaLivroValues } from "./domain";
 
 // Re-exportar para uso global
 export type {
-  Artigo, NewArtigo,
-  Livro, NewLivro,
-  Projeto, NewProjeto,
-  Software, NewSoftware,
-  ContentStatus,
-  Dificuldade,
-  ContentType
+  Artigo, ContentStatus, ContentType, Dificuldade, Livro, NewArtigo, NewLivro, NewProjeto, NewSoftware, Projeto, Software
 };
 
 // ==================== Union type de todos os conteúdos ====================
@@ -129,7 +120,7 @@ export interface ActionResult<T = unknown> {
   data?: T;
   error?: string;
   // Opcional: para erros de validação de formulário (Zod)
-  validationErrors?: Record<string, string[]>; 
+  validationErrors?: Record<string, string[]>;
 }
 
 export interface PaginatedResponse<T> {
@@ -175,7 +166,8 @@ export interface CloudinaryUploadResult {
 // ==================== Utility Types ====================
 
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-export type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+export type RequiredBy<T, K extends keyof T> = Omit<T, K> &
+  Required<Pick<T, K>>;
 
 // ==================== Constants ====================
 
@@ -186,7 +178,14 @@ export type Categoria = (typeof CATEGORIAS)[number];
 export const UPLOAD_CONSTRAINTS = {
   image: {
     maxSize: 3 * 1024 * 1024,
-    acceptedFormats: [".webp", ".png", ".avif", "image/webp", "image/png", "image/avif"],
+    acceptedFormats: [
+      ".webp",
+      ".png",
+      ".avif",
+      "image/webp",
+      "image/png",
+      "image/avif",
+    ],
   },
   pdf: {
     maxSize: 400 * 1024 * 1024,

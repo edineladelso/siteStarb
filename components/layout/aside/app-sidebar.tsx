@@ -229,7 +229,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               ? "h-[55vh] sm:mt-15 sm:overflow-x-hidden"
               : "sm:max-h-[60vh]",
           )}
-          className2={cn(isCollapsed && "[&>svg]:size-6")}
+          className2={cn(isCollapsed && "[&>svg]:size-5.5")}
           colorIcon={cn(isCollapsed && "text-sidebar-foreground/95")}
           items={data.navMain}
         />
