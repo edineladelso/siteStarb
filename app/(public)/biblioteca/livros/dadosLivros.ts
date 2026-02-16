@@ -1,24 +1,25 @@
 import type { Livro, NewLivro } from "@/lib/types";
 
-
 export const fakeLivrosNovos: NewLivro[] = [
   {
     titulo: "Cálculo Estrutural Avançado",
     slug: "calculo-estrutural-avancado",
     categoria: "Engenharia Civil",
-    descricao: "Um guia completo sobre estruturas de concreto e aço para grandes obras.",
+    descricao:
+      "Um guia completo sobre estruturas de concreto e aço para grandes obras.",
     status: "publicado",
     autor: "Dr. Ricardo Santos",
     anoPublicacao: 2023,
     detalhes: {
-      sinopse: "Aborda desde os fundamentos até as normas técnicas mais recentes.",
+      sinopse:
+        "Aborda desde os fundamentos até as normas técnicas mais recentes.",
       numeroPaginas: 450,
       autor: "Dr. Ricardo Santos",
       editora: "TechPress",
       isbn: "978-85-000-0001-1",
     },
+    capa: "https://exemplo.com/capas/calculo.jpg",
     midia: {
-      capa: "https://exemplo.com/capas/calculo.jpg",
       pdf: "https://exemplo.com/files/calculo.pdf",
     },
     areas: ["estruturas", "concreto_armado"],
@@ -40,8 +41,8 @@ export const fakeLivrosNovos: NewLivro[] = [
       autor: "Ana Clara Oliveira",
       editora: "CodeMasters",
     },
+    capa: "https://exemplo.com/capas/algoritmos.png",
     midia: {
-      capa: "https://exemplo.com/capas/algoritmos.png",
       epub: "https://exemplo.com/files/algoritmos.epub",
     },
     areas: ["algoritmos", "estruturas_de_dados"],
@@ -62,9 +63,8 @@ export const fakeLivrosNovos: NewLivro[] = [
       numeroPaginas: 180,
       autor: "Prof. Alberto Einstein",
     },
-    midia: {
-      capa: "https://exemplo.com/capas/fisica.jpg",
-    },
+    capa: "https://exemplo.com/capas/fisica.jpg",
+    midia: {},
     areas: ["fisica_moderna"],
     macroAreas: ["Fisica"],
     tags: ["ciencia", "quântica"],
@@ -81,8 +81,8 @@ export const fakeLivrosNovos: NewLivro[] = [
       autor: "Eng. Marcos Viana",
       editora: "Industrial Book",
     },
+    capa: "https://exemplo.com/capas/controle.jpg",
     midia: {
-      capa: "https://exemplo.com/capas/controle.jpg",
       pdf: "https://exemplo.com/files/controle.pdf",
     },
     areas: ["controle_automatico", "sistemas_de_controle"],
@@ -102,8 +102,8 @@ export const fakeLivrosNovos: NewLivro[] = [
       autor: "Dra. Beatriz Luz",
       isbn: "978-85-111-2222-3",
     },
+    capa: "https://exemplo.com/capas/quimica.png",
     midia: {
-      capa: "https://exemplo.com/capas/quimica.png",
       resumo: "https://exemplo.com/resumos/quimica.pdf",
     },
     areas: ["quimica_organica"],
@@ -122,8 +122,8 @@ export const fakeLivrosNovos: NewLivro[] = [
       autor: "Lucas Frontend",
       editora: "WebFlow Edições",
     },
+    capa: "https://exemplo.com/capas/react.jpg",
     midia: {
-      capa: "https://exemplo.com/capas/react.jpg",
       epub: "",
     },
     areas: ["web", "programacao"],
@@ -134,16 +134,16 @@ export const fakeLivrosNovos: NewLivro[] = [
     titulo: "Termodinâmica para Engenheiros",
     slug: "termodinamica-engenheiros",
     categoria: "Mecânica",
-    descricao: "Estudo das leis da termodinâmica aplicadas a máquinas térmicas.",
+    descricao:
+      "Estudo das leis da termodinâmica aplicadas a máquinas térmicas.",
     status: "publicado",
     autor: "Carlos Termo",
     detalhes: {
       numeroPaginas: 510,
       autor: "Carlos Termo",
     },
-    midia: {
-      capa: "https://exemplo.com/capas/termo.jpg",
-    },
+    capa: "https://exemplo.com/capas/termo.jpg",
+    midia: {},
     areas: ["termodinamica", "maquinas_termicas"],
     macroAreas: ["Fisica", "Mecanica"],
     tags: ["energia", "calor"],
@@ -160,8 +160,8 @@ export const fakeLivrosNovos: NewLivro[] = [
       autor: "Hacker do Bem",
       isbn: null,
     },
+    capa: "https://exemplo.com/capas/seguranca.jpg",
     midia: {
-      capa: "https://exemplo.com/capas/seguranca.jpg",
       pdf: "https://exemplo.com/files/seguranca.pdf",
     },
     areas: ["seguranca_da_informacao", "redes_de_computadores"],
@@ -181,9 +181,8 @@ export const fakeLivrosNovos: NewLivro[] = [
       numeroPaginas: 380,
       autor: "Sofia Neural",
     },
-    midia: {
-      capa: "https://exemplo.com/capas/ia.jpg",
-    },
+    capa: "https://exemplo.com/capas/ia.jpg",
+    midia: {},
     areas: ["inteligencia_artificial", "aprendizado_de_maquina"],
     macroAreas: ["IA"],
     tags: ["python", "ml", "ia"],
@@ -201,8 +200,8 @@ export const fakeLivrosNovos: NewLivro[] = [
       autor: "Prof. Ohm",
       editora: "Volt Books",
     },
+    capa: "https://exemplo.com/capas/circuitos.jpg",
     midia: {
-      capa: "https://exemplo.com/capas/circuitos.jpg",
       pdf: "https://exemplo.com/files/circuitos.pdf",
     },
     areas: ["circuitos_eletricos", "eletricidade"],
@@ -211,7 +210,6 @@ export const fakeLivrosNovos: NewLivro[] = [
     novo: false,
   },
 ];
-
 
 // Dados simulados do banco de dados:
 export const fakeSelectLivros: Livro[] = [
@@ -229,14 +227,15 @@ export const fakeSelectLivros: Livro[] = [
     downloads: 450,
     avaliacao: "4.8",
     detalhes: {
-      sinopse: "Aborda desde os fundamentos até as normas técnicas mais recentes.",
+      sinopse:
+        "Aborda desde os fundamentos até as normas técnicas mais recentes.",
       numeroPaginas: 450,
       autor: "Dr. Ricardo Santos",
       editora: "TechPress",
       isbn: "978-85-000-0001-1",
     },
+    capa: "https://images.unsplash.com/photo-1544947950-fa07a98d237f",
     midia: {
-      capa: "https://images.unsplash.com/photo-1544947950-fa07a98d237f",
       pdf: "https://exemplo.com/files/calculo.pdf",
     },
     areas: ["estruturas", "concreto_armado"],
@@ -265,8 +264,8 @@ export const fakeSelectLivros: Livro[] = [
       autor: "Ana Clara Oliveira",
       editora: "CodeMasters",
     },
+    capa: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4",
     midia: {
-      capa: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4",
       epub: "https://exemplo.com/files/algoritmos.epub",
     },
     areas: ["algoritmos", "estruturas_de_dados"],
@@ -324,8 +323,8 @@ export const fakeSelectLivros: Livro[] = [
       autor: "Eng. Marcos Viana",
       editora: "Industrial Book",
     },
+    capa: "https://images.unsplash.com/photo-1518314916381-77a37c2a49ae",
     midia: {
-      capa: "https://images.unsplash.com/photo-1518314916381-77a37c2a49ae",
       pdf: "https://exemplo.com/files/controle.pdf",
     },
     areas: ["controle_automatico", "sistemas_de_controle"],
@@ -354,8 +353,8 @@ export const fakeSelectLivros: Livro[] = [
       autor: "Dra. Beatriz Luz",
       isbn: "978-85-111-2222-3",
     },
+    capa: "https://images.unsplash.com/photo-1532187875605-1ef6c756999a",
     midia: {
-      capa: "https://images.unsplash.com/photo-1532187875605-1ef6c756999a",
       resumo: "https://exemplo.com/resumos/quimica.pdf",
     },
     areas: ["quimica_organica"],
@@ -384,8 +383,8 @@ export const fakeSelectLivros: Livro[] = [
       autor: "Lucas Frontend",
       editora: "WebFlow Edições",
     },
+    capa: "https://images.unsplash.com/photo-1633356122544-f134324a6cee",
     midia: {
-      capa: "https://images.unsplash.com/photo-1633356122544-f134324a6cee",
       epub: "",
     },
     areas: ["web", "programacao"],
@@ -413,9 +412,8 @@ export const fakeSelectLivros: Livro[] = [
       numeroPaginas: 510,
       autor: "Carlos Termo",
     },
-    midia: {
-      capa: "https://images.unsplash.com/photo-1581092160562-40aa08e78837",
-    },
+    capa: "https://images.unsplash.com/photo-1581092160562-40aa08e78837",
+    midia: {},
     areas: ["termodinamica", "maquinas_termicas"],
     macroAreas: ["Fisica", "Mecanica"],
     tags: ["energia", "calor", "motores"],
@@ -442,8 +440,8 @@ export const fakeSelectLivros: Livro[] = [
       autor: "Hacker do Bem",
       isbn: null,
     },
+    capa: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
     midia: {
-      capa: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
       pdf: "https://exemplo.com/files/seguranca.pdf",
     },
     areas: ["seguranca_da_informacao", "redes_de_computadores"],
@@ -472,9 +470,8 @@ export const fakeSelectLivros: Livro[] = [
       numeroPaginas: 380,
       autor: "Sofia Neural",
     },
-    midia: {
-      capa: "https://images.unsplash.com/photo-1677442136019-21780ecad995",
-    },
+    capa: "https://images.unsplash.com/photo-1677442136019-21780ecad995",
+    midia: {},
     areas: ["inteligencia_artificial", "aprendizado_de_maquina"],
     macroAreas: ["IA"],
     tags: ["python", "ml", "ia"],
@@ -501,8 +498,8 @@ export const fakeSelectLivros: Livro[] = [
       autor: "Prof. Ohm",
       editora: "Volt Books",
     },
+    capa: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0",
     midia: {
-      capa: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0",
       pdf: "https://exemplo.com/files/circuitos.pdf",
     },
     areas: ["circuitos_eletricos", "eletricidade"],

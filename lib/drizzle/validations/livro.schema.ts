@@ -13,6 +13,7 @@ export const insertLivroSchema = createInsertSchema(livros, {
 
   autor: z.string().min(2),
 
+  capa: z.string().url(),
   // JSONB: Detalhes
   detalhes: z.object({
     sinopse: z.string().min(10).optional(),
@@ -24,7 +25,6 @@ export const insertLivroSchema = createInsertSchema(livros, {
 
   // JSONB: Midia
   midia: z.object({
-    capa: z.string().url(),
     pdf: z.string().url().optional(),
     epub: z.string().url().or(z.literal("")).optional(), // Pode ser vazio se não houver epub
     resumo: z.string().url().optional(),

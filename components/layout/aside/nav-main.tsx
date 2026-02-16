@@ -17,12 +17,14 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { ChevronRight, ChevronUp, MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export function NavMain({
   items,
   className1,
   className2,
+  classNameSideBarMenu,
   colorIcon,
 }: {
   items: {
@@ -38,6 +40,7 @@ export function NavMain({
   className1?: string;
   className2?: string;
   colorIcon?: string;
+  classNameSideBarMenu?: string;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const LimitItens = 7;
@@ -47,13 +50,13 @@ export function NavMain({
   return (
     <SidebarGroup className={cn(className1)}>
       <SidebarGroupLabel>Material</SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarMenu className={cn(classNameSideBarMenu)}>
         {visibleItems.map((item) => (
           <Collapsible
             key={item.title}
             asChild
             defaultOpen={item.isActive}
-            className="group/collapsible"
+            className="group/collapsible flex "
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
@@ -72,9 +75,9 @@ export function NavMain({
                     (subItem: { title: string; url: string }) => (
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild>
-                          <a href={subItem.url}>
+                          <Link href={subItem.url}>
                             <span>{subItem.title}</span>
-                          </a>
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ),

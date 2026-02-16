@@ -1,7 +1,7 @@
 "use server";
 
 import { db, profiles } from "@/lib/drizzle/db";
-import { createClient } from "@/lib/supabase/server";
+import { createSSClient } from "@/lib/supabase/server";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 
@@ -28,7 +28,7 @@ export async function promoverParaAdmin(
     return { error: "Código inválido." };
   }
 
-  const supabase = await createClient();
+  const supabase = await createSSClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

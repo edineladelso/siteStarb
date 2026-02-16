@@ -104,7 +104,7 @@ export default function LivrosPage() {
             <td className="px-4 py-4">
               <div className="flex items-center gap-3">
                 <Image
-                  src={livro.midia.capa}
+                  src={livro.capa}
                   alt={livro.titulo}
                   width={48}
                   height={64}
@@ -112,7 +112,9 @@ export default function LivrosPage() {
                 />
                 <div>
                   <p className="font-semibold text-slate-900">{livro.titulo}</p>
-                  <p className="text-sm text-slate-500">{livro.detalhes.isbn}</p>
+                  <p className="text-sm text-slate-500">
+                    {livro.detalhes.isbn}
+                  </p>
                 </div>
               </div>
             </td>

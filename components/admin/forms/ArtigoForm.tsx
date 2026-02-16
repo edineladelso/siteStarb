@@ -175,8 +175,8 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
   };
 
   // Entrada livre para autores (texto) - só parseamos vírgulas na submissão/blur
-  const [autoresInput, setAutoresInput] = useState(
-    () => defaultValues.autores.join(", ")
+  const [autoresInput, setAutoresInput] = useState(() =>
+    defaultValues.autores.join(", "),
   );
 
   const form = useForm<FormValues>({
@@ -216,7 +216,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
     setIsPending(true);
     try {
       const formData = new FormData();
-      
+
       // Campos básicos
       formData.set("titulo", values.titulo);
       formData.set("categoria", values.categoria);
@@ -312,10 +312,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
       </div>
 
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Dados Principais */}
           <Card className="bg-accent border-slate-300 shadow-md">
             <CardHeader className="m-0 p-0">
@@ -338,7 +335,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                     <FormControl>
                       <Input
                         placeholder="Ex: Impacto da IA na Engenharia Civil"
-                        className="shadow-sm text-sm"
+                        className="text-sm shadow-sm"
                         {...field}
                       />
                     </FormControl>
@@ -461,7 +458,9 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                         }}
                         onBlur={() => {
                           const autores = parseAutores(autoresInput);
-                          setValue("autores", autores, { shouldValidate: true });
+                          setValue("autores", autores, {
+                            shouldValidate: true,
+                          });
                         }}
                       />
                     </FormControl>
@@ -644,20 +643,19 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
                       onOpenChange={setIsHtmlDialogOpen}
                     >
                       <DialogContent
-                        className="flex h-[calc(100%-1rem)] sm:max-h-[90vh] w-[calc(100%-1rem)] flex-col gap-3 p-4 sm:h-[95vh] sm:w-[90vw] sm:max-w-5xl sm:p-6 lg:h-[80vh] lg:w-[80vw]"
-
+                        className="flex h-[calc(100%-1rem)] w-[calc(100%-1rem)] flex-col gap-3 p-4 sm:h-[95vh] sm:max-h-[90vh] sm:w-[90vw] sm:max-w-5xl sm:p-6 lg:h-[80vh] lg:w-[80vw]"
                         classNameX="top-1 sm:top-3 right-1 sm:right-3 p-1 border rounded-lg border-gray-600"
                         size={5}
                       >
                         <DialogHeader className="m-0 p-0">
                           <DialogTitle>Editar Conteúdo HTML</DialogTitle>
                         </DialogHeader>
-                        <div className="flex-1 w-full">
+                        <div className="w-full flex-1">
                           <Textarea
                             value={field.value}
                             onChange={field.onChange}
                             placeholder="<h1>Título</h1><p>Conteúdo do artigo...</p>"
-                            className="h-full w-full resize-none font-mono text-xs sm:text-sm shadow-sm "
+                            className="h-full w-full resize-none font-mono text-xs shadow-sm sm:text-sm"
                           />
                         </div>
                         <DialogFooter className="m-0 p-0 text-xs">
@@ -920,6 +918,35 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
 
           {/* Actions */}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex gap-2 rounded-md border pl-2">
+                    <FormLabel className="text-sm font-bold">
+                      Status
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl className="border-l border-y-0 border-r-0 shadow-none">
+                        <SelectTrigger className="">
+                          <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="shadow-none">
+                        <SelectItem value="rascunho">Rascunho</SelectItem>
+                        <SelectItem value="publicado">Publicado</SelectItem>
+                        <SelectItem value="arquivado">Arquivado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <Button
               type="button"
               variant="outline"

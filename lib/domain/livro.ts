@@ -22,6 +22,7 @@ export interface Livro extends ContentBase {
 
   numeroPaginas?: number;
 
+  capa:string;
   detalhes: DetalhesLivro;
   midia: MidiaLivro;
 
@@ -32,7 +33,6 @@ export interface Livro extends ContentBase {
 }
 
 export interface MidiaLivro {
-  capa: string;
   pdf?: string;
   epub?: string;
   resumo?: string;

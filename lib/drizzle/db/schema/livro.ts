@@ -34,6 +34,7 @@ export const livros = pgTable("livros", {
   autor: text("autor").notNull(),
   anoPublicacao: integer("ano_publicacao"),
   idioma: text("idioma"),
+  capa: text("capa").notNull(),
 
   // JSONB complexos
   detalhes: jsonb("detalhes").$type<DetalhesLivro>().notNull(),

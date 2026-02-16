@@ -1,13 +1,18 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createSSClient } from "@/lib/supabase/server";
 
 export async function registrarComEmail(formData: FormData) {
   const email = String(formData.get("email") || "");
   const senha = String(formData.get("senha") || "");
+  const cofirmarSenha = String(formData.get("confirmarSenha") || "");
 
-  const supabase = await createClient();
+  if (senha !== cofirmarSenha) {
+    redirect("/registro?message=Senha nao confimada");
+  }
+
+  const supabase = await createSSClient();
   const { error } = await supabase.auth.signUp({ email, password: senha });
 
   if (error) {
@@ -21,7 +26,7 @@ export async function fazerLoginComEmail(formData: FormData) {
   const email = String(formData.get("email") || "");
   const senha = String(formData.get("senha") || "");
 
-  const supabase = await createClient();
+  const supabase = await createSSClient();
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password: senha,
@@ -35,10 +40,12 @@ export async function fazerLoginComEmail(formData: FormData) {
 }
 
 export async function loginComGoogle() {
-  const supabase = await createClient();
+  const supabase = await createSSClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback` },
+    options: {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+    },
   });
 
   if (error) {
@@ -51,10 +58,12 @@ export async function loginComGoogle() {
 }
 
 export async function loginComGithub() {
-  const supabase = await createClient();
+  const supabase = await createSSClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "github",
-    options: { redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback` },
+    options: {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+    },
   });
 
   if (error) {

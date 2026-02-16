@@ -37,7 +37,7 @@ const StarBHomePage = () => {
     <div className="min-h-screen w-full">
       {/* Navigation */}
 
-      <main className="mx-auto max-w-7xl space-y-16 px-4 py-8 sm:space-y-24 sm:px-12 sm:py-12 lg:space-y-28 lg:px-16 lg:py-16">
+      <main className="mx-auto max-w-7xl space-y-14 px-4 py-8 sm:space-y-20 sm:px-12 sm:py-12 lg:space-y-22 lg:px-16 lg:py-16">
         {/* HERO SECTION - Magnifico e Moderno */}
         <section className="relative">
           {/* Background decorativo */}
@@ -105,13 +105,12 @@ const StarBHomePage = () => {
                 </Button>
 
                 <Button
-                  variant="outline"
                   size="lg"
                   asChild
-                  className="h-10 border-2 border-blue-200 px-8 text-base font-semibold hover:bg-blue-50 sm:h-14"
+                  className="h-10  bg-linear-to-br from-[#0c0516] via-[#5416b5]/30 to-[#0f083b] px-8 text-base font-semibold hover:via-[#5416b5]/60 sm:h-14"
                 >
-                  <Link href="/softwares">
-                    Ver Softwares <ArrowRight />
+                  <Link href="/biblioteca/artigos">
+                    Explorar Artigos <ArrowRight />
                   </Link>
                 </Button>
               </div>
@@ -149,10 +148,6 @@ const StarBHomePage = () => {
                   <CarouselNext className="right-4 border-2 border-blue-200 bg-white/90 text-blue-700 shadow-lg hover:bg-white" />
                 </div>
               </Carousel>
-
-              {/* Elementos decorativos flutuantes */}
-              <div className="animation-delay-2000 pointer-events-none absolute -top-20 -right-4 h-16 w-16 animate-pulse rounded-full bg-blue-300/75 opacity-20 blur-xl"></div>
-              <div className="animation-delay-2000 pointer-events-none absolute -bottom-16 -left-6 z-0 h-16 w-16 animate-pulse rounded-full bg-indigo-300 opacity-20 blur-xl"></div>
 
               <div className="mt-8 space-y-6">
                 {/* Badges de features */}
@@ -494,11 +489,11 @@ const StarBHomePage = () => {
         <HomeSeparator />
 
         {/* CALL TO ACTION FINAL */}
-        <section className="relative overflow-hidden rounded-3xl bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700 p-8 text-center shadow-2xl shadow-blue-500/30 sm:p-12 lg:p-16">
+        <section className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#0c0516] via-[#5416b5] to-[#0f083b] p-8 text-center shadow-2xl shadow-blue-500/30 sm:p-12 lg:p-16">
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-10">
             <div
-              className="absolute inset-0"
+              className="absolute inset-0 blur-xs"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
               }}

@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createSSClient } from "@/lib/supabase/server";
 import { db, profiles } from "@/lib/drizzle/db";
 import { eq } from "drizzle-orm";
 import { AdminSetupForm } from "./AdminSetupForm";
 
 export default async function AdminSetupPage() {
-  const supabase = await createClient();
+  const supabase = await createSSClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

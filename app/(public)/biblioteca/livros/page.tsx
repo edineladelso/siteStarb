@@ -354,7 +354,7 @@ function LivrosPageInner() {
           </div>
 
           <div
-            className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-6"
+            className="grid grid-cols-2 p-3 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-6 overflow-y-scroll max-h-60"
             role="group"
             aria-label="Filtrar por categoria"
           >
@@ -444,7 +444,7 @@ function LivrosPageInner() {
         {!categoriaAtiva && !busca && (
           <>
             {/* POPULARES */}
-            <section className="space-y-6" aria-labelledby="populares-heading">
+            <section className="space-y-2" aria-labelledby="populares-heading">
               <h2
                 id="populares-heading"
                 className="text-2xl font-bold text-slate-900 sm:text-3xl"
@@ -458,9 +458,9 @@ function LivrosPageInner() {
                   loop: true,
                 }}
                 setApi={setPopularesApi}
-                className="w-full overflow-hidden"
+                className="w-full"
               >
-                <CarouselContent className="mx-auto max-w-5xl gap-3 px-2">
+                <CarouselContent className="mx-auto max-w-5xl gap-3 sm:py-7">
                   {populares.map((livro) => (
                     <CarouselItem
                       key={livro.id}
@@ -470,15 +470,11 @@ function LivrosPageInner() {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <div className="mt-8 flex justify-center gap-2">
-                  <CarouselPrevious className="relative inset-0 translate-y-0 border-2 border-slate-200 bg-white shadow-lg hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
-                  <CarouselNext className="relative inset-0 translate-y-0 border-2 border-slate-200 bg-white shadow-lg hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
-                </div>
               </Carousel>
             </section>
 
             {/* NOVOS */}
-            <section className="space-y-6" aria-labelledby="novos-heading">
+            <section className="space-y-2" aria-labelledby="novos-heading">
               <h2
                 id="novos-heading"
                 className="text-2xl font-bold text-slate-900 sm:text-3xl"
@@ -492,9 +488,9 @@ function LivrosPageInner() {
                   loop: true,
                 }}
                 setApi={setNovosApi}
-                className="w-full overflow-hidden"
+                className="w-full"
               >
-                <CarouselContent className="mx-auto max-w-5xl gap-3 px-2">
+                <CarouselContent className="mx-auto max-w-5xl gap-3 sm:py-7">
                   {novos.map((livro) => (
                     <CarouselItem
                       key={livro.id}
@@ -528,7 +524,7 @@ function LivrosPageInner() {
 
           {livrosFiltrados.length > 0 ? (
             <div
-              className="grid grid-cols-1 gap-4 min-[380px]:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5"
+              className="grid grid-cols-1 gap-1 min-[380px]:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5"
               role="list"
               aria-label="Lista de livros"
             >

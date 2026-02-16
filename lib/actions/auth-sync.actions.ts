@@ -3,7 +3,7 @@
 import { db } from "@/lib/drizzle/db";
 import type { AuthProvider } from "@/lib/drizzle/db/schema/profile";
 import { profiles } from "@/lib/drizzle/db/schema/profile";
-import { createClient } from "@/lib/supabase/server";
+import { createSSClient } from "@/lib/supabase/server";
 import { ActionResult } from "@/lib/types";
 import { eq } from "drizzle-orm";
 
@@ -12,7 +12,7 @@ import { eq } from "drizzle-orm";
  * Ideal para ser chamado no layout raiz ou após o callback de login.
  */
 export async function syncUserProfile(): Promise<ActionResult> {
-  const supabase = await createClient();
+  const supabase = await createSSClient();
 
   // 1. Obter usuário da sessão atual do Supabase
   const {

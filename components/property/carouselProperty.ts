@@ -16,6 +16,11 @@ export type ImgType = {
 };
 const imgCarousel: ImgType[] = [
   {
+    value: "engenharia",
+    src: engenharia,
+    alt: "Imagem de engenharia de projetos",
+  },
+  {
     value: "edinelRobotics",
     src: edinelRobotics,
     alt: "Imagem frontal de Edinel operando robô",
@@ -39,11 +44,6 @@ const imgCarousel: ImgType[] = [
     value: "imgMeca5",
     src: imgMeca5,
     alt: "Imagem lateral de Edinel operando robô",
-  },
-  {
-    value: "engenharia",
-    src: engenharia,
-    alt: "Imagem de engenharia de projetos",
   },
   {
     value: "imgAi",

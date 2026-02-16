@@ -7,7 +7,7 @@ import {
   registerSchema,
   type RegisterInput,
 } from "@/lib/drizzle/validations/auth.schema";
-import { createClient } from "@/lib/supabase/server"; // Você precisará criar este helper
+import { createSSClient } from "@/lib/supabase/server"; // Você precisará criar este helper
 import { ActionResult } from "@/lib/types";
 
 /**
@@ -16,7 +16,7 @@ import { ActionResult } from "@/lib/types";
 export async function loginComProvider(
   provider: "google" | "github",
 ): Promise<ActionResult<string>> {
-  const supabase = await createClient();
+  const supabase = await createSSClient();
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
@@ -38,7 +38,7 @@ export async function registrarComEmail(
   const parsed = registerSchema.safeParse(values);
   if (!parsed.success) return { success: false, error: "Dados inválidos" };
 
-  const supabase = await createClient();
+  const supabase = await createSSClient();
 
   // 1. Criar usuário no Supabase Auth
   const { data: authData, error: authError } = await supabase.auth.signUp({

@@ -25,8 +25,8 @@ export function NavbarDesktop() {
 
   return (
     <NavigationMenu>
-      <NavigationMenuList className="flex gap-2">
-        <NavigationMenuItem className="min-[765px]:hidden  min-[1100px]:block">
+      <NavigationMenuList className="flex gap-2  sm:gap-3 lg:gap-8">
+        <NavigationMenuItem className="min-[765px]:hidden min-[1100px]:block">
           <NavigationMenuTrigger className={cn(styleMenuTriger, "")}>
             <span>Home</span>
           </NavigationMenuTrigger>
@@ -66,7 +66,7 @@ export function NavbarDesktop() {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className="min-[765px]:hidden  min-[1000px]:block">
+        <NavigationMenuItem className="min-[765px]:hidden min-[1000px]:block">
           <NavigationMenuTrigger className={styleMenuTriger}>
             Biblioteca
           </NavigationMenuTrigger>

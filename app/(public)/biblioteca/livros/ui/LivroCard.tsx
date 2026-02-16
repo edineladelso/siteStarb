@@ -14,6 +14,7 @@ import {
   BookOpen,
   Sparkles,
   TrendingUp,
+  Globe,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -49,6 +50,7 @@ import {
   getCategoriaIcon,
 } from "@/lib/domain/areasCategoriasPatern";
 import type { MacroAreaLivro } from "@/lib/domain/areas";
+import { cn } from "@/lib";
 
 // Mapeamento de cores por MacroArea para gradientes
 const CATEGORIA_GRADIENTS: Record<MacroAreaLivro, string> = {
@@ -109,7 +111,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
   };
 
   return (
-    <Card className="group relative overflow-hidden bg-white shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20">
+    <Card className={cn("group relative overflow-hidden bg-white shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:-translate-y-3 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20", compact && "hover:-translate-y-6 group-focus-visible:translate-y-6 hover:scale-x-115 hover:scale-y-109")}>
       {/* Badges de Status */}
       <div
         className="absolute top-2 left-2 z-20 flex flex-wrap gap-1.5"
@@ -156,12 +158,12 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
       {/* Capa do Livro */}
       <CardHeader className="p-0">
         <div
-          className={`relative ${compact ? "h-45 sm:h-55" : "h-50 sm:h-56"} overflow-hidden bg-slate-100`}
+          className={`relative ${compact ? "h-45 sm:h-50" : "h-50 sm:h-56"} overflow-hidden bg-slate-100`}
         >
-          {livro.midia.capa ? (
+          {livro.capa ? (
             <>
               <Image
-                src={livro.midia.capa}
+                src={livro.capa}
                 alt={`Capa do livro ${livro.titulo}`}
                 fill
                 sizes={
@@ -239,7 +241,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
         </div>
 
         {/* Estatísticas */}
-        <div className="flex items-center justify-between border-t border-slate-100 p-2">
+        <div className="flex items-center gap justify-between border-t border-slate-100 py-2">
           <div
             className="flex items-center gap-1"
             title={`Avaliação: ${livro.avaliacao}`}
@@ -267,7 +269,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
 
           <div
             className="flex items-center gap-1 text-slate-500"
-            title={`${livro.views.toLocaleString("pt-BR")} visualizações`}
+            title={`${livro.views.toLocaleString("pt-PT")} visualizações`}
           >
             <Eye className="h-4 w-4" aria-hidden="true" />
             <span className="text-sm font-medium">
@@ -280,7 +282,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
       </CardContent>
 
       {/* Ações */}
-      <CardFooter className="flex gap-2 border-t border-slate-100 bg-slate-50/50 px-4">
+      <CardFooter className="flex gap-2 border-slate-300 bg-slate-50/50 px-4 [.border-t]:pt-0">
         {/* Botão Info/Detalhes */}
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -366,7 +368,7 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
                           className="mt-0.5 text-lg text-blue-950"
                           aria-hidden="true"
                         >
-                          🌐
+                          <Globe className="size-5"/>
                         </span>
                         <div>
                           <strong className="text-slate-900">Idioma:</strong>

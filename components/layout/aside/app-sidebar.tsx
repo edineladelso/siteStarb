@@ -25,6 +25,7 @@ import {
   Code,
   Settings,
   HardHat,
+  UserCircle,
 } from "lucide-react";
 import * as React from "react";
 
@@ -50,6 +51,7 @@ import {
 import { LABELS_CATEGORIAS } from "@/lib/domain/areasCategoriasPatern";
 import { Separator } from "../../ui/separator";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const macroAreaIcons: Record<MacroAreaLivro, React.ElementType> = {
   Matematica: Calculator,
@@ -215,19 +217,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+      <SidebarHeader className={cn(isCollapsed && "hidden")}>
         <ServiceSwitcher services={data.services} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain
+          classNameSideBarMenu={cn(isCollapsed && "gap-3")}
           className1={cn(
             "overflow-y-scroll text-sidebar-foreground/70",
             isCollapsed
-              ? "h-[50vh] sm:mt-10 sm:overflow-x-hidden"
+              ? "h-[55vh] sm:mt-15 sm:overflow-x-hidden"
               : "sm:max-h-[60vh]",
           )}
-          className2=""
-          colorIcon={cn(isCollapsed && "text-sidebar-foreground/70")}
+          className2={cn(isCollapsed && "[&>svg]:size-6")}
+          colorIcon={cn(isCollapsed && "text-sidebar-foreground/95")}
           items={data.navMain}
         />
         <Separator className={cn(isCollapsed && "sm:hidden")} />
@@ -236,9 +239,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           projects={data.projects}
         />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
+      {isCollapsed ? (
+        <Link href={"/login"} className="mx-auto [&_svg]:size-6 mb-10 hover:text-blue-600">
+          <UserCircle />
+        </Link>
+      ) : (
+        <SidebarFooter>
+          <NavUser
+            user={data.user}
+            classNameSideBarMenu={cn(isCollapsed && "hidden")}
+          />
+        </SidebarFooter>
+      )}
       <SidebarRail />
     </Sidebar>
   );

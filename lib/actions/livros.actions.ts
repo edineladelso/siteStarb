@@ -43,6 +43,7 @@ export async function criarLivro(formData: FormData) {
       : null,
     idioma: formData.get("idioma") ? String(formData.get("idioma")) : null,
 
+    capa: String(formData.get("capa_url")),
     detalhes: {
       sinopse: String(formData.get("sinopse") || formData.get("descricao")),
       numeroPaginas: Number(formData.get("numeroPaginas")),
@@ -52,7 +53,6 @@ export async function criarLivro(formData: FormData) {
     },
 
     midia: {
-      capa: String(formData.get("capa_url")),
       pdf: String(formData.get("pdf_url")),
       epub: String(formData.get("epub_url") || ""),
       resumo: String(formData.get("resumo_url")),

@@ -25,20 +25,24 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export function NavUser({
   user,
+  classNameSideBarMenu,
 }: {
   user: {
     name: string;
     email: string;
     avatar: string;
   };
+  classNameSideBarMenu?: string;
 }) {
   const { isMobile } = useSidebar();
 
   return (
-    <SidebarMenu>
+    <SidebarMenu className={cn(classNameSideBarMenu)}>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -85,8 +89,10 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <BadgeCheck />
-                Conta
+                <Link href={"/login"} className="hover:text-blue-700">
+                  <BadgeCheck />
+                  Conta
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCard />

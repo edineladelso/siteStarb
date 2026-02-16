@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createSSClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { syncUserProfile } from "@/lib/actions/auth-sync.actions";
 
@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   const next = searchParams.get("next") ?? "/dashboard";
 
   if (code) {
-    const supabase = await createClient();
+    const supabase = await createSSClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     
     if (!error) {

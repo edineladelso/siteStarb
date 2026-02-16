@@ -10,7 +10,7 @@ import {
   selectArtigoSchema,
 } from "@/lib/drizzle/validations/artigo.schema";
 import { gerarSlugUnico } from "@/lib/utils/slugify";
-import { eq } from "drizzle-orm";
+import { eq, StringChunk } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { ActionResult, Artigo } from "../types";
@@ -60,6 +60,7 @@ export async function criarArtigo(
       categoria: String(formData.get("categoria")),
       descricao: String(formData.get("descricao")),
       status: (formData.get("status") as Status) || "rascunho",
+      capa: String(formData.get("capa")),
       autores,
       resumo: String(formData.get("resumo")),
       palavrasChave: formData.get("palavrasChave") || null,
