@@ -210,7 +210,7 @@ export default async function LivroDetalhesPage({ params }: PageProps) {
 
           <div className="grid gap-8 p-6 lg:grid-cols-[300px_1fr] lg:gap-10 lg:p-10">
             <aside className="space-y-5">
-              <div className="relative mx-auto aspect-[3/4] w-full max-w-[260px] overflow-hidden rounded-2xl border border-stone-200 bg-slate-100 shadow-2xl shadow-stone-300/30">
+              <div className="relative mx-auto aspect-3/4 w-full max-w-65 overflow-hidden rounded-2xl border border-stone-200 bg-slate-100 shadow-2xl shadow-stone-300/30">
                 {livro.capa ? (
                   <Image
                     src={livro.capa}
