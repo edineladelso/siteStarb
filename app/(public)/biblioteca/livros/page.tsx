@@ -1,6 +1,13 @@
 "use client";
 
-import { Suspense, useCallback, useMemo, useState, useEffect } from "react";
+import {
+  Suspense,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+  memo,
+} from "react";
 import {
   Search,
   Filter,
@@ -50,7 +57,11 @@ interface StatItemProps {
   color?: string;
 }
 
-function StatItem({ icon, label, color = "blue" }: StatItemProps) {
+const StatItem = memo(function StatItem({
+  icon,
+  label,
+  color = "blue",
+}: StatItemProps) {
   return (
     <div
       className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white px-4 py-2 shadow-md transition-all hover:shadow-lg"
@@ -62,7 +73,7 @@ function StatItem({ icon, label, color = "blue" }: StatItemProps) {
       <span className="text-sm font-semibold text-slate-700">{label}</span>
     </div>
   );
-}
+});
 
 // Componente de Botão de Ordenação Reutilizável
 interface OrdenacaoButtonProps {
@@ -72,7 +83,7 @@ interface OrdenacaoButtonProps {
   onClick: () => void;
 }
 
-function OrdenacaoButton({
+const OrdenacaoButton = memo(function OrdenacaoButton({
   icon,
   label,
   isActive,
@@ -94,7 +105,7 @@ function OrdenacaoButton({
       {label}
     </Button>
   );
-}
+});
 
 // Componente Principal
 function LivrosPageInner() {
@@ -354,7 +365,7 @@ function LivrosPageInner() {
           </div>
 
           <div
-            className="grid grid-cols-2 p-3 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-6 overflow-y-scroll max-h-60"
+            className="grid max-h-60 grid-cols-2 gap-3 overflow-y-scroll p-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-6"
             role="group"
             aria-label="Filtrar por categoria"
           >
@@ -461,12 +472,12 @@ function LivrosPageInner() {
                 className="w-full"
               >
                 <CarouselContent className="mx-auto max-w-5xl gap-3 sm:py-7">
-                  {populares.map((livro) => (
+                  {populares.map((livro, idx) => (
                     <CarouselItem
                       key={livro.id}
                       className="max-w-75 basis-[82%] sm:basis-1/2 lg:basis-[33%] 2xl:basis-1/4"
                     >
-                      <LivroCard livro={livro} />
+                      <LivroCard livro={livro} priority={idx === 0} />
                     </CarouselItem>
                   ))}
                 </CarouselContent>
@@ -491,12 +502,12 @@ function LivrosPageInner() {
                 className="w-full"
               >
                 <CarouselContent className="mx-auto max-w-5xl gap-3 sm:py-7">
-                  {novos.map((livro) => (
+                  {novos.map((livro, idx) => (
                     <CarouselItem
                       key={livro.id}
                       className="max-w-75 basis-[82%] sm:basis-1/2 lg:basis-[33%] 2xl:basis-1/4"
                     >
-                      <LivroCard livro={livro} />
+                      <LivroCard livro={livro} priority={idx === 0} />
                     </CarouselItem>
                   ))}
                 </CarouselContent>

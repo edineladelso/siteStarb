@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, memo } from "react";
 
 import {
   AlertDialog,
@@ -77,9 +77,14 @@ const CATEGORIA_GRADIENTS: Record<MacroAreaLivro, string> = {
 interface LivroCardProps {
   livro: Livro;
   compact?: boolean;
+  priority?: boolean;
 }
 
-export default function LivroCard({ livro, compact = false }: LivroCardProps) {
+export default memo(function LivroCard({
+  livro,
+  compact = false,
+  priority = false,
+}: LivroCardProps) {
   const [favorito, setFavorito] = useState(false);
 
   // Pega a primeira MacroArea como categoria principal
@@ -180,7 +185,11 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
                     : "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 }
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
-                priority={Boolean(livro.popular || livro.novo)}
+                priority={priority}
+                loading={priority ? "eager" : "lazy"}
+                quality={compact ? 75 : 85}
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'%3E%3Crect fill='%23e5e7eb' width='400' height='500'/%3E%3C/svg%3E"
               />
               {/* Overlay com gradiente para melhor legibilidade */}
               <div
@@ -472,4 +481,4 @@ export default function LivroCard({ livro, compact = false }: LivroCardProps) {
       </CardFooter>
     </Card>
   );
-}
+});
