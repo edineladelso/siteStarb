@@ -1,31 +1,52 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse, NextRequest } from "next/server";
+// Rotas que requerem admin
+const adminRoutes = ["/admin"];
 
 export default async function proxy(request: NextRequest) {
   const { nextUrl } = request;
-  const response = NextResponse.next({ request });
+  const { pathname } = request.nextUrl;
+  const response = NextResponse.next({ request: { headers: request.headers } });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options),
-          );
-        },
-      },
-    },
-  );
+  // const supabase = createServerClient(
+  //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  //   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+  //   {
+  //     cookies: {
+  //       getAll() {
+  //         return request.cookies.getAll();
+  //       },
+  //       setAll(cookiesToSet) {
+  //         cookiesToSet.forEach(({ name, value, options }) =>
+  //           response.cookies.set(name, value, options),
+  //         );
+  //       },
+  //     },
+  //   },
+  // );
 
   // Atualiza/refresca a sessão (getUser faz o refresh no Supabase)
   // const {
   //   data: { user },
   // } = await supabase.auth.getUser();
+
+  // Se é uma rota de admin e o usuário não é admin
+  if (adminRoutes.some((route) => pathname.startsWith(route))) {
+    // Aqui você poderia verificar se o usuário é admin
+    // Por enquanto, deixar passar e a página verificará
+  }
+
+  // // Se é uma rota privada e não tem usuário, redirecionar para login
+  // if (privateRoutes.some((route) => pathname.startsWith(route))) {
+  //   if (!user) {
+  //     return NextResponse.redirect(
+  //       new URL(`/login?next=${encodeURIComponent(pathname)}`),
+  //     );
+  //   }
+  // }
+  // Se está logado e tenta acessar login/registro, redirecionar para home
+  // if ((pathname === "/login" || pathname === "/registro") && user) {
+  //   return NextResponse.redirect(new URL("/", request.url));
+  // }
 
   // Helper: redirect mantendo cookies de sessão (refresh do Supabase)
   const redirectWithCookies = (url: URL) => {
@@ -39,7 +60,7 @@ export default async function proxy(request: NextRequest) {
   if (modoManutencao && nextUrl.pathname !== "/manutencao") {
     const redirectUrl = new URL("/manutencao", request.url);
 
-    console.log("Modo manutencao: ", modoManutencao)
+    console.log("Modo manutencao: ", modoManutencao);
     return NextResponse.redirect(redirectUrl);
   }
 

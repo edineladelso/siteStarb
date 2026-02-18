@@ -1,5 +1,5 @@
 // src/lib/validators/auth.ts
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { profiles } from "../db/schema/profile";
 

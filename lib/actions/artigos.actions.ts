@@ -11,7 +11,7 @@ import {
   selectArtigoSchema,
 } from "@/lib/drizzle/validations/artigo.schema";
 import { gerarSlugUnico } from "@/lib/utils/slugify";
-import { eq, StringChunk } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { ActionResult, Artigo } from "../types";

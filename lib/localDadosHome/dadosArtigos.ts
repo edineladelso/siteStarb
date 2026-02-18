@@ -6,7 +6,7 @@ const baseDatas = {
   updatedAt: new Date("2025-11-03"),
 } as const;
 
-function makeMidia(html: string) {
+function makeMidia() {
   // Usamos htmlUrl somente para satisfazer o schema; o conteúdo é entregue pelo campo extra `html`.
   return { tipo: "plataforma" as const, htmlUrl: "https://example.com/artigo" };
 }

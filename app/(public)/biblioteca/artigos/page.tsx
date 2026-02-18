@@ -20,7 +20,7 @@ import { artigosBiblioteca } from "../../../../lib/localDadosHome/dadosArtigos";
 import ArtigoCard, { clampStyle } from "./ui/ArtigoCard";
 import { listarArtigos } from "@/lib/actions";
 import type { Artigo } from "@/lib";
-import { LoadingContent, LoadingVariant } from "@/app/loading/Loading";
+import { LoadingVariant } from "@/app/loading/Loading";
 
 function StatPill({
   icon,
@@ -159,6 +159,7 @@ export default function ArtigosPage() {
               href={`/biblioteca/artigos/${artigoDestaque.slug}`}
               className="group relative block overflow-hidden rounded-2xl border border-white/15 bg-white/10 shadow-2xl shadow-black/20"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={capaDestaque}
                 alt={artigoDestaque.titulo}

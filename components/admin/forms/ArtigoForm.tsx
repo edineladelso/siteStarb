@@ -57,7 +57,6 @@ import {
   Grid3x3,
   Loader2,
   Maximize,
-  Maximize2Icon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -446,7 +445,7 @@ export function ArtigoForm({ initialData, onCancel }: ArtigoFormProps) {
               <FormField
                 control={form.control}
                 name="autores"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormLabel className="text-sm font-semibold">
                       Autores *

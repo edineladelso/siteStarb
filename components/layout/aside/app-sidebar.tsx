@@ -52,6 +52,7 @@ import { LABELS_CATEGORIAS } from "@/lib/domain/areasCategoriasPatern";
 import { Separator } from "../../ui/separator";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import type { CurrentUser } from "@/lib/actions/user.actions";
 
 const macroAreaIcons: Record<MacroAreaLivro, React.ElementType> = {
   Matematica: Calculator,
@@ -165,60 +166,72 @@ const navMain = macroAreaLivroValues.map((macroArea) => {
   };
 });
 
-const data = {
-  user: {
-    name: "Star B",
-    email: "uccstarB@gmail.com",
-    avatar: "/img/star.webp",
-  },
-  services: [
-    {
-      name: "Star B Avançado",
-      logo: Command,
-      plan: "Enterprise",
-      href: "#",
-    },
-    {
-      name: "Star B IA",
-      logo: AudioWaveform,
-      plan: "Pro",
-      href: "#",
-    },
-    {
-      name: "Star B Basico",
-      logo: GalleryVerticalEnd,
-      plan: "Free",
-      href: "#",
-    },
-  ],
-  navMain,
-  projects: [
-    {
-      name: "Design de Engenharia",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Ideias & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "TCC && Dissertação",
-      url: "#",
-      icon: Map,
-    },
-  ],
+const defaultUser = {
+  name: "Star B",
+  email: "uccstarB@gmail.com",
+  avatar: "/img/star.webp",
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+const services = [
+  {
+    name: "Star B Avançado",
+    logo: Command,
+    plan: "Enterprise",
+    href: "#",
+  },
+  {
+    name: "Star B IA",
+    logo: AudioWaveform,
+    plan: "Pro",
+    href: "#",
+  },
+  {
+    name: "Star B Basico",
+    logo: GalleryVerticalEnd,
+    plan: "Free",
+    href: "#",
+  },
+];
+
+const projects = [
+  {
+    name: "Design de Engenharia",
+    url: "#",
+    icon: Frame,
+  },
+  {
+    name: "Ideias & Marketing",
+    url: "#",
+    icon: PieChart,
+  },
+  {
+    name: "TCC && Dissertação",
+    url: "#",
+    icon: Map,
+  },
+];
+
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  user?: CurrentUser | null;
+}
+
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+
+  // Usar dados do usuário se disponível, senão usar padrão
+  const displayUser = user
+    ? {
+        name: user.nome,
+        email: user.email,
+        avatar: user.avatarUrl || "/img/star.webp",
+      }
+    : defaultUser;
 
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className={cn(isCollapsed && "hidden")}>
-        <ServiceSwitcher services={data.services} />
+        <ServiceSwitcher services={services} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain
@@ -231,22 +244,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           )}
           className2={cn(isCollapsed && "[&>svg]:size-5.5")}
           colorIcon={cn(isCollapsed && "text-sidebar-foreground/95")}
-          items={data.navMain}
+          items={navMain}
         />
         <Separator className={cn(isCollapsed && "sm:hidden")} />
         <NavProjects
           className2="text-sidebar-foreground/70"
-          projects={data.projects}
+          projects={projects}
         />
       </SidebarContent>
       {isCollapsed ? (
-        <Link href={"/login"} className="mx-auto [&_svg]:size-6 mb-10 hover:text-blue-600">
+        <Link href={user ? "#" : "/login"} className="mx-auto [&_svg]:size-6 mb-10 hover:text-blue-600">
           <UserCircle />
         </Link>
       ) : (
         <SidebarFooter>
           <NavUser
-            user={data.user}
+            user={displayUser}
+            role={user?.role}
             classNameSideBarMenu={cn(isCollapsed && "hidden")}
           />
         </SidebarFooter>
