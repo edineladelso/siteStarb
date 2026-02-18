@@ -30,10 +30,10 @@ export default async function proxy(request: NextRequest) {
   // } = await supabase.auth.getUser();
 
   // Se é uma rota de admin e o usuário não é admin
-  if (adminRoutes.some((route) => pathname.startsWith(route))) {
-    // Aqui você poderia verificar se o usuário é admin
-    // Por enquanto, deixar passar e a página verificará
-  }
+  // if (adminRoutes.some((route) => pathname.startsWith(route))) {
+  //   // Aqui você poderia verificar se o usuário é admin
+  //   // Por enquanto, deixar passar e a página verificará
+  // }
 
   // // Se é uma rota privada e não tem usuário, redirecionar para login
   // if (privateRoutes.some((route) => pathname.startsWith(route))) {

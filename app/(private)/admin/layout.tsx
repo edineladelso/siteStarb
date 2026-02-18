@@ -27,8 +27,8 @@ export default async function AdminLayout({
   const stats = await getDashboardStats();
 
   return (
-    <SidebarProvider>
-      <div className="bg-sidebar flex min-h-screen w-full">
+    <SidebarProvider className="min-h-svh">
+      <div className="bg-sidebar flex min-h-svh w-full">
         <AdminSidebar
           counts={{
             livros: stats.totalLivros,
@@ -38,7 +38,7 @@ export default async function AdminLayout({
           }}
         />
         <SidebarInset>
-          <div className="bg-sidebar flex min-h-screen flex-col">
+          <div className="bg-sidebar flex min-h-svh flex-col">
             <AdminHeader />
             <main className="bg-sidebar my-10 flex flex-1 justify-center px-6 sm:px-10">
               {children}

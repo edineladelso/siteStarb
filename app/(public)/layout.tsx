@@ -14,9 +14,9 @@ export default async function PublicLayout({
 
   return (
     <>
-      <SidebarProvider>
+      <SidebarProvider className="min-h-svh">
         <AppSidebar user={user} />
-        <div className="bg-sidebar-primary-foreground flex min-h-screen w-full flex-col">
+        <div className="bg-sidebar-primary-foreground flex min-h-svh w-full flex-col">
           <Header />
           <main className="flex flex-1">{children}</main>
           <Footer />
