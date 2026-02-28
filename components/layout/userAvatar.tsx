@@ -11,10 +11,10 @@ interface UserAvatarProps {
 }
 
 const sizeMap = {
-  sm: { container: "h-7 w-7",  text: "text-[10px]", img: 28  },
-  md: { container: "h-9 w-9",  text: "text-xs",     img: 36  },
-  lg: { container: "h-12 w-12",text: "text-sm",     img: 48  },
-  xl: { container: "h-24 w-24",text: "text-2xl",    img: 96  },
+  sm: { container: "h-7 w-7", text: "text-[10px]", img: 28 },
+  md: { container: "h-9 w-9", text: "text-xs", img: 36 },
+  lg: { container: "h-12 w-12", text: "text-sm", img: 48 },
+  xl: { container: "h-24 w-24", text: "text-2xl", img: 96 },
 };
 
 // Gera cor de fundo deterministicamente a partir do nome
@@ -42,20 +42,31 @@ function getIniciais(nome: string): string {
   return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
 }
 
-export function UserAvatar({ nome, avatarUrl, size = "md", className }: UserAvatarProps) {
+export function UserAvatar({
+  nome,
+  avatarUrl,
+  size = "md",
+  className,
+}: UserAvatarProps) {
   const { container, text, img } = sizeMap[size];
   const iniciais = getIniciais(nome || "U");
   const gradiente = gerarCorFundo(nome || "U");
 
   if (avatarUrl) {
     return (
-      <div className={cn("relative overflow-hidden rounded-full shrink-0", container, className)}>
+      <div
+        className={cn(
+          "relative shrink-0 overflow-hidden rounded-full",
+          container,
+          className,
+        )}
+      >
         <Image
           src={avatarUrl}
           alt={`Avatar de ${nome}`}
           width={img}
           height={img}
-          className="object-cover w-full h-full"
+          className="h-full w-full object-cover"
           onError={(e) => {
             // Fallback se a imagem falhar
             (e.target as HTMLImageElement).style.display = "none";
@@ -70,12 +81,12 @@ export function UserAvatar({ nome, avatarUrl, size = "md", className }: UserAvat
       aria-label={`Avatar de ${nome}`}
       role="img"
       className={cn(
-        "relative rounded-full shrink-0 flex items-center justify-center",
-        "bg-gradient-to-br font-bold text-white shadow-md select-none",
+        "relative flex shrink-0 items-center justify-center rounded-full",
+        "bg-linear-to-br font-bold text-white shadow-md select-none",
         gradiente,
         container,
         text,
-        className
+        className,
       )}
     >
       {iniciais}

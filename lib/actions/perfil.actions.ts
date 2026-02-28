@@ -48,7 +48,7 @@ export async function atualizarPerfil(
     });
 
     if (!parsed.success) {
-      const primeiro = parsed.error.errors[0];
+      const primeiro = parsed.error.issues[0];
       return { success: false, erro: primeiro.message };
     }
 

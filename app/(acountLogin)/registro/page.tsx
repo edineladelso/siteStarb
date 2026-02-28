@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PasswordInput } from "../ui/passwordInput";
 import { registrarComEmail } from "@/lib/supabase/auth/auth-actions";
+import asideImage from "@/public/image/rotate1.jpg";
+import { AlertCircle, Info } from "lucide-react";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import asideImage from "@/public/image/rotate1.jpg";
-import { Info, AlertCircle } from "lucide-react";
-import type { Metadata } from "next";
+import { PasswordInput } from "../ui/passwordInput";
 
 export const metadata: Metadata = {
   title: "Criar Conta",
@@ -22,7 +22,7 @@ export default async function RegistroPage({ searchParams }: PageProps) {
   const params = await searchParams;
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center bg-sidebar-foreground p-6">
+    <div className="bg-sidebar-foreground relative flex min-h-screen w-full items-center justify-center p-6">
       {/* Background decorativo */}
       <Image
         src={asideImage}
@@ -46,7 +46,11 @@ export default async function RegistroPage({ searchParams }: PageProps) {
             aria-live="assertive"
             className="mb-4 flex items-center gap-2 rounded-lg border border-red-500 bg-red-500/20 p-3"
           >
-            <AlertCircle size={16} className="shrink-0 text-red-400" aria-hidden="true" />
+            <AlertCircle
+              size={16}
+              className="shrink-0 text-red-400"
+              aria-hidden="true"
+            />
             <p className="text-sm text-red-200">{params.error}</p>
           </div>
         )}
@@ -58,19 +62,27 @@ export default async function RegistroPage({ searchParams }: PageProps) {
             aria-live="polite"
             className="mb-4 flex items-center gap-2 rounded-lg border border-green-500 bg-green-500/20 p-3"
           >
-            <Info size={16} className="shrink-0 text-green-400" aria-hidden="true" />
+            <Info
+              size={16}
+              className="shrink-0 text-green-400"
+              aria-hidden="true"
+            />
             <p className="text-sm text-green-200">{params.message}</p>
           </div>
         )}
 
         {/* ── Formulário ── */}
         <form action={registrarComEmail} className="space-y-4" noValidate>
-
           {/* Nome */}
           <div>
-            <label htmlFor="nome" className="mb-1 block text-xs font-semibold text-white/70">
+            <label
+              htmlFor="nome"
+              className="mb-1 block text-xs font-semibold text-white/70"
+            >
               Nome Completo{" "}
-              <span aria-hidden="true" className="text-red-400">*</span>
+              <span aria-hidden="true" className="text-red-400">
+                *
+              </span>
               <span className="sr-only">(obrigatório)</span>
             </label>
             <Input
@@ -88,9 +100,14 @@ export default async function RegistroPage({ searchParams }: PageProps) {
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="mb-1 block text-xs font-semibold text-white/70">
+            <label
+              htmlFor="email"
+              className="mb-1 block text-xs font-semibold text-white/70"
+            >
               Email{" "}
-              <span aria-hidden="true" className="text-red-400">*</span>
+              <span aria-hidden="true" className="text-red-400">
+                *
+              </span>
               <span className="sr-only">(obrigatório)</span>
             </label>
             <Input
@@ -107,9 +124,14 @@ export default async function RegistroPage({ searchParams }: PageProps) {
 
           {/* Senha */}
           <div>
-            <label htmlFor="senha" className="mb-1 block text-xs font-semibold text-white/70">
+            <label
+              htmlFor="senha"
+              className="mb-1 block text-xs font-semibold text-white/70"
+            >
               Senha{" "}
-              <span aria-hidden="true" className="text-red-400">*</span>
+              <span aria-hidden="true" className="text-red-400">
+                *
+              </span>
               <span className="sr-only">(obrigatório)</span>
             </label>
             <PasswordInput
@@ -129,9 +151,14 @@ export default async function RegistroPage({ searchParams }: PageProps) {
 
           {/* Confirmar Senha */}
           <div>
-            <label htmlFor="confirmarSenha" className="mb-1 block text-xs font-semibold text-white/70">
+            <label
+              htmlFor="confirmarSenha"
+              className="mb-1 block text-xs font-semibold text-white/70"
+            >
               Confirmar Senha{" "}
-              <span aria-hidden="true" className="text-red-400">*</span>
+              <span aria-hidden="true" className="text-red-400">
+                *
+              </span>
               <span className="sr-only">(obrigatório)</span>
             </label>
             <PasswordInput
@@ -167,7 +194,11 @@ export default async function RegistroPage({ searchParams }: PageProps) {
         {/* Aviso de email */}
         <div className="mt-6 rounded-lg bg-neutral-700/50 p-4" role="note">
           <p className="flex items-start gap-3 text-xs text-gray-300">
-            <Info size={16} className="mt-0.5 shrink-0 text-gray-400" aria-hidden="true" />
+            <Info
+              size={16}
+              className="mt-0.5 shrink-0 text-gray-400"
+              aria-hidden="true"
+            />
             <span>
               Ao criar uma conta, você receberá um email de confirmação.
               Verifique sua caixa de entrada e pasta de spam.

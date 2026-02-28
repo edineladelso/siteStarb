@@ -2,7 +2,6 @@
 
 import {
   Atom,
-  AudioWaveform,
   BookOpen,
   Boxes,
   Brain,
@@ -14,7 +13,6 @@ import {
   Command,
   FlaskConical,
   Frame,
-  GalleryVerticalEnd,
   Gauge,
   HardHat,
   LogIn,
@@ -33,13 +31,15 @@ import * as React from "react";
 import { NavMain } from "@/components/layout/aside/nav-main";
 import { NavProjects } from "@/components/layout/aside/nav-projects";
 import { NavUser } from "@/components/layout/aside/nav-user";
-import { ServiceSwitcher } from "@/components/layout/aside/services-switcher";
 import { UserAvatar } from "@/components/layout/userAvatar";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
@@ -169,13 +169,6 @@ const navMain = macroAreaLivroValues.map((macroArea) => {
   };
 });
 
-// ─── Serviços ─────────────────────────────────────────────────────────────────
-const services = [
-  { name: "Star B Avançado", logo: Command, plan: "Enterprise", href: "#" },
-  { name: "Star B IA", logo: AudioWaveform, plan: "Pro", href: "#" },
-  { name: "Star B Basico", logo: GalleryVerticalEnd, plan: "Free", href: "#" },
-];
-
 // ─── Projetos ────────────────────────────────────────────────────────────────
 const projects = [
   { name: "Design de Engenharia", url: "#", icon: Frame },
@@ -189,8 +182,9 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
-  const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
+  const { state, isMobile } = useSidebar();
+  const isCollapsedDesktop = state === "collapsed" && !isMobile;
+  const showCollapsedFooter = isCollapsedDesktop;
 
   const displayUser = user
     ? {
@@ -203,25 +197,36 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       {/* ── Header ── */}
-      <SidebarHeader className={cn(isCollapsed && "hidden")}>
-        <ServiceSwitcher services={services} />
+      <SidebarHeader className={cn(isCollapsedDesktop && "hidden")}>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" className="pointer-events-none">
+              <div className="text-sidebar-primary ml-1 flex aspect-square size-8 items-center justify-center rounded-lg border">
+                <Command className="size-5.5" />
+              </div>
+              <div className="grid flex-1 text-left text-xl leading-tight">
+                <span className="truncate font-bold">Star B</span>
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
 
       {/* ── Conteúdo ── */}
       <SidebarContent>
         <NavMain
-          classNameSideBarMenu={cn(isCollapsed && "gap-3")}
+          classNameSideBarMenu={cn(isCollapsedDesktop && "gap-3")}
           className1={cn(
             "overflow-y-scroll text-sidebar-foreground/70",
-            isCollapsed
+            isCollapsedDesktop
               ? "h-[55vh] sm:mt-15 sm:overflow-x-hidden"
               : "sm:max-h-[60vh]",
           )}
-          className2={cn(isCollapsed && "[&>svg]:size-5.5")}
-          colorIcon={cn(isCollapsed && "text-sidebar-foreground/95")}
+          className2={cn(isCollapsedDesktop && "[&>svg]:size-5.5")}
+          colorIcon={cn(isCollapsedDesktop && "text-sidebar-foreground/95")}
           items={navMain}
         />
-        <Separator className={cn(isCollapsed && "sm:hidden")} />
+        <Separator className={cn(isCollapsedDesktop && "sm:hidden")} />
         <NavProjects
           className2="text-sidebar-foreground/70"
           projects={projects}
@@ -229,7 +234,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarContent>
 
       {/* ── Footer / Avatar colapsado ── */}
-      {isCollapsed ? (
+      {showCollapsedFooter ? (
         <div className="mb-8 flex justify-center">
           {user ? (
             // Utilizador autenticado — avatar clicável para o perfil
@@ -267,7 +272,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             <NavUser
               user={displayUser}
               role={user?.role}
-              classNameSideBarMenu={cn(isCollapsed && "hidden")}
+              classNameSideBarMenu={cn(showCollapsedFooter && "hidden")}
             />
           ) : (
             // Sidebar expandida sem utilizador — botão de login

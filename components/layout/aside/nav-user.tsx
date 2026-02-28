@@ -134,7 +134,7 @@ export function NavUser({
 
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/perfil">
+                <Link href="/minha-conta">
                   <Sparkles className="mr-2" size={16} />
                   Meu Perfil
                 </Link>
