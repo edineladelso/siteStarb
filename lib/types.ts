@@ -192,3 +192,36 @@ export const UPLOAD_CONSTRAINTS = {
     acceptedFormats: [".pdf", "application/pdf"],
   },
 } as const;
+
+// ============================================
+// TIPOS PARA CONFIGURAÇÕES DO SISTEMA
+// ============================================
+
+export interface ConfiguracaoCloudinary {
+  cloudName: string;
+  apiKey: string;
+  apiSecret: string;
+  pastaUploads: string;
+  precisaoCompressao: 'alta' | 'media' | 'baixa';
+}
+
+export interface ConfiguracaoBancoDados {
+  provider: 'postgres' | 'mysql' | 'sqlite';
+  connectionString: string;
+  pool?: {
+    min: number;
+    max: number;
+  };
+}
+
+export interface ConfiguracaoSistema {
+  nomeApp: string;
+  versao: string;
+  ambiente: 'desenvolvimento' | 'producao' | 'teste';
+  cloudinary: ConfiguracaoCloudinary;
+  bancoDados: ConfiguracaoBancoDados;
+  chaveSecreta: string;
+  urlBase: string;
+  paginasMaximas: number;
+  limiteDownloadDiario: number;
+}

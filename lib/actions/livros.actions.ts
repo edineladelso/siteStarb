@@ -30,6 +30,11 @@ export async function criarLivro(formData: FormData) {
   // Derivação automática via Domínio
   const macroAreas = toMacroAreas(areas);
 
+  const pdfUrl = String(formData.get("pdf_url") ?? "").trim();
+  const epubUrl = String(formData.get("epub_url") ?? "").trim();
+  const resumoUrl = String(formData.get("resumo_url") ?? "").trim();
+  const capaUrl = String(formData.get("capa_url") ?? "").trim();
+
   const bruto = {
     titulo,
     slug,
@@ -43,19 +48,21 @@ export async function criarLivro(formData: FormData) {
       : null,
     idioma: formData.get("idioma") ? String(formData.get("idioma")) : null,
 
-    capa: String(formData.get("capa_url")),
+    capa: capaUrl,
     detalhes: {
       sinopse: String(formData.get("sinopse") || formData.get("descricao")),
       numeroPaginas: Number(formData.get("numeroPaginas")),
       autor: String(formData.get("autor")),
-      editora: formData.get("editora") ? String(formData.get("editora")) : null,
+      editora: formData.get("editora")
+        ? String(formData.get("editora"))
+        : undefined,
       isbn: formData.get("isbn") ? String(formData.get("isbn")) : null,
     },
 
     midia: {
-      pdf: String(formData.get("pdf_url")),
-      epub: String(formData.get("epub_url") || ""),
-      resumo: String(formData.get("resumo_url")),
+      pdf: pdfUrl || undefined,
+      epub: epubUrl,
+      resumo: resumoUrl || undefined,
     },
 
     areas,
@@ -118,7 +125,20 @@ export async function atualizarLivro(
   id: number,
   formData: FormData,
 ): Promise<ActionResult<Livro>> {
+  if (!id || Number.isNaN(id)) {
+    return { success: false, error: "ID inválido para atualização." };
+  }
+
+  const atual = await getLivroById(id);
+  if (!atual) {
+    return { success: false, error: "Livro não encontrado." };
+  }
+
   const titulo = String(formData.get("titulo"));
+  const pdfUrl = String(formData.get("pdf_url") ?? "").trim();
+  const epubUrl = String(formData.get("epub_url") ?? "").trim();
+  const resumoUrl = String(formData.get("resumo_url") ?? "").trim();
+  const capaUrl = String(formData.get("capa_url") ?? "").trim();
 
   // Nota: Não alteramos o slug em updates para preservar SEO
 
@@ -130,6 +150,7 @@ export async function atualizarLivro(
 
   const bruto = {
     titulo,
+    slug: atual.slug,
     categoria: String(formData.get("categoria")),
     descricao: String(formData.get("descricao")),
     status: (formData.get("status") as Status) || "rascunho",
@@ -147,14 +168,16 @@ export async function atualizarLivro(
       sinopse: String(formData.get("sinopse") || formData.get("descricao")),
       numeroPaginas: Number(formData.get("numeroPaginas")),
       isbn: formData.get("isbn") ? String(formData.get("isbn")) : null,
-      editora: formData.get("editora") ? String(formData.get("editora")) : null,
+      editora: formData.get("editora")
+        ? String(formData.get("editora"))
+        : undefined,
     },
     midia: {
-      capa: String(formData.get("capa_url")),
-      pdf: String(formData.get("pdf_url")),
-      epub: String(formData.get("epub_url") || ""),
-      resumo: String(formData.get("resumo_url")),
+      pdf: pdfUrl || undefined,
+      epub: epubUrl,
+      resumo: resumoUrl || undefined,
     },
+    capa: capaUrl,
     areas,
     macroAreas,
     tags: formData.get("tags")
@@ -180,7 +203,7 @@ export async function atualizarLivro(
       .returning();
 
     revalidatePath("/biblioteca");
-    revalidatePath(`/biblioteca/livro/${atualizado.slug}`);
+    revalidatePath(`/biblioteca/livros/${atualizado.slug}`);
     return { success: true, data: atualizado };
   } catch (error) {
     console.error("Erro ao atualizar livro:", error);

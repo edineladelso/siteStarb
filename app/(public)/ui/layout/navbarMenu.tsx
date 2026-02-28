@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { NavbarDesktop } from "./navbarDesktop";
 import { NavbarMobile } from "./navbarMobile";
-import Pesquisa from "./pesquisa";
+import Pesquisa from "./pesquisa-wrapper";
 
 export function NavigationMenuDemo({ isMobile }: { isMobile?: boolean }) {
   const detectedMobile = useIsMobile();

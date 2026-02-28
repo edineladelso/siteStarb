@@ -33,7 +33,7 @@ import {
   YAxis,
   type PieLabelRenderProps,
 } from "recharts";
-import AnalyticsService from "./AnaliticsServices";
+import AnalyticsService from "./AnalyticsServices";
 import { ChartCard, MetricCard } from "./charts";
 
 /**

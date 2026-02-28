@@ -56,21 +56,24 @@ export function NavMain({
             key={item.title}
             asChild
             defaultOpen={item.isActive}
-            className="group/collapsible flex "
+            className="group/collapsible"
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
-                  tooltip={item.title}
-                  className={cn("", className2)}
+                  type="button"
+                  className={cn(
+                    "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground",
+                    className2,
+                  )}
                 >
                   {item.icon && <item.icon className={cn(colorIcon)} />}
                   <span className="text-sm">{item.title}</span>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
+              <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
+                <SidebarMenuSub className="mt-1">
                   {item.items?.map(
                     (subItem: { title: string; url: string }) => (
                       <SidebarMenuSubItem key={subItem.title}>

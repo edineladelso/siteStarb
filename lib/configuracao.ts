@@ -7,7 +7,7 @@ import {
   ConfiguracaoBancoDados,
   ConfiguracaoCloudinary,
   ConfiguracaoSistema,
-} from "./tipos";
+} from "./types";
 
 // ============================================
 // CONFIGURAÇÕES DO CLOUDINARY

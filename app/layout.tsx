@@ -57,7 +57,10 @@ export default function RootLayout({
       className={`${mavenPro.variable} ${poppins.variable} ${muktaMalar.variable} ${montserrat.variable} ${neuton.variable} ${spectral.variable}`}
     >
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <body className="min-h-svh bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <body
+        suppressHydrationWarning
+        className="min-h-svh bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50"
+      >
         <div className="min-h-svh">{children}</div>
       </body>
     </html>

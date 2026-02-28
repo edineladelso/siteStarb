@@ -1,8 +1,7 @@
 // 1. Importar o componente
 
-// import AnalyticsService from "@/components/admin/AnaliticsServices";
+// import AnalyticsService from "@/components/admi./AnalyticsServices";
 import AnalyticsComponent from "@/components/admin/AnalyticsComponents";
-
 
 // 2. Usar na página admin/analytics
 export default function AnalyticsPage() {
