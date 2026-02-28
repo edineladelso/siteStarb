@@ -1,38 +1,40 @@
 "use client";
 
 import {
+  Atom,
   AudioWaveform,
   BookOpen,
+  Boxes,
+  Brain,
+  Building,
+  Calculator,
+  CircuitBoard,
+  Code,
+  Cog,
   Command,
+  FlaskConical,
   Frame,
   GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Calculator,
-  Atom,
-  FlaskConical,
-  Boxes,
-  Cog,
-  Zap,
-  CircuitBoard,
   Gauge,
-  Monitor,
-  Shield,
-  Radio,
-  Network,
-  Building,
-  Brain,
-  Code,
-  Settings,
   HardHat,
-  UserCircle,
+  LogIn,
+  Map,
+  Monitor,
+  Network,
+  PieChart,
+  Radio,
+  Settings,
+  Shield,
+  Zap,
 } from "lucide-react";
+import Link from "next/link";
 import * as React from "react";
 
 import { NavMain } from "@/components/layout/aside/nav-main";
 import { NavProjects } from "@/components/layout/aside/nav-projects";
 import { NavUser } from "@/components/layout/aside/nav-user";
 import { ServiceSwitcher } from "@/components/layout/aside/services-switcher";
+import { UserAvatar } from "@/components/layout/userAvatar";
 import {
   Sidebar,
   SidebarContent,
@@ -41,6 +43,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
+import type { CurrentUser } from "@/lib/actions/user.actions";
 import {
   AreaLivroParaMacroArea,
   areaLivroValues,
@@ -49,11 +52,10 @@ import {
   type MacroAreaLivro,
 } from "@/lib/domain/areas";
 import { LABELS_CATEGORIAS } from "@/lib/domain/areasCategoriasPatern";
-import { Separator } from "../../ui/separator";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import type { CurrentUser } from "@/lib/actions/user.actions";
+import { Separator } from "../../ui/separator";
 
+// ─── Ícones por macro área ────────────────────────────────────────────────────
 const macroAreaIcons: Record<MacroAreaLivro, React.ElementType> = {
   Matematica: Calculator,
   Fisica: Atom,
@@ -149,6 +151,7 @@ const AREA_LABELS: Record<AreaLivro, string> = {
   geologia_de_engenharia: "Geologia de Engenharia",
 };
 
+// ─── Nav items com links funcionais ──────────────────────────────────────────
 const navMain = macroAreaLivroValues.map((macroArea) => {
   const macro = macroArea as MacroAreaLivro;
   const children = areaLivroValues
@@ -166,51 +169,21 @@ const navMain = macroAreaLivroValues.map((macroArea) => {
   };
 });
 
-const defaultUser = {
-  name: "Star B",
-  email: "uccstarB@gmail.com",
-  avatar: "/img/star.webp",
-};
-
+// ─── Serviços ─────────────────────────────────────────────────────────────────
 const services = [
-  {
-    name: "Star B Avançado",
-    logo: Command,
-    plan: "Enterprise",
-    href: "#",
-  },
-  {
-    name: "Star B IA",
-    logo: AudioWaveform,
-    plan: "Pro",
-    href: "#",
-  },
-  {
-    name: "Star B Basico",
-    logo: GalleryVerticalEnd,
-    plan: "Free",
-    href: "#",
-  },
+  { name: "Star B Avançado", logo: Command, plan: "Enterprise", href: "#" },
+  { name: "Star B IA", logo: AudioWaveform, plan: "Pro", href: "#" },
+  { name: "Star B Basico", logo: GalleryVerticalEnd, plan: "Free", href: "#" },
 ];
 
+// ─── Projetos ────────────────────────────────────────────────────────────────
 const projects = [
-  {
-    name: "Design de Engenharia",
-    url: "#",
-    icon: Frame,
-  },
-  {
-    name: "Ideias & Marketing",
-    url: "#",
-    icon: PieChart,
-  },
-  {
-    name: "TCC && Dissertação",
-    url: "#",
-    icon: Map,
-  },
+  { name: "Design de Engenharia", url: "#", icon: Frame },
+  { name: "Ideias & Marketing", url: "#", icon: PieChart },
+  { name: "TCC && Dissertação", url: "#", icon: Map },
 ];
 
+// ─── Props ────────────────────────────────────────────────────────────────────
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user?: CurrentUser | null;
 }
@@ -219,20 +192,22 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
 
-  // Usar dados do usuário se disponível, senão usar padrão
   const displayUser = user
     ? {
         name: user.nome,
         email: user.email,
-        avatar: user.avatarUrl || "/img/star.webp",
+        avatar: user.avatarUrl ?? null,
       }
-    : defaultUser;
+    : null;
 
   return (
     <Sidebar collapsible="icon" {...props}>
+      {/* ── Header ── */}
       <SidebarHeader className={cn(isCollapsed && "hidden")}>
         <ServiceSwitcher services={services} />
       </SidebarHeader>
+
+      {/* ── Conteúdo ── */}
       <SidebarContent>
         <NavMain
           classNameSideBarMenu={cn(isCollapsed && "gap-3")}
@@ -252,19 +227,65 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
           projects={projects}
         />
       </SidebarContent>
+
+      {/* ── Footer / Avatar colapsado ── */}
       {isCollapsed ? (
-        <Link href={user ? "#" : "/login"} className="mx-auto [&_svg]:size-6 mb-10 hover:text-blue-600">
-          <UserCircle />
-        </Link>
+        <div className="mb-8 flex justify-center">
+          {user ? (
+            // Utilizador autenticado — avatar clicável para o perfil
+            <Link
+              href="/minha-conta"
+              aria-label="Ver meu perfil"
+              className="group relative"
+            >
+              <UserAvatar
+                nome={user.nome}
+                avatarUrl={user.avatarUrl}
+                size="sm"
+                className="ring-2 ring-transparent transition-all group-hover:ring-violet-500"
+              />
+              {/* Indicador online */}
+              <span
+                aria-hidden="true"
+                className="ring-sidebar absolute right-0 bottom-0 h-2 w-2 rounded-full bg-emerald-400 ring-2"
+              />
+            </Link>
+          ) : (
+            // Visitante — link para login
+            <Link
+              href="/login"
+              aria-label="Fazer login"
+              className="text-sidebar-foreground/90 flex items-center justify-center rounded-full p-1 transition-colors hover:text-blue-700"
+            >
+              <LogIn size={22} aria-hidden="true" />
+            </Link>
+          )}
+        </div>
       ) : (
         <SidebarFooter>
-          <NavUser
-            user={displayUser}
-            role={user?.role}
-            classNameSideBarMenu={cn(isCollapsed && "hidden")}
-          />
+          {displayUser ? (
+            <NavUser
+              user={displayUser}
+              role={user?.role}
+              classNameSideBarMenu={cn(isCollapsed && "hidden")}
+            />
+          ) : (
+            // Sidebar expandida sem utilizador — botão de login
+            <Link
+              href="/login"
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2.5",
+                "text-sidebar-foreground/60 text-sm font-medium",
+                "hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors",
+              )}
+            >
+              <LogIn size={18} aria-hidden="true" />
+              <span>Entrar na conta</span>
+            </Link>
+          )}
         </SidebarFooter>
       )}
+
       <SidebarRail />
     </Sidebar>
   );

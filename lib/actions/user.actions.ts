@@ -10,27 +10,32 @@ export type CurrentUser = {
   id: string;
   email: string;
   nome: string;
+  apelido: string | null;
   avatarUrl: string | null;
   role: "admin" | "user";
   provider: "email" | "google" | "github";
 };
 
 /**
- * Obtém o usuário autenticado atualmente
+ * Obtém o utilizador autenticado com o seu perfil.
+ *
+ * Retorna null silenciosamente em qualquer um destes casos:
+ *  - Não há sessão ativa
+ *  - O perfil ainda não foi criado (trigger pendente)
+ *  - Erro de rede/DB — não bloqueia o render da página
  */
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   try {
     const supabase = await createSSClient();
 
-    // 1. Obter usuário do Supabase Auth
+    // 1. Verificar sessão no Supabase Auth
     const {
       data: { user: authUser },
       error: authError,
     } = await supabase.auth.getUser();
 
-    if (authError || !authUser) {
-      return null;
-    }
+    // Sem sessão → utilizador não autenticado (situação normal)
+    if (authError || !authUser) return null;
 
     // 2. Buscar perfil no Drizzle
     const [profile] = await db
@@ -39,26 +44,29 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
       .where(eq(profiles.id, authUser.id))
       .limit(1);
 
-    if (!profile) {
-      return null;
-    }
+    // Perfil ainda não criado (trigger pode estar a processar)
+    if (!profile) return null;
 
     return {
-      id: profile.id,
-      email: profile.email,
-      nome: profile.nome,
-      avatarUrl: profile.avatarUrl,
-      role: profile.role as "admin" | "user",
-      provider: profile.provider as "email" | "google" | "github",
+      id:        profile.id,
+      email:     profile.email,
+      nome:      profile.nome,
+      apelido:   profile.apelido   ?? null,
+      avatarUrl: profile.avatarUrl ?? null,
+      role:      profile.role      as "admin" | "user",
+      provider:  profile.provider  as "email" | "google" | "github",
     };
   } catch (error) {
-    console.error("[getCurrentUser Error]:", error);
+    // Só loga em desenvolvimento para não poluir produção
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[getCurrentUser] Não foi possível obter o utilizador:", error);
+    }
     return null;
   }
 }
 
 /**
- * Faz logout do usuário
+ * Faz logout do utilizador atual
  */
 export async function logout(): Promise<ActionResult> {
   try {
@@ -77,9 +85,9 @@ export async function logout(): Promise<ActionResult> {
 }
 
 /**
- * Verifica se o usuário é administrador
+ * Verifica se o utilizador atual é administrador
  */
 export async function isAdmin(): Promise<boolean> {
   const user = await getCurrentUser();
-  return user?.role === "admin" ?? false;
+  return user?.role === "admin";
 }

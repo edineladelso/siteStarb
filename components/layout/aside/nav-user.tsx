@@ -39,7 +39,7 @@ export function NavUser({
   user: {
     name: string;
     email: string;
-    avatar: string;
+    avatar: string | null;
   };
   role?: "admin" | "user";
   classNameSideBarMenu?: string;
@@ -79,8 +79,8 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg bg-blue-600 text-white font-semibold">
+                <AvatarImage src={user.avatar ?? undefined} alt={user.name} />
+                <AvatarFallback className="rounded-lg bg-blue-600 font-semibold text-white">
                   {getInitials(user.name)}
                 </AvatarFallback>
               </Avatar>
@@ -100,8 +100,8 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg bg-blue-600 text-white font-semibold">
+                  <AvatarImage src={user.avatar ?? undefined} alt={user.name} />
+                  <AvatarFallback className="rounded-lg bg-blue-600 font-semibold text-white">
                     {getInitials(user.name)}
                   </AvatarFallback>
                 </Avatar>
@@ -110,14 +110,14 @@ export function NavUser({
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
                 {role === "admin" && (
-                  <span className="ml-auto text-xs bg-red-500/20 text-red-300 px-2 py-0.5 rounded">
+                  <span className="ml-auto rounded bg-red-500/20 px-2 py-0.5 text-xs text-red-300">
                     Admin {user.name}
                   </span>
                 )}
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            
+
             {role === "admin" && (
               <>
                 <DropdownMenuGroup>
@@ -148,7 +148,7 @@ export function NavUser({
                 Notificações
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            
+
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={handleLogout}
