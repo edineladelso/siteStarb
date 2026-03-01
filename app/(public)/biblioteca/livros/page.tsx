@@ -1,29 +1,28 @@
 "use client";
 
 import {
+  BookOpen,
+  Clock,
+  Filter,
+  Library,
+  Search,
+  Sparkles,
+  Star,
+  TrendingUp,
+  Users,
+} from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  memo,
   Suspense,
   useCallback,
+  useEffect,
   useMemo,
   useState,
-  useEffect,
-  memo,
 } from "react";
-import {
-  Search,
-  Filter,
-  TrendingUp,
-  Sparkles,
-  Library,
-  Users,
-  Clock,
-  Star,
-  BookOpen,
-} from "lucide-react";
-import { useSearchParams } from "next/navigation";
 
 import LivroCard from "@/app/(public)/biblioteca/livros/ui/LivroCard";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Carousel,
   CarouselContent,
@@ -32,13 +31,8 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
+import { Input } from "@/components/ui/input";
 
-import { fakeSelectLivros as livros } from "./dadosLivros";
-import {
-  CATEGORIAS_LIVROS,
-  getCategoriaNome,
-  type CategoriaLivroInfo,
-} from "../../../../lib/domain/areasCategoriasPatern";
 import {
   AreaLivroParaMacroArea,
   areaLivroValues,
@@ -46,6 +40,12 @@ import {
   type AreaLivro,
   type MacroAreaLivro,
 } from "@/lib/domain/areas";
+import {
+  CATEGORIAS_LIVROS,
+  getCategoriaNome,
+  type CategoriaLivroInfo,
+} from "../../../../lib/domain/areasCategoriasPatern";
+import { fakeSelectLivros as livros } from "./dadosLivros";
 
 // Types
 type OrdenacaoTipo = "popular" | "novo" | "avaliacao";
@@ -110,6 +110,8 @@ const OrdenacaoButton = memo(function OrdenacaoButton({
 // Componente Principal
 function LivrosPageInner() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const [popularesApi, setPopularesApi] = useState<CarouselApi | null>(null);
   const [novosApi, setNovosApi] = useState<CarouselApi | null>(null);
   // Valores iniciais derivados da URL (sem efeito para evitar cascatas)
@@ -132,30 +134,58 @@ function LivrosPageInner() {
     return null;
   }, [searchParams]);
 
-  // Estados com tipos corretos
-  const [categoriaAtiva, setCategoriaAtiva] = useState<MacroAreaLivro | null>(
+  const categoriaAtiva = useMemo<MacroAreaLivro | null>(
     () =>
       macroAreaFromParams ??
       (areaFromParams ? AreaLivroParaMacroArea[areaFromParams] : null),
+    [macroAreaFromParams, areaFromParams],
   );
-  const [areaAtiva, setAreaAtiva] = useState<AreaLivro | null>(
-    () => areaFromParams,
-  );
+  const areaAtiva = areaFromParams;
   const [ordenacao, setOrdenacao] = useState<OrdenacaoTipo>("popular");
   const [busca, setBusca] = useState("");
 
+  const updateFiltrosNaUrl = useCallback(
+    (macroArea: MacroAreaLivro | null, area: AreaLivro | null) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (macroArea) {
+        params.set("macroArea", macroArea);
+      } else {
+        params.delete("macroArea");
+      }
+
+      if (area) {
+        params.set("area", area);
+      } else {
+        params.delete("area");
+      }
+
+      const query = params.toString();
+      router.push(query ? `${pathname}?${query}` : pathname, {
+        scroll: false,
+      });
+    },
+    [pathname, router, searchParams],
+  );
+
   // Handlers nomeados para melhor debugging
-  const handleCategoriaClick = useCallback((categoria: MacroAreaLivro) => {
-    setCategoriaAtiva((prev) => (prev === categoria ? null : categoria));
-    setAreaAtiva(null);
-  }, []);
+  const handleCategoriaClick = useCallback(
+    (categoria: MacroAreaLivro) => {
+      const nextCategoria = categoriaAtiva === categoria ? null : categoria;
+      updateFiltrosNaUrl(nextCategoria, null);
+    },
+    [categoriaAtiva, updateFiltrosNaUrl],
+  );
+
+  const handleVerTodas = useCallback(() => {
+    updateFiltrosNaUrl(null, null);
+  }, [updateFiltrosNaUrl]);
 
   const handleLimparFiltros = useCallback(() => {
-    setCategoriaAtiva(null);
-    setAreaAtiva(null);
+    updateFiltrosNaUrl(null, null);
     setBusca("");
     setOrdenacao("popular");
-  }, []);
+  }, [updateFiltrosNaUrl]);
 
   const handleBuscaChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -354,7 +384,7 @@ function LivrosPageInner() {
             </h2>
             <Button
               variant="ghost"
-              onClick={() => setCategoriaAtiva(null)}
+              onClick={handleVerTodas}
               className={`text-sm font-medium transition-colors hover:text-blue-700 ${
                 categoriaAtiva === null ? "text-blue-700" : "text-slate-500"
               }`}
