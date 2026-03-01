@@ -118,7 +118,7 @@ export function MinhaContaView({ user }: MinhaContaViewProps) {
   }
 
   return (
-    <div className="relative min-h-screen bg-zinc-200">
+    <div className="relative min-h-svh bg-zinc-200/50">
       <Button
         asChild
         variant="outline"
@@ -132,7 +132,7 @@ export function MinhaContaView({ user }: MinhaContaViewProps) {
       </Button>
       <div
         aria-hidden="true"
-        className="h-36 w-full bg-linear-to-br from-zinc-200 via-zinc-300 to-zinc-200"
+        className="h-36 w-full bg-linear-to-br from-zinc-100 via-zinc-200/40 to-zinc-100"
       />
 
       <div className="mx-auto max-w-3xl px-4 pb-24 sm:px-6">
@@ -143,7 +143,7 @@ export function MinhaContaView({ user }: MinhaContaViewProps) {
                 nome={user.nome}
                 avatarUrl={user.avatarUrl}
                 size="xl"
-                className="shadow-xl ring-4 ring-zinc-200"
+                className="shadow-xl ring-4 ring-zinc-100"
               />
               {user.role === "admin" && (
                 <span
@@ -406,13 +406,13 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-zinc-300 bg-linear-to-br from-zinc-200 via-zinc-400/80 to-zinc-300 shadow-sm">
+    <section className="rounded-2xl border border-zinc-300 bg-linear-to-br from-zinc-100 via-zinc-200/50 to-zinc-100 shadow-sm">
       <div className="border-b border-zinc-300 px-5 py-3.5 sm:px-6">
         <h2 className="text-[11px] font-semibold tracking-[0.18em] text-zinc-500 uppercase">
           {titulo}
         </h2>
       </div>
-      <div className="p-5 sm:p-6">{children}</div>
+      <div className="p-4 sm:p-6">{children}</div>
     </section>
   );
 }
@@ -435,8 +435,8 @@ function InfoItem({
   vazio?: boolean;
 }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-zinc-300 bg-zinc-100 px-4 py-3">
-      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white">
+    <div className="flex items-start gap-3 rounded-xl border border-zinc-300 bg-zinc-200/5 px-4 py-3">
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/60 shadow shadow-zinc-300">
         <Icon size={14} className="text-zinc-500" aria-hidden="true" />
       </div>
       <div className="min-w-0">
@@ -466,8 +466,8 @@ function SettingsRow({
   mono?: boolean;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-zinc-300 bg-zinc-100 px-4 py-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white">
+    <div className="flex items-center gap-3 rounded-xl border border-zinc-300 bg-zinc-200/5 px-4 py-3">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/60 shadow shadow-zinc-300">
         <Icon size={14} className="text-zinc-500" aria-hidden="true" />
       </div>
       <div className="min-w-0 flex-1">
