@@ -46,6 +46,7 @@ import {
   type CategoriaLivroInfo,
 } from "../../../../lib/domain/areasCategoriasPatern";
 import { fakeSelectLivros as livros } from "./dadosLivros";
+import LivrosPageSkeleton from "./livros-page-skeleton";
 
 // Types
 type OrdenacaoTipo = "popular" | "novo" | "avaliacao";
@@ -605,7 +606,7 @@ function LivrosPageInner() {
 
 export default function LivrosPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50" />}>
+    <Suspense fallback={<LivrosPageSkeleton />}>
       <LivrosPageInner />
     </Suspense>
   );
