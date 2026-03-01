@@ -2,7 +2,7 @@ import { StatsData } from "@/lib/localDadosHome/stats";
 
 export default function Stats() {
   return (
-    <div className="grid grid-cols-3 gap-2 sm:gap-4 pt-4">
+    <div className="grid grid-cols-3 gap-2 sm:gap-4 pt-2">
       {StatsData.map((Stat, index) => (
         <div
           key={index}
@@ -12,7 +12,7 @@ export default function Stats() {
             {Stat.icon}
           </div>
           <div>
-            <div className="text-xl font-bold sm:text-2xl ">
+            <div className="text-xl font-bold sm:text-xl ">
               {Stat.stat}
             </div>
             <div className="mt-1 text-xs text-slate-600 sm:text-sm">

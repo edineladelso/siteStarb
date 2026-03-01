@@ -6,7 +6,7 @@ import {
 
 export const BadgesFeaturesArray = [
   {
-    conteudo: "Conteúdo Verificado",
+    conteudo: "Verificado",
     icon: <VerificadoIcon />,
   },
   {

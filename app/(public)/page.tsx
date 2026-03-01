@@ -33,10 +33,10 @@ import Link from "next/link";
 
 const StarBHomePage = () => {
   return (
-    <div className="min-h-screen w-full">
+    <div className="min-h-svh w-full">
       {/* Navigation */}
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:space-y-10 sm:px-12 sm:py-12 lg:px-16 lg:py-16 2xl:space-y-22">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:space-y-10 sm:px-12 sm:py-10 lg:px-16 2xl:space-y-22">
         {/* HERO SECTION - Magnifico e Moderno */}
         <section className="relative">
           {/* Background decorativo */}
@@ -50,18 +50,20 @@ const StarBHomePage = () => {
             {/* Hero Content */}
             <div className="order-2 space-y-6 lg:order-1 lg:space-y-8">
               {/* Badge */}
-              <div className="animate-pulse-slow inline-flex items-center gap-2 rounded-full bg-linear-to-r from-blue-800 to-indigo-800 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/50">
-                <span className="h-2 w-2 animate-ping rounded-full bg-white"></span>
-                <span>Plataforma de Engenharia Profissional</span>
+              <div className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-zinc-200/80 via-zinc-300/60 to-gray-300 px-4 py-2 text-sm font-semibold shadow shadow-black/50">
+                <span className="h-2 w-2 animate-ping rounded-full bg-black"></span>
+                <span className="bg-linear-to-r from-blue-900 to-slate-900 bg-clip-text font-black text-transparent">
+                  Plataforma de Engenharia Profissional
+                </span>
               </div>
 
               {/* Heading */}
-              <h1 className="text-3xl leading-tight font-black sm:text-4xl lg:text-5xl 2xl:text-6xl">
-                <span className="bg-linear-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
+              <h1 className="text-3xl leading-tight font-black sm:text-4xl xl:text-[43px] 2xl:text-5xl">
+                <span className="bg-linear-to-r from-slate-900 via-blue-900 to-indigo-800 bg-clip-text text-transparent">
                   Conhecimento Técnico
                 </span>
                 <br />
-                <span className="bg-linear-to-r from-blue-900 to-slate-900 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-blue-800 to-slate-900 bg-clip-text text-transparent">
                   Sério & Profundo
                 </span>
               </h1>
@@ -91,24 +93,23 @@ const StarBHomePage = () => {
               <Stats />
 
               {/* CTA Buttons */}
-              <div className="flex flex-wrap justify-around gap-4 pt-2">
+              <div className="flex flex-wrap justify-around gap-3">
                 <Button
                   asChild
                   variant={"secondary"}
                   size="lg"
-                  className="h-10 w-full rounded-2xl bg-white/60 px-8 text-base font-semibold shadow shadow-gray-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 sm:h-14"
+                  className="h-10 w-full rounded-2xl bg-white/60 px-8 text-base font-semibold shadow shadow-gray-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 sm:h-12"
                 >
                   <Link href="/biblioteca/livros">
                     Explorar Biblioteca
                     <ArrowRight />
                   </Link>
                 </Button>
-
                 <Button
                   size="lg"
                   asChild
                   variant={"secondary"}
-                  className="h-10 w-full rounded-2xl bg-white/60 px-8 text-base font-semibold shadow shadow-gray-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 sm:h-14"
+                  className="h-10 w-full rounded-2xl bg-white/60 px-8 text-base font-semibold shadow shadow-gray-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 sm:h-12"
                 >
                   <Link href="/biblioteca/artigos">
                     Explorar Artigos <ArrowRight />
@@ -155,7 +156,7 @@ const StarBHomePage = () => {
                 <BadgesFeatures />
 
                 {/* Barra de progresso animada */}
-                <div className="space-y-2">
+                <div className="space-y-1 w-[90%] mx-auto">
                   <div className="flex items-center justify-between text-sm">
                     <span className="font-medium text-slate-600">
                       Progresso da Biblioteca
@@ -202,7 +203,7 @@ const StarBHomePage = () => {
         {/* RECURSOS PRINCIPAIS */}
         <section className="space-y-10 lg:space-y-12">
           <header className="mx-auto max-w-3xl space-y-4 text-center">
-            <h2 className="bg-linear-to-r from-slate-900 to-blue-900 bg-clip-text text-3xl font-bold text-transparent sm:text-4xl lg:text-5xl">
+            <h2 className="bg-linear-to-r from-slate-900 to-blue-900 bg-clip-text text-3xl font-bold text-transparent sm:text-4xl 2xl:text-5xl">
               O que você encontra na Star B
             </h2>
             <p className="text-lg leading-relaxed text-slate-700 sm:text-xl">
@@ -285,7 +286,7 @@ const StarBHomePage = () => {
               </span>
             </div>
 
-            <h2 className="bg-linear-to-r from-slate-900 to-blue-900 bg-clip-text text-3xl font-bold text-transparent sm:text-4xl lg:text-5xl">
+            <h2 className="bg-linear-to-r from-slate-900 to-blue-900 bg-clip-text text-3xl font-bold text-transparent sm:text-4xl 2xl:text-5xl">
               Conteúdo Avançado
             </h2>
             <p className="text-lg leading-relaxed text-slate-700 sm:text-xl">
@@ -439,14 +440,14 @@ const StarBHomePage = () => {
         <HomeSeparator />
 
         {/* CALL TO ACTION FINAL */}
-        <section className="relative overflow-hidden rounded-3xl bg-linear-to-br from-zinc-100 via-zinc-200/50 to-zinc-100 p-8 text-center shadow shadow-zinc-500 sm:p-12 lg:p-16">
+        <section className="relative overflow-hidden max-w-4xl mx-auto rounded-3xl bg-linear-to-br from-zinc-100 via-zinc-200/50 to-zinc-100 p-8 text-center shadow shadow-zinc-500 sm:p-12 lg:p-16">
           {/* Background Pattern */}
 
           <div className="relative z-10 mx-auto max-w-3xl space-y-6">
-            <h2 className="text-2xl leading-tight font-black text-slate-900 sm:text-3xl xl:text-5xl">
+            <h2 className="text-2xl leading-tight font-black text-slate-900 sm:text-3xl 2xl:text-5xl">
               Aqui você pode aprender por curiosidade.
               <br />
-              <span className="text-zinc-700">Você pode alcançar domínio.</span>
+              <span className="text-zinc-700">Você pode alcançar o seu potencial.</span>
             </h2>
 
             <p className="text-lg leading-relaxed text-slate-700 sm:text-xl">
@@ -455,11 +456,11 @@ const StarBHomePage = () => {
               profissionais que querem elevar seu nível intelectual.
             </p>
 
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
+            <div className="flex justify-center gap-4 pt-4 max-sm:flex-wrap sm:gap-20">
               <Button
                 size="lg"
                 asChild
-                className="h-10 w-[90%] rounded-2xl bg-white/20 px-8 font-semibold text-slate-900 shadow shadow-zinc-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 sm:h-14"
+                className="h-10 rounded-2xl bg-white/20 px-8 font-semibold text-slate-900 shadow shadow-zinc-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 max-sm:w-[90%] sm:h-14"
               >
                 <Link href="/biblioteca/livros">Começar pela Biblioteca</Link>
               </Button>
@@ -468,7 +469,7 @@ const StarBHomePage = () => {
                 size="lg"
                 variant="outline"
                 asChild
-                className="h-10 w-[90%] rounded-2xl bg-white/20 px-8 font-semibold text-slate-900 shadow shadow-zinc-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 sm:h-14"
+                className="h-10 rounded-2xl bg-white/20 px-8 font-semibold text-slate-900 shadow shadow-zinc-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 max-sm:w-[90%] sm:h-14"
               >
                 <Link href="/premium">Ver Planos Premium</Link>
               </Button>
