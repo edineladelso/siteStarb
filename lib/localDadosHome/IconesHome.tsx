@@ -612,7 +612,7 @@ export const VerificadoIcon = ({
   className?: string;
 }) => (
   <svg
-    className={cn(size ? `size-${size}` : "size-4", "text-blue-600", className)}
+    className={cn(size ? `size-${size}` : "size-4", "text-slate-700", className)}
     fill="currentColor"
     viewBox="0 0 20 20"
   >
@@ -634,7 +634,7 @@ export const EstudantesIcon = ({
   <svg
     className={cn(
       size ? `size-${size}` : "size-4",
-      "text-indigo-600",
+      "text-slate-700",
       className,
     )}
     fill="currentColor"
@@ -654,7 +654,7 @@ export const AtualizadoIcon = ({
   <svg
     className={cn(
       size ? `size-${size}` : "size-4",
-      "text-purple-600",
+      "text-slate-700",
       className,
     )}
     fill="currentColor"

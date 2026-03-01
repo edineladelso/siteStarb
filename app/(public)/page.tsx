@@ -25,7 +25,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { StarsIcon } from "@/lib/localDadosHome/IconesHome";
 import { itensPremium } from "@/lib/localDadosHome/PremiumHome";
 import { recursosHome } from "@/lib/localDadosHome/RecursosHome";
 import { ArrowRight } from "lucide-react";
@@ -37,7 +36,7 @@ const StarBHomePage = () => {
     <div className="min-h-screen w-full">
       {/* Navigation */}
 
-      <main className="mx-auto max-w-7xl space-y-14 px-4 py-8 sm:space-y-20 sm:px-12 sm:py-12 lg:space-y-22 lg:px-16 lg:py-16">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:space-y-10 sm:px-12 sm:py-12 lg:px-16 lg:py-16 2xl:space-y-22">
         {/* HERO SECTION - Magnifico e Moderno */}
         <section className="relative">
           {/* Background decorativo */}
@@ -51,38 +50,38 @@ const StarBHomePage = () => {
             {/* Hero Content */}
             <div className="order-2 space-y-6 lg:order-1 lg:space-y-8">
               {/* Badge */}
-              <div className="animate-pulse-slow inline-flex items-center gap-2 rounded-full bg-linear-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/50">
+              <div className="animate-pulse-slow inline-flex items-center gap-2 rounded-full bg-linear-to-r from-blue-800 to-indigo-800 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/50">
                 <span className="h-2 w-2 animate-ping rounded-full bg-white"></span>
                 <span>Plataforma de Engenharia Profissional</span>
               </div>
 
               {/* Heading */}
-              <h1 className="text-3xl leading-tight font-black sm:text-4xl lg:text-5xl xl:text-6xl">
+              <h1 className="text-3xl leading-tight font-black sm:text-4xl lg:text-5xl 2xl:text-6xl">
                 <span className="bg-linear-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
                   Conhecimento Técnico
                 </span>
                 <br />
-                <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-blue-900 to-slate-900 bg-clip-text text-transparent">
                   Sério & Profundo
                 </span>
               </h1>
 
               {/* Description */}
-              <p className="max-w-2xl text-lg leading-relaxed text-slate-600 sm:text-xl">
+              <p className="max-w-2xl text-lg leading-relaxed text-slate-700 sm:text-xl">
                 A Star B é uma plataforma de aprendizagem técnica focada em{" "}
-                <span className="font-semibold text-blue-700">
+                <span className="font-semibold text-slate-900">
                   livros de engenharia
                 </span>
                 ,{" "}
-                <span className="font-semibold text-indigo-700">
+                <span className="font-semibold text-slate-900/90">
                   softwares profissionais
                 </span>
                 ,{" "}
-                <span className="font-semibold text-purple-700">
+                <span className="font-semibold text-zinc-800">
                   artigos científicos
                 </span>{" "}
                 e{" "}
-                <span className="font-semibold text-blue-700">
+                <span className="font-semibold text-slate-900">
                   formação em IA
                 </span>{" "}
                 — organizada para quem quer compreender profundamente.
@@ -92,11 +91,12 @@ const StarBHomePage = () => {
               <Stats />
 
               {/* CTA Buttons */}
-              <div className="flex flex-col gap-4 pt-2 sm:flex-row">
+              <div className="flex flex-wrap justify-around gap-4 pt-2">
                 <Button
                   asChild
+                  variant={"secondary"}
                   size="lg"
-                  className="h-10 bg-linear-to-r from-blue-600 to-indigo-600 px-8 text-base font-semibold shadow-xl shadow-blue-500/30 hover:from-blue-700 hover:to-indigo-700 sm:h-14"
+                  className="h-10 w-full rounded-2xl bg-white/60 px-8 text-base font-semibold shadow shadow-gray-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 sm:h-14"
                 >
                   <Link href="/biblioteca/livros">
                     Explorar Biblioteca
@@ -107,7 +107,8 @@ const StarBHomePage = () => {
                 <Button
                   size="lg"
                   asChild
-                  className="h-10  bg-linear-to-br from-[#0c0516] via-[#5416b5]/30 to-[#0f083b] px-8 text-base font-semibold hover:via-[#5416b5]/60 sm:h-14"
+                  variant={"secondary"}
+                  className="h-10 w-full rounded-2xl bg-white/60 px-8 text-base font-semibold shadow shadow-gray-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 sm:h-14"
                 >
                   <Link href="/biblioteca/artigos">
                     Explorar Artigos <ArrowRight />
@@ -159,11 +160,11 @@ const StarBHomePage = () => {
                     <span className="font-medium text-slate-600">
                       Progresso da Biblioteca
                     </span>
-                    <span className="font-bold text-blue-700">75%</span>
+                    <span className="font-bold text-blue-800">75%</span>
                   </div>
-                  <div className="h-3 overflow-hidden rounded-full border border-blue-100 bg-white/60 shadow-sm backdrop-blur-sm">
+                  <div className="h-2 overflow-hidden rounded-full border border-blue-100 bg-white/60 shadow-sm backdrop-blur-sm">
                     <div
-                      className="animate-progress h-full rounded-full bg-linear-to-r from-blue-500 via-indigo-500 to-purple-500"
+                      className="animate-progress h-full rounded-full bg-linear-to-r from-slate-900 via-indigo-900 to-blue-700"
                       style={{ width: "75%" }}
                     ></div>
                   </div>
@@ -173,69 +174,18 @@ const StarBHomePage = () => {
                 </div>
 
                 {/* Mini cards de destaque */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="rounded-xl border border-blue-100 bg-linear-to-br from-blue-50 to-indigo-50 p-4 text-center shadow-sm transition-shadow hover:shadow-md">
-                    <div className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-2xl font-bold text-transparent">
-                      4.9
-                    </div>
-                    <div className="mt-1 mb-1 flex justify-center">
-                      <StarsIcon />
-                    </div>
-                    <div className="text-xs text-slate-600">Avaliação</div>
-                  </div>
-
-                  <div className="rounded-xl border border-indigo-100 bg-linear-to-br from-indigo-50 to-purple-50 p-4 text-center shadow-sm transition-shadow hover:shadow-md">
-                    <div className="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
-                      98%
-                    </div>
-                    <div className="mt-2 flex justify-center">
-                      <svg
-                        className="h-5 w-5 text-green-600"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                    <div className="text-xs text-slate-600">Satisfação</div>
-                  </div>
-
-                  <div className="rounded-xl border border-purple-100 bg-linear-to-br from-purple-50 to-pink-50 p-4 text-center shadow-sm transition-shadow hover:shadow-md">
-                    <div className="bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-2xl font-bold text-transparent">
-                      24h
-                    </div>
-                    <div className="mt-2 flex justify-center">
-                      <svg
-                        className="h-5 w-5 text-blue-600"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                    <div className="text-xs text-slate-600">Suporte</div>
-                  </div>
-                </div>
 
                 {/* Linha decorativa com ícones */}
                 <div className="flex items-center justify-center gap-4 pt-4">
                   <div className="h-px flex-1 bg-linear-to-r from-transparent via-blue-200 to-transparent"></div>
                   <div className="flex gap-2">
-                    <div className="h-2 w-2 animate-bounce rounded-full bg-blue-500"></div>
+                    <div className="h-2 w-2 animate-bounce rounded-full bg-slate-900"></div>
                     <div
-                      className="h-2 w-2 animate-bounce rounded-full bg-indigo-500"
+                      className="h-2 w-2 animate-bounce rounded-full bg-blue-900"
                       style={{ animationDelay: "0.1s" }}
                     ></div>
                     <div
-                      className="h-2 w-2 animate-bounce rounded-full bg-purple-500"
+                      className="h-2 w-2 animate-bounce rounded-full bg-blue-600"
                       style={{ animationDelay: "0.2s" }}
                     ></div>
                   </div>
@@ -255,7 +205,7 @@ const StarBHomePage = () => {
             <h2 className="bg-linear-to-r from-slate-900 to-blue-900 bg-clip-text text-3xl font-bold text-transparent sm:text-4xl lg:text-5xl">
               O que você encontra na Star B
             </h2>
-            <p className="text-lg leading-relaxed text-slate-600 sm:text-xl">
+            <p className="text-lg leading-relaxed text-slate-700 sm:text-xl">
               Aqui o foco é{" "}
               <span className="font-semibold text-blue-700">
                 domínio intelectual
@@ -271,7 +221,7 @@ const StarBHomePage = () => {
                 <TooltipTrigger asChild>
                   <Link
                     href={recurso.href}
-                    className="group relative block rounded-2xl border-2 border-blue-100 bg-white/60 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/20 lg:p-8"
+                    className="group relative block rounded-2xl border border-zinc-200 bg-white/40 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-xl hover:shadow-zinc-500/20"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     {recurso.badge && (
@@ -280,7 +230,7 @@ const StarBHomePage = () => {
                       </span>
                     )}
 
-                    <div className="mb-4 transform text-blue-600 transition-transform group-hover:scale-110 [&>svg]:size-8">
+                    <div className="mb-4 w-12 transform rounded-xl p-2 shadow shadow-zinc-400 transition-transform lg:group-hover:scale-110 [&>svg]:size-8">
                       {recurso.icon}
                     </div>
 
@@ -322,7 +272,7 @@ const StarBHomePage = () => {
         {/* CONTEÚDO PREMIUM */}
         <section className="space-y-10 lg:space-y-12">
           <header className="mx-auto max-w-3xl space-y-4 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-linear-to-r from-amber-100 to-yellow-100 px-4 py-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/90 px-4 py-2">
               <svg
                 className="h-5 w-5 text-amber-600"
                 fill="currentColor"
@@ -338,9 +288,9 @@ const StarBHomePage = () => {
             <h2 className="bg-linear-to-r from-slate-900 to-blue-900 bg-clip-text text-3xl font-bold text-transparent sm:text-4xl lg:text-5xl">
               Conteúdo Avançado
             </h2>
-            <p className="text-lg leading-relaxed text-slate-600 sm:text-xl">
+            <p className="text-lg leading-relaxed text-slate-700 sm:text-xl">
               Para quem deseja ir além do estudo teórico e entrar em{" "}
-              <span className="font-semibold text-blue-700">
+              <span className="font-semibold text-slate-900">
                 domínio profissional avançado
               </span>
               , a Star B disponibiliza uma área premium com acesso a materiais
@@ -353,7 +303,7 @@ const StarBHomePage = () => {
               <Sheet key={item.href}>
                 <SheetTrigger asChild>
                   <div
-                    className="group cursor-pointer rounded-2xl border-2 border-blue-100 bg-linear-to-br from-white to-blue-50/50 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/20 lg:p-8"
+                    className="group cursor-pointer rounded-2xl border border-zinc-200 bg-white/40 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-xl hover:shadow-blue-500/20 lg:p-8"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <div className="mb-3 flex items-start justify-between">
@@ -392,7 +342,7 @@ const StarBHomePage = () => {
                   </div>
                 </SheetTrigger>
 
-                <SheetContent className="sm:max-w-md">
+                <SheetContent className="space-y-8 sm:max-w-md">
                   <SheetHeader>
                     <SheetTitle className="bg-linear-to-r from-blue-700 to-indigo-700 bg-clip-text text-2xl font-bold text-transparent">
                       {item.titulo}
@@ -402,8 +352,8 @@ const StarBHomePage = () => {
                     </SheetDescription>
                   </SheetHeader>
 
-                  <div className="mt-6 space-y-6">
-                    <div className="rounded-xl border border-blue-100 bg-linear-to-br from-blue-50 to-indigo-50 p-6">
+                  <div className="relative h-svh space-y-8 px-2">
+                    <div className="rounded-xl border border-blue-100 bg-linear-to-br from-blue-50 to-indigo-50 px-3 py-6 sm:p-6">
                       <p className="leading-relaxed text-slate-700">
                         O acesso completo a este tipo de conteúdo exige conta
                         premium ativa. Isso garante{" "}
@@ -422,7 +372,7 @@ const StarBHomePage = () => {
                       </p>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-3 px-2">
                       <h4 className="font-semibold text-slate-900">
                         Benefícios Premium:
                       </h4>
@@ -474,7 +424,7 @@ const StarBHomePage = () => {
 
                     <Button
                       asChild
-                      className="h-12 w-full bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                      className="absolute bottom-5 mx-auto h-10 w-[96%] bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
                     >
                       <Link href="/premium">Conhecer Plano Premium</Link>
                     </Button>
@@ -489,66 +439,43 @@ const StarBHomePage = () => {
         <HomeSeparator />
 
         {/* CALL TO ACTION FINAL */}
-        <section className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#0c0516] via-[#5416b5] to-[#0f083b] p-8 text-center shadow-2xl shadow-blue-500/30 sm:p-12 lg:p-16">
+        <section className="relative overflow-hidden rounded-3xl bg-linear-to-br from-zinc-100 via-zinc-200/50 to-zinc-100 p-8 text-center shadow shadow-zinc-500 sm:p-12 lg:p-16">
           {/* Background Pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div
-              className="absolute inset-0 blur-xs"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-              }}
-            ></div>
-          </div>
 
           <div className="relative z-10 mx-auto max-w-3xl space-y-6">
-            <h2 className="text-3xl leading-tight font-black text-white sm:text-4xl lg:text-5xl">
-              Aqui você não aprende por curiosidade.
+            <h2 className="text-2xl leading-tight font-black text-slate-900 sm:text-3xl xl:text-5xl">
+              Aqui você pode aprender por curiosidade.
               <br />
-              <span className="text-blue-100">Você estuda para dominar.</span>
+              <span className="text-zinc-700">Você pode alcançar domínio.</span>
             </h2>
 
-            <p className="text-lg leading-relaxed text-blue-50 sm:text-xl">
+            <p className="text-lg leading-relaxed text-slate-700 sm:text-xl">
               A Star B foi construída para quem leva conhecimento técnico a
               sério: estudantes exigentes, engenheiros em formação e
               profissionais que querem elevar seu nível intelectual.
             </p>
 
-            <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Button
                 size="lg"
                 asChild
-                className="h-10 bg-white px-8 font-semibold text-blue-700 shadow-xl transition-all duration-500 hover:bg-white/10 hover:text-white sm:h-14"
+                className="h-10 w-[90%] rounded-2xl bg-white/20 px-8 font-semibold text-slate-900 shadow shadow-zinc-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 sm:h-14"
               >
-                <Link href="/biblioteca/livros">
-                  Começar pela Biblioteca
-                  <svg
-                    className="ml-2 h-5 w-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
-                  </svg>
-                </Link>
+                <Link href="/biblioteca/livros">Começar pela Biblioteca</Link>
               </Button>
 
               <Button
                 size="lg"
                 variant="outline"
                 asChild
-                className="h-10 border-2 border-white px-8 font-semibold text-blue-700 transition-all duration-500 hover:bg-white/10 sm:h-14"
+                className="h-10 w-[90%] rounded-2xl bg-white/20 px-8 font-semibold text-slate-900 shadow shadow-zinc-400 transition-all duration-500 hover:-translate-y-1 hover:bg-black/10 sm:h-14"
               >
                 <Link href="/premium">Ver Planos Premium</Link>
               </Button>
             </div>
 
             {/* Trust indicators */}
-            <div className="flex flex-wrap justify-center gap-8 pt-8 text-blue-100">
+            <div className="flex flex-wrap justify-center gap-4 pt-8 text-slate-700">
               <div className="flex items-center gap-2">
                 <svg
                   className="h-5 w-5"
