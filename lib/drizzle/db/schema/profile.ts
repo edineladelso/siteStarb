@@ -17,6 +17,7 @@ export const profiles = pgTable("profiles", {
   nome: text("nome").notNull(),
   apelido: text("apelido"),
   avatarUrl: text("avatar_url"),
+  avatarPublicId: text("avatar_public_id"),
   
   role: text("role").$type<Role>().notNull().default("user"),
   provider: text("provider").$type<AuthProvider>().notNull().default("email"),

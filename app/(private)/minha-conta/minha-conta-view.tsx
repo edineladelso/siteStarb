@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import { ImageUpload } from "@/components/cloudinaryUpload/imageUpload";
 import { UserAvatar } from "@/components/layout/userAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +9,10 @@ import {
   atualizarPerfil,
   sincronizarAvatar,
 } from "@/lib/actions/perfil.actions";
-import type { CurrentUser } from "@/lib/actions/user.actions";
+import {
+  saveAvatarFromCloudinary,
+  type CurrentUser,
+} from "@/lib/actions/user.actions";
 import { cn } from "@/lib/utils";
 import {
   AlertCircle,
@@ -48,9 +52,12 @@ const roleLabel: Record<string, string> = {
 
 export function MinhaContaView({ user }: MinhaContaViewProps) {
   const [modoEdicao, setModoEdicao] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(user.avatarUrl);
   const [feedback, setFeedback] = useState<Feedback>(null);
+  const [feedbackAvatar, setFeedbackAvatar] = useState<Feedback>(null);
   const [feedbackSync, setFeedbackSync] = useState<Feedback>(null);
   const [isPending, startTransition] = useTransition();
+  const [isAvatarPending, startAvatarUpdate] = useTransition();
   const [isSyncing, startSync] = useTransition();
   const [isLoggingOut, startLogout] = useTransition();
   const closeEditTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -101,6 +108,25 @@ export function MinhaContaView({ user }: MinhaContaViewProps) {
     });
   }
 
+  function handleAvatarChange(url: string, publicId: string) {
+    startAvatarUpdate(async () => {
+      setFeedbackAvatar(null);
+
+      const result = await saveAvatarFromCloudinary({
+        avatarUrl: url,
+        avatarPublicId: publicId,
+      });
+
+      if (result.success) {
+        setAvatarUrl(result.url);
+        setFeedbackAvatar({ tipo: "success", msg: result.mensagem });
+        return;
+      }
+
+      setFeedbackAvatar({ tipo: "error", msg: result.error });
+    });
+  }
+
   function handleLogout() {
     startLogout(async () => {
       await fazerLogout();
@@ -109,11 +135,13 @@ export function MinhaContaView({ user }: MinhaContaViewProps) {
 
   function enterEditMode() {
     setFeedback(null);
+    setFeedbackAvatar(null);
     setModoEdicao(true);
   }
 
   function cancelEditMode() {
     setFeedback(null);
+    setFeedbackAvatar(null);
     setModoEdicao(false);
   }
 
@@ -141,7 +169,7 @@ export function MinhaContaView({ user }: MinhaContaViewProps) {
             <div className="relative">
               <UserAvatar
                 nome={user.nome}
-                avatarUrl={user.avatarUrl}
+                avatarUrl={avatarUrl}
                 size="xl"
                 className="shadow-xl ring-4 ring-zinc-100"
               />
@@ -246,18 +274,18 @@ export function MinhaContaView({ user }: MinhaContaViewProps) {
                   <div className="flex items-center gap-4">
                     <UserAvatar
                       nome={user.nome}
-                      avatarUrl={user.avatarUrl}
+                      avatarUrl={avatarUrl}
                       size="lg"
                       className="ring-2 ring-zinc-300"
                     />
                     <div>
                       <p className="text-sm font-medium text-zinc-800">
-                        {user.avatarUrl
+                        {avatarUrl
                           ? `Avatar da conta ${providerLabel[user.provider] ?? user.provider}`
                           : "Avatar gerado com as suas iniciais"}
                       </p>
                       <p className="mt-0.5 text-xs text-zinc-500">
-                        {user.avatarUrl
+                        {avatarUrl
                           ? "Pode sincronizar para buscar a foto mais recente"
                           : "Faça login com Google ou GitHub para usar foto de perfil"}
                       </p>
@@ -319,6 +347,49 @@ export function MinhaContaView({ user }: MinhaContaViewProps) {
           {modoEdicao && (
             <SectionCard titulo="Editar perfil">
               <form action={handleSalvar} className="space-y-5" noValidate>
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold tracking-widest text-zinc-500 uppercase">
+                    Avatar
+                  </label>
+
+                  <div className="rounded-xl border border-zinc-300 bg-white/80 p-3">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-3">
+                        <UserAvatar
+                          nome={user.nome}
+                          avatarUrl={avatarUrl}
+                          size="lg"
+                          className="ring-2 ring-zinc-300"
+                        />
+                        <p className="text-xs text-zinc-500">
+                          PNG, JPG ou WEBP até 5MB.
+                        </p>
+                      </div>
+
+                      <ImageUpload
+                        value={avatarUrl ?? undefined}
+                        folder="meu-projeto/avatars"
+                        disabled={isAvatarPending || isPending}
+                        onChange={handleAvatarChange}
+                        className="space-y-0"
+                      />
+                    </div>
+                  </div>
+
+                  {isAvatarPending && (
+                    <p className="mt-2 text-xs text-zinc-500">A guardar avatar...</p>
+                  )}
+
+                  {feedbackAvatar && (
+                    <div className="mt-3">
+                      <FeedbackBanner
+                        tipo={feedbackAvatar.tipo}
+                        msg={feedbackAvatar.msg}
+                      />
+                    </div>
+                  )}
+                </div>
+
                 <div>
                   <label
                     htmlFor="nome"
