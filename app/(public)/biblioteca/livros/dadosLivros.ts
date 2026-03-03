@@ -1,6 +1,43 @@
 import type { Livro, NewLivro } from "@/lib/types";
+import type { CapaFileType, MidiaLivro } from "@/lib/domain/livro";
 
-export const fakeLivrosNovos: NewLivro[] = [
+type LegacyMidia = {
+  pdf?: string;
+  epub?: string;
+  resumo?: string;
+};
+
+type LegacyLivroNovo = Omit<NewLivro, "capa" | "midia"> & {
+  capa: string;
+  midia: LegacyMidia;
+};
+
+type LegacyLivroSelect = Omit<Livro, "capa" | "midia"> & {
+  capa: string;
+  midia: LegacyMidia;
+};
+
+function toCapaFileType(capaUrl: string, slug: string): CapaFileType {
+  return {
+    capaUrl,
+    capaPublicId: `legacy/livros/${slug}/capa`,
+  };
+}
+
+function toMidiaFileType(midia: LegacyMidia, slug: string): MidiaLivro {
+  const pdf = midia.pdf?.trim();
+
+  return {
+    pdf: pdf || undefined,
+    pdfPublicId: pdf ? `legacy/livros/${slug}/pdf` : undefined,
+    byte: pdf ? 0 : undefined,
+    format: pdf ? "pdf" : undefined,
+    epub: midia.epub,
+    resumo: midia.resumo,
+  };
+}
+
+const fakeLivrosNovosLegacy: LegacyLivroNovo[] = [
   {
     titulo: "Cálculo Estrutural Avançado",
     slug: "calculo-estrutural-avancado",
@@ -212,7 +249,7 @@ export const fakeLivrosNovos: NewLivro[] = [
 ];
 
 // Dados simulados do banco de dados:
-export const fakeSelectLivros: Livro[] = [
+const fakeSelectLivrosLegacy: LegacyLivroSelect[] = [
   {
     id: 1,
     titulo: "Cálculo Estrutural Avançado",
@@ -511,3 +548,15 @@ export const fakeSelectLivros: Livro[] = [
     updatedAt: new Date("2023-01-15T10:00:00Z"),
   },
 ];
+
+export const fakeLivrosNovos: NewLivro[] = fakeLivrosNovosLegacy.map((livro) => ({
+  ...livro,
+  capa: toCapaFileType(livro.capa, livro.slug),
+  midia: toMidiaFileType(livro.midia, livro.slug),
+}));
+
+export const fakeSelectLivros: Livro[] = fakeSelectLivrosLegacy.map((livro) => ({
+  ...livro,
+  capa: toCapaFileType(livro.capa, livro.slug),
+  midia: toMidiaFileType(livro.midia, livro.slug),
+}));

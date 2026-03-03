@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,20 +12,40 @@ type UploadConfig = {
   maxSize: number; // em bytes
   acceptedFormats: string[];
   multiple?: boolean;
-  folder?: string;
 };
 
-type UploadedFile = {
+type UploadResourceType = "image" | "raw" | "auto";
+
+export type UploadedFile = {
   id: string;
   name: string;
   size: number;
   type: string;
   url?: string;
   publicId?: string;
+  bytes?: number;
+  format?: string;
+  resourceType?: UploadResourceType;
   progress: number;
   status: "uploading" | "success" | "error";
   error?: string;
 };
+
+type SignatureResponse = {
+  signature: string;
+  timestamp: number;
+  apiKey: string;
+  cloudName: string;
+  folder: string;
+};
+
+function inferFileFormat(file: File, fallback?: unknown): string {
+  if (typeof fallback === "string" && fallback.trim()) return fallback.trim();
+  const ext = file.name.split(".").pop()?.toLowerCase();
+  if (ext) return ext;
+  if (file.type.includes("/")) return file.type.split("/")[1] || "";
+  return "";
+}
 
 // Configurações por tipo
 const UPLOAD_CONFIGS: Record<FileType, UploadConfig> = {
@@ -59,6 +79,7 @@ export default function CloudinaryUpload({
   folder = "starb",
   onUploadComplete,
   onUploadError,
+  onFileRemove,
   label,
   description,
 }: {
@@ -66,6 +87,7 @@ export default function CloudinaryUpload({
   folder?: string;
   onUploadComplete?: (files: UploadedFile[]) => void;
   onUploadError?: (error: string) => void;
+  onFileRemove?: (file: UploadedFile) => void;
   label?: string;
   description?: string;
 }) {
@@ -73,6 +95,7 @@ export default function CloudinaryUpload({
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const config = UPLOAD_CONFIGS[type];
+  const resourceType: UploadResourceType = type === "image" ? "image" : "raw";
 
   // Validar arquivo
   const validateFile = (file: File): { valid: boolean; error?: string } => {
@@ -106,7 +129,77 @@ export default function CloudinaryUpload({
     return { valid: true };
   };
 
-  // Simular upload para Cloudinary
+  const requestSignature = async (targetFolder: string): Promise<SignatureResponse> => {
+    const response = await fetch("/api/cloudinary/signature", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        folder: targetFolder,
+        resourceType,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data?.error || "Falha ao gerar assinatura de upload.");
+    }
+
+    return data as SignatureResponse;
+  };
+
+  const uploadWithProgress = async (
+    url: string,
+    formData: FormData,
+    onProgress: (progress: number) => void,
+  ): Promise<Record<string, unknown>> =>
+    new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", url);
+
+      xhr.upload.onprogress = (event) => {
+        if (!event.lengthComputable) return;
+        const progress = Math.round((event.loaded * 100) / event.total);
+        onProgress(progress);
+      };
+
+      xhr.onload = () => {
+        try {
+          const parsed = JSON.parse(xhr.responseText) as Record<string, unknown>;
+          if (xhr.status < 200 || xhr.status >= 300) {
+            reject(
+              new Error(
+                String(
+                  (parsed.error as { message?: string } | undefined)?.message ||
+                    "Falha ao enviar arquivo para o Cloudinary.",
+                ),
+              ),
+            );
+            return;
+          }
+          resolve(parsed);
+        } catch {
+          reject(new Error("Resposta inválida do Cloudinary."));
+        }
+      };
+
+      xhr.onerror = () => reject(new Error("Erro de rede ao enviar arquivo."));
+      xhr.send(formData);
+    });
+
+  const deleteRemoteFile = async (file: UploadedFile) => {
+    if (!file.publicId) return;
+    await fetch("/api/cloudinary/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        publicId: file.publicId,
+        resourceType: file.resourceType ?? resourceType,
+      }),
+    });
+  };
+
+  // Upload real para Cloudinary com assinatura no servidor
   const uploadToCloudinary = async (file: File): Promise<UploadedFile> => {
     const fileId = Math.random().toString(36).substring(7);
 
@@ -123,52 +216,42 @@ export default function CloudinaryUpload({
     setFiles((prev) => [...prev, uploadedFile]);
 
     try {
-      // IMPORTANTE: Aqui você deve implementar o upload real para Cloudinary
-      // Exemplo de código real:
-      /*
+      const targetFolder = `${folder.replace(/\/+$/, "")}/${type}`;
+      const signature = await requestSignature(targetFolder);
+
       const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', 'seu_preset');
-      formData.append('folder', `${folder}/${type}`);
+      formData.append("file", file);
+      formData.append("api_key", signature.apiKey);
+      formData.append("timestamp", String(signature.timestamp));
+      formData.append("signature", signature.signature);
+      formData.append("folder", signature.folder);
 
-      const response = await fetch(
-        'https://api.cloudinary.com/v1_1/SEU_CLOUD_NAME/auto/upload',
-        {
-          method: 'POST',
-          body: formData,
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            setFiles(prev => prev.map(f => 
-              f.id === fileId ? { ...f, progress } : f
-            ));
-          }
-        }
+      const cloudinaryResponse = await uploadWithProgress(
+        `https://api.cloudinary.com/v1_1/${signature.cloudName}/${resourceType}/upload`,
+        formData,
+        (progress) => {
+          setFiles((prev) =>
+            prev.map((f) => (f.id === fileId ? { ...f, progress } : f)),
+          );
+        },
       );
-
-      const data = await response.json();
-      */
-
-      // Simulação de upload com progresso
-      for (let progress = 0; progress <= 100; progress += 10) {
-        await new Promise((resolve) => setTimeout(resolve, 200));
-        setFiles((prev) =>
-          prev.map((f) => (f.id === fileId ? { ...f, progress } : f)),
-        );
-      }
-
-      // Simular resposta do Cloudinary
-      const mockCloudinaryResponse = {
-        url: URL.createObjectURL(file),
-        public_id: `${folder}/${type}/${fileId}`,
-        secure_url: URL.createObjectURL(file),
-      };
 
       const completedFile: UploadedFile = {
         ...uploadedFile,
         progress: 100,
         status: "success",
-        url: mockCloudinaryResponse.secure_url,
-        publicId: mockCloudinaryResponse.public_id,
+        url: String(cloudinaryResponse.secure_url ?? ""),
+        publicId: String(cloudinaryResponse.public_id ?? ""),
+        bytes:
+          typeof cloudinaryResponse.bytes === "number"
+            ? cloudinaryResponse.bytes
+            : undefined,
+        format:
+          inferFileFormat(file, cloudinaryResponse.format) || undefined,
+        resourceType:
+          typeof cloudinaryResponse.resource_type === "string"
+            ? (cloudinaryResponse.resource_type as UploadResourceType)
+            : resourceType,
       };
 
       setFiles((prev) =>
@@ -214,6 +297,13 @@ export default function CloudinaryUpload({
 
     // Upload de arquivos válidos
     try {
+      if (!config.multiple) {
+        const uploadedFiles = files.filter((file) => file.status === "success");
+        await Promise.all(uploadedFiles.map((file) => deleteRemoteFile(file)));
+        uploadedFiles.forEach((file) => onFileRemove?.(file));
+        setFiles([]);
+      }
+
       const uploadPromises = validationResults.map((r) =>
         uploadToCloudinary(r.file),
       );
@@ -251,8 +341,17 @@ export default function CloudinaryUpload({
     }
   };
 
-  const removeFile = (fileId: string) => {
+  const removeFile = async (fileId: string) => {
+    const target = files.find((file) => file.id === fileId);
     setFiles((prev) => prev.filter((f) => f.id !== fileId));
+    if (target?.status === "success") {
+      try {
+        await deleteRemoteFile(target);
+      } catch {
+        // limpeza best-effort
+      }
+      onFileRemove?.(target);
+    }
   };
 
   const formatFileSize = (bytes: number): string => {
@@ -484,7 +583,17 @@ export default function CloudinaryUpload({
                       className="h-8 w-8 p-0 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
                       onClick={(e) => {
                         e.stopPropagation();
-                        window.open(file.url, "_blank");
+                        const targetUrl =
+                          type === "pdf" && file.publicId
+                            ? `/api/cloudinary/download?publicId=${encodeURIComponent(
+                                file.publicId,
+                              )}&resourceType=raw&format=${encodeURIComponent(
+                                file.format || "pdf",
+                              )}`
+                            : file.url;
+                        if (targetUrl) {
+                          window.open(targetUrl, "_blank", "noopener,noreferrer");
+                        }
                       }}
                     >
                       <svg

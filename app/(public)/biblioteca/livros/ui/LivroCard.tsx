@@ -51,6 +51,7 @@ import {
   getCategoriaIcon,
   getCategoriaNome,
 } from "@/lib/domain/areasCategoriasPatern";
+import { getLivroCapaUrl, getLivroPdfAccessUrl } from "@/lib/domain/livro";
 import type { Livro } from "@/lib/types";
 
 // Mapeamento de cores por MacroArea para gradientes
@@ -92,14 +93,16 @@ export default memo(function LivroCard({
     livro.macroAreas?.[0] ?? "Engenharia";
   const categoriaLabel = getCategoriaNome(categoriaPrincipal);
   const gradientClasses = CATEGORIA_GRADIENTS[categoriaPrincipal];
+  const capaUrl = getLivroCapaUrl(livro.capa);
 
   // Formata avaliação para número
   const avaliacaoNumero = parseFloat(livro.avaliacao ?? "0");
 
   // Determina quais formatos estão disponíveis
   const formatosDisponiveis = useMemo(() => {
-    const formatos = [];
-    if (livro.midia.pdf) formatos.push({ tipo: "PDF", url: livro.midia.pdf });
+    const formatos = [] as Array<{ tipo: string; url: string }>;
+    const pdfUrl = getLivroPdfAccessUrl(livro.midia);
+    if (pdfUrl) formatos.push({ tipo: "PDF", url: pdfUrl });
     if (livro.midia.epub)
       formatos.push({ tipo: "EPUB", url: livro.midia.epub });
     if (livro.midia.resumo)
@@ -113,7 +116,7 @@ export default memo(function LivroCard({
   };
 
   const handleDownload = (url: string, tipo: string) => {
-    // TODO: Implementar download real
+    window.open(url, "_blank", "noopener,noreferrer");
     console.log(`Baixando ${tipo}:`, url);
   };
 
@@ -173,10 +176,10 @@ export default memo(function LivroCard({
         <div
           className={`relative ${compact ? "h-45 sm:h-50" : "h-50 sm:h-56"} overflow-hidden bg-slate-100`}
         >
-          {livro.capa ? (
+          {capaUrl ? (
             <>
               <Image
-                src={livro.capa}
+                src={capaUrl}
                 alt={`Capa do livro ${livro.titulo}`}
                 fill
                 sizes={

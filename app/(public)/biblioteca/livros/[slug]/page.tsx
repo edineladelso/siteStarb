@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { getCategoriaNome } from "@/lib/domain/areasCategoriasPatern";
+import { formatBytes, getLivroCapaUrl, getLivroPdfAccessUrl } from "@/lib/domain/livro";
 
 import { fakeSelectLivros } from "../dadosLivros";
 import { getLivroBySlug } from "@/lib/actions";
@@ -111,6 +112,7 @@ export async function generateMetadata({
   const categoriaPrincipal = livro.macroAreas?.[0]
     ? getCategoriaNome(livro.macroAreas[0])
     : livro.categoria;
+  const capaUrl = getLivroCapaUrl(livro.capa);
 
   return {
     title: `${livro.titulo} | StarB Biblioteca`,
@@ -122,10 +124,10 @@ export async function generateMetadata({
       title: livro.titulo,
       description: livro.detalhes.sinopse ?? livro.descricao,
       type: "article",
-      images: livro.capa
+      images: capaUrl
         ? [
             {
-              url: livro.capa,
+              url: capaUrl,
               alt: `Capa do livro ${livro.titulo}`,
             },
           ]
@@ -153,9 +155,11 @@ export default async function LivroDetalhesPage({ params }: PageProps) {
     getCategoriaNome(macro),
   );
   const categoriaPrincipal = macroAreas[0] ?? livro.categoria;
+  const capaUrl = getLivroCapaUrl(livro.capa);
+  const pdfUrl = getLivroPdfAccessUrl(livro.midia);
 
   const formatosDisponiveis = [
-    { label: "PDF", url: livro.midia?.pdf ?? "" },
+    { label: "PDF", url: pdfUrl },
     { label: "EPUB", url: livro.midia?.epub ?? "" },
     { label: "Resumo", url: livro.midia?.resumo ?? "" },
   ].filter(
@@ -211,9 +215,9 @@ export default async function LivroDetalhesPage({ params }: PageProps) {
           <div className="grid gap-8 p-6 lg:grid-cols-[300px_1fr] lg:gap-10 lg:p-10">
             <aside className="space-y-5">
               <div className="relative mx-auto aspect-3/4 w-full max-w-65 overflow-hidden rounded-2xl border border-stone-200 bg-slate-100 shadow-2xl shadow-stone-300/30">
-                {livro.capa ? (
+                {capaUrl ? (
                   <Image
-                    src={livro.capa}
+                    src={capaUrl}
                     alt={`Capa do livro ${livro.titulo}`}
                     fill
                     sizes="(max-width: 1024px) 260px, 300px"
@@ -318,14 +322,21 @@ export default async function LivroDetalhesPage({ params }: PageProps) {
                   )}
                 </Button>
 
-                {livro.midia?.pdf && (
+                {pdfUrl && (
                   <Button variant="outline" asChild className="rounded-full">
-                    <a href={livro.midia.pdf} target="_blank" rel="noreferrer">
+                    <a href={pdfUrl} target="_blank" rel="noreferrer">
                       <Download className="h-4 w-4" />
                       Baixar PDF
                     </a>
                   </Button>
                 )}
+
+                {typeof livro.midia?.byte === "number" &&
+                  livro.midia.byte > 0 && (
+                    <Badge variant="secondary" className="rounded-full">
+                      PDF: {formatBytes(livro.midia.byte)}
+                    </Badge>
+                  )}
 
                 <Button
                   variant="ghost"

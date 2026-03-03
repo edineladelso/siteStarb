@@ -4,7 +4,7 @@ import { livros } from "../db/schema/livro";
 import { areaLivroValues, macroAreaLivroValues } from "@/lib/domain/areas";
 import { statusEnum } from "../db/schema/enums";
 
-export const insertLivroSchema = createInsertSchema(livros, {
+const insertLivroBaseSchema = createInsertSchema(livros, {
   titulo: z.string().min(2).max(255),
   slug: z.string().min(2),
   categoria: z.string().min(2),
@@ -13,7 +13,10 @@ export const insertLivroSchema = createInsertSchema(livros, {
 
   autor: z.string().min(2),
 
-  capa: z.string().url(),
+  capa: z.object({
+    capaUrl: z.string().url("URL da capa inválida"),
+    capaPublicId: z.string().min(1, "publicId da capa obrigatório"),
+  }),
   // JSONB: Detalhes
   detalhes: z.object({
     sinopse: z.string().min(10).optional(),
@@ -26,6 +29,9 @@ export const insertLivroSchema = createInsertSchema(livros, {
   // JSONB: Midia
   midia: z.object({
     pdf: z.string().url().optional(),
+    pdfPublicId: z.string().min(1).optional(),
+    byte: z.number().int().nonnegative().optional(),
+    format: z.string().min(1).optional(),
     epub: z.string().url().or(z.literal("")).optional(), // Pode ser vazio se não houver epub
     resumo: z.string().url().optional(),
   }),
@@ -45,6 +51,40 @@ export const insertLivroSchema = createInsertSchema(livros, {
   views: true,
   downloads: true,
   avaliacao: true,
+});
+
+export const insertLivroSchema = insertLivroBaseSchema.superRefine((data, ctx) => {
+  if (!data.midia.pdf) {
+    ctx.addIssue({
+      path: ["midia", "pdf"],
+      code: "custom",
+      message: "Upload do PDF é obrigatório.",
+    });
+  }
+
+  if (!data.midia.pdfPublicId) {
+    ctx.addIssue({
+      path: ["midia", "pdfPublicId"],
+      code: "custom",
+      message: "publicId do PDF é obrigatório.",
+    });
+  }
+
+  if (!Number.isFinite(data.midia.byte) || (data.midia.byte ?? 0) <= 0) {
+    ctx.addIssue({
+      path: ["midia", "byte"],
+      code: "custom",
+      message: "Tamanho do PDF inválido.",
+    });
+  }
+
+  if (!data.midia.format) {
+    ctx.addIssue({
+      path: ["midia", "format"],
+      code: "custom",
+      message: "Formato do PDF é obrigatório.",
+    });
+  }
 });
 
 export const selectLivroSchema = createSelectSchema(livros);

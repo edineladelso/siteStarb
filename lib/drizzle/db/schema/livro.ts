@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import type {
+  CapaFileType,
   DetalhesLivro,
   MidiaLivro
 } from "@/lib/domain/livro";
@@ -34,7 +35,7 @@ export const livros = pgTable("livros", {
   autor: text("autor").notNull(),
   anoPublicacao: integer("ano_publicacao"),
   idioma: text("idioma"),
-  capa: text("capa").notNull(),
+  capa: jsonb("capa").$type<CapaFileType>().notNull(),
 
   // JSONB complexos
   detalhes: jsonb("detalhes").$type<DetalhesLivro>().notNull(),

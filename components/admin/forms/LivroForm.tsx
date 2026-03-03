@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import CloudinaryUpload from "@/components/admin/CloudinaryUpload";
+import type { UploadedFile } from "@/components/admin/CloudinaryUpload";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,6 +51,10 @@ import {
 } from "@/lib/domain/areas";
 import { LABELS_CATEGORIAS } from "@/lib/domain/areasCategoriasPatern";
 import type { Status } from "@/lib/domain/enums";
+import {
+  getLivroCapaPublicId,
+  getLivroCapaUrl,
+} from "@/lib/domain/livro";
 import type { Livro } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -74,7 +79,11 @@ type LivroFormState = {
   idioma: string;
   numeroPaginas: string;
   capaUrl: string;
+  capaPublicId: string;
   pdfUrl: string;
+  pdfPublicId: string;
+  pdfByte: string;
+  pdfFormat: string;
   epubUrl: string;
   resumoUrl: string;
   tags: string[];
@@ -152,8 +161,12 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
       numeroPaginas: initialData?.detalhes?.numeroPaginas
         ? String(initialData.detalhes.numeroPaginas)
         : "",
-      capaUrl: initialData?.capa ?? "",
+      capaUrl: getLivroCapaUrl(initialData?.capa),
+      capaPublicId: getLivroCapaPublicId(initialData?.capa),
       pdfUrl: initialData?.midia?.pdf ?? "",
+      pdfPublicId: initialData?.midia?.pdfPublicId ?? "",
+      pdfByte: String(initialData?.midia?.byte ?? ""),
+      pdfFormat: initialData?.midia?.format ?? "",
       epubUrl: initialData?.midia?.epub ?? "",
       resumoUrl: initialData?.midia?.resumo ?? "",
       tags: initialData?.tags ?? [],
@@ -249,8 +262,24 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
       return "Faça upload da capa do livro.";
     }
 
+    if (!formData.capaPublicId.trim()) {
+      return "A capa precisa de um publicId válido no Cloudinary.";
+    }
+
     if (!formData.pdfUrl.trim()) {
       return "Faça upload do PDF do livro.";
+    }
+
+    if (!formData.pdfPublicId.trim()) {
+      return "O PDF precisa de um publicId válido no Cloudinary.";
+    }
+
+    if (!formData.pdfByte.trim() || Number(formData.pdfByte) <= 0) {
+      return "O tamanho do PDF é inválido.";
+    }
+
+    if (!formData.pdfFormat.trim()) {
+      return "Formato do PDF inválido.";
     }
 
     return null;
@@ -282,7 +311,11 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
       payload.set("areas", formData.areas.join(","));
       payload.set("tags", formData.tags.join(","));
       payload.set("capa_url", formData.capaUrl.trim());
+      payload.set("capa_public_id", formData.capaPublicId.trim());
       payload.set("pdf_url", formData.pdfUrl.trim());
+      payload.set("pdf_public_id", formData.pdfPublicId.trim());
+      payload.set("pdf_byte", formData.pdfByte.trim());
+      payload.set("pdf_format", formData.pdfFormat.trim());
 
       if (formData.editora.trim()) payload.set("editora", formData.editora.trim());
       if (formData.isbn.trim()) payload.set("isbn", formData.isbn.trim());
@@ -652,21 +685,41 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
           <CardContent className="space-y-6 pt-6">
             <CloudinaryUpload
               type="image"
+              folder="starb/livros/capas"
               label="Capa do Livro *"
               description="PNG, WEBP ou AVIF — máx 3MB"
-              onUploadComplete={(files: Array<{ url?: string }>) => {
-                const url = files[0]?.url;
-                if (url) setField("capaUrl", url);
+              onUploadComplete={(files: UploadedFile[]) => {
+                const uploaded = files[0];
+                if (uploaded?.url) setField("capaUrl", uploaded.url);
+                if (uploaded?.publicId) {
+                  setField("capaPublicId", uploaded.publicId);
+                }
+              }}
+              onFileRemove={() => {
+                setField("capaUrl", "");
+                setField("capaPublicId", "");
               }}
             />
 
             <CloudinaryUpload
               type="pdf"
+              folder="starb/livros/arquivos"
               label="Arquivo PDF *"
               description="PDF — máx 400MB"
-              onUploadComplete={(files: Array<{ url?: string }>) => {
-                const url = files[0]?.url;
-                if (url) setField("pdfUrl", url);
+              onUploadComplete={(files: UploadedFile[]) => {
+                const uploaded = files[0];
+                if (uploaded?.url) setField("pdfUrl", uploaded.url);
+                if (uploaded?.publicId) setField("pdfPublicId", uploaded.publicId);
+                if (typeof uploaded?.bytes === "number") {
+                  setField("pdfByte", String(uploaded.bytes));
+                }
+                if (uploaded?.format) setField("pdfFormat", uploaded.format);
+              }}
+              onFileRemove={() => {
+                setField("pdfUrl", "");
+                setField("pdfPublicId", "");
+                setField("pdfByte", "");
+                setField("pdfFormat", "");
               }}
             />
 

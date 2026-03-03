@@ -10,10 +10,10 @@ import { DataTable } from "@/components/admin/DataTable";
 import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { Plus, Search } from "lucide-react";
 import type { ContentStatus, Livro } from "@/lib/types";
-import { listarLivros } from "@/lib/actions";
+import { deletarLivro, listarLivros } from "@/lib/actions";
 import { ActionMenu } from "@/components/admin/shared/ActionMenu";
 import { ConfirmationDialog } from "@/components/admin/shared/ConfirmationDialog";
-import { genericDelete } from "@/lib/actions/shared";
+import { getLivroCapaUrl } from "@/lib/domain/livro";
 
 export default function LivrosPage() {
   const router = useRouter();
@@ -42,7 +42,7 @@ export default function LivrosPage() {
     const id = deleteId;
     setDeleteId(null);
     try {
-      await genericDelete(livros, id, "/admin/livros");
+      await deletarLivro(id);
       loadLivros();
     } catch (error) {
       console.error("Erro ao deletar livro:", error);
@@ -104,7 +104,7 @@ export default function LivrosPage() {
             <td className="px-4 py-4">
               <div className="flex items-center gap-3">
                 <Image
-                  src={livro.capa}
+                  src={getLivroCapaUrl(livro.capa)}
                   alt={livro.titulo}
                   width={48}
                   height={64}

@@ -1,5 +1,6 @@
 "use server";
 
+import cloudinary from "@/lib/cloudinary";
 import { toMacroAreas, type AreaLivro } from "@/lib/domain/areas";
 import { db } from "@/lib/drizzle/db";
 import { livros } from "@/lib/drizzle/db/schema/livro";
@@ -14,20 +15,36 @@ import { z } from "zod";
 import type { Status } from "../domain/enums";
 import type { ActionResult, Livro } from "../types";
 
-export async function criarLivro(formData: FormData) {
-  const titulo = String(formData.get("titulo"));
-  const slug = await gerarSlugUnico(titulo, "livro");
-
-  // Processamento de Arrays (vindo como strings separadas por vírgula)
+function parseAreas(formData: FormData): AreaLivro[] {
   const areasRaw = formData.get("areas") as string;
-  const areas = (
-    areasRaw ? areasRaw.split(",").map((a) => a.trim()) : []
-  ) as AreaLivro[];
+  return (areasRaw ? areasRaw.split(",").map((a) => a.trim()) : []) as AreaLivro[];
+}
 
+function parseTags(formData: FormData): string[] {
   const tagsRaw = formData.get("tags") as string;
-  const tags = tagsRaw ? tagsRaw.split(",").map((t) => t.trim()) : [];
+  return tagsRaw ? tagsRaw.split(",").map((t) => t.trim()) : [];
+}
 
-  // Derivação automática via Domínio
+function parseBytes(formData: FormData): number {
+  const value = Number(formData.get("pdf_byte") ?? 0);
+  return Number.isFinite(value) && value >= 0 ? Math.trunc(value) : 0;
+}
+
+function getLegacySafeCapaPublicId(capa: unknown): string {
+  if (!capa || typeof capa !== "object") return "";
+  const publicId = (capa as { capaPublicId?: unknown }).capaPublicId;
+  return typeof publicId === "string" ? publicId : "";
+}
+
+function getLegacySafePdfPublicId(midia: unknown): string {
+  if (!midia || typeof midia !== "object") return "";
+  const publicId = (midia as { pdfPublicId?: unknown }).pdfPublicId;
+  return typeof publicId === "string" ? publicId : "";
+}
+
+function buildLivroPayload(formData: FormData, slug: string) {
+  const areas = parseAreas(formData);
+  const tags = parseTags(formData);
   const macroAreas = toMacroAreas(areas);
 
   const pdfUrl = String(formData.get("pdf_url") ?? "").trim();
@@ -35,8 +52,8 @@ export async function criarLivro(formData: FormData) {
   const resumoUrl = String(formData.get("resumo_url") ?? "").trim();
   const capaUrl = String(formData.get("capa_url") ?? "").trim();
 
-  const bruto = {
-    titulo,
+  return {
+    titulo: String(formData.get("titulo")),
     slug,
     categoria: String(formData.get("categoria")),
     descricao: String(formData.get("descricao")),
@@ -48,7 +65,11 @@ export async function criarLivro(formData: FormData) {
       : null,
     idioma: formData.get("idioma") ? String(formData.get("idioma")) : null,
 
-    capa: capaUrl,
+    capa: {
+      capaUrl,
+      capaPublicId: String(formData.get("capa_public_id") ?? "").trim(),
+    },
+
     detalhes: {
       sinopse: String(formData.get("sinopse") || formData.get("descricao")),
       numeroPaginas: Number(formData.get("numeroPaginas")),
@@ -61,6 +82,9 @@ export async function criarLivro(formData: FormData) {
 
     midia: {
       pdf: pdfUrl || undefined,
+      pdfPublicId: String(formData.get("pdf_public_id") ?? "").trim() || undefined,
+      byte: parseBytes(formData) || undefined,
+      format: String(formData.get("pdf_format") ?? "").trim() || undefined,
       epub: epubUrl,
       resumo: resumoUrl || undefined,
     },
@@ -71,6 +95,54 @@ export async function criarLivro(formData: FormData) {
     novo: Boolean(formData.get("novo")),
     popular: Boolean(formData.get("popular")),
   };
+}
+
+async function cleanupReplacedAssets(params: {
+  previousCapaPublicId?: string;
+  previousPdfPublicId?: string;
+  nextCapaPublicId?: string;
+  nextPdfPublicId?: string;
+}) {
+  const deletions: Promise<unknown>[] = [];
+
+  if (
+    params.previousCapaPublicId &&
+    params.previousCapaPublicId !== params.nextCapaPublicId
+  ) {
+    deletions.push(
+      cloudinary.uploader.destroy(params.previousCapaPublicId, {
+        resource_type: "image",
+        invalidate: true,
+      }),
+    );
+  }
+
+  if (
+    params.previousPdfPublicId &&
+    params.previousPdfPublicId !== params.nextPdfPublicId
+  ) {
+    deletions.push(
+      cloudinary.uploader.destroy(params.previousPdfPublicId, {
+        resource_type: "raw",
+        invalidate: true,
+      }),
+    );
+  }
+
+  if (!deletions.length) return;
+
+  const results = await Promise.allSettled(deletions);
+  const failures = results.filter((result) => result.status === "rejected");
+  if (failures.length) {
+    console.warn("[livros] Falha parcial na limpeza de assets antigos:", failures);
+  }
+}
+
+export async function criarLivro(formData: FormData) {
+  const titulo = String(formData.get("titulo"));
+  const slug = await gerarSlugUnico(titulo, "livro");
+
+  const bruto = buildLivroPayload(formData, slug);
 
   const parsed = insertLivroSchema.safeParse(bruto);
 
@@ -82,6 +154,7 @@ export async function criarLivro(formData: FormData) {
   try {
     await db.insert(livros).values(parsed.data);
     revalidatePath("/biblioteca");
+    revalidatePath("/admin/livros");
     return { success: true };
   } catch (error) {
     console.error("Erro no Banco:", error);
@@ -104,7 +177,7 @@ export async function getLivroBySlug(slug: string) {
 }
 
 export async function getLivroById(id: number) {
-  if (!id || isNaN(id)) return null;
+  if (!id || Number.isNaN(id)) return null;
 
   try {
     const res = await db
@@ -116,10 +189,9 @@ export async function getLivroById(id: number) {
     return res[0] || null;
   } catch (error) {
     console.error("Erro ao buscar livro por ID: ", error);
+    return null;
   }
 }
-
-// src/lib/actions/livros.actions.ts
 
 export async function atualizarLivro(
   id: number,
@@ -134,56 +206,7 @@ export async function atualizarLivro(
     return { success: false, error: "Livro não encontrado." };
   }
 
-  const titulo = String(formData.get("titulo"));
-  const pdfUrl = String(formData.get("pdf_url") ?? "").trim();
-  const epubUrl = String(formData.get("epub_url") ?? "").trim();
-  const resumoUrl = String(formData.get("resumo_url") ?? "").trim();
-  const capaUrl = String(formData.get("capa_url") ?? "").trim();
-
-  // Nota: Não alteramos o slug em updates para preservar SEO
-
-  const areasRaw = formData.get("areas") as string;
-  const areas = (
-    areasRaw ? areasRaw.split(",").map((a) => a.trim()) : []
-  ) as AreaLivro[];
-  const macroAreas = toMacroAreas(areas);
-
-  const bruto = {
-    titulo,
-    slug: atual.slug,
-    categoria: String(formData.get("categoria")),
-    descricao: String(formData.get("descricao")),
-    status: (formData.get("status") as Status) || "rascunho",
-    autor: String(formData.get("autor")),
-    anoPublicacao: formData.get("anoPublicacao")
-      ? Number(formData.get("anoPublicacao"))
-      : null,
-    idioma: formData.get("idioma") ? String(formData.get("idioma")) : null,
-    numeroPaginas: formData.get("numeroPaginas")
-      ? Number(formData.get("numeroPaginas"))
-      : null,
-
-    detalhes: {
-      autor: String(formData.get("autor")),
-      sinopse: String(formData.get("sinopse") || formData.get("descricao")),
-      numeroPaginas: Number(formData.get("numeroPaginas")),
-      isbn: formData.get("isbn") ? String(formData.get("isbn")) : null,
-      editora: formData.get("editora")
-        ? String(formData.get("editora"))
-        : undefined,
-    },
-    midia: {
-      pdf: pdfUrl || undefined,
-      epub: epubUrl,
-      resumo: resumoUrl || undefined,
-    },
-    capa: capaUrl,
-    areas,
-    macroAreas,
-    tags: formData.get("tags")
-      ? (formData.get("tags") as string).split(",").map((t) => t.trim())
-      : [],
-  };
+  const bruto = buildLivroPayload(formData, atual.slug);
 
   const parsed = insertLivroSchema.safeParse(bruto);
 
@@ -202,11 +225,55 @@ export async function atualizarLivro(
       .where(eq(livros.id, id))
       .returning();
 
+    await cleanupReplacedAssets({
+      previousCapaPublicId: getLegacySafeCapaPublicId(atual.capa),
+      previousPdfPublicId: getLegacySafePdfPublicId(atual.midia),
+      nextCapaPublicId: atualizado.capa?.capaPublicId,
+      nextPdfPublicId: atualizado.midia?.pdfPublicId,
+    });
+
     revalidatePath("/biblioteca");
+    revalidatePath("/admin/livros");
     revalidatePath(`/biblioteca/livros/${atualizado.slug}`);
     return { success: true, data: atualizado };
   } catch (error) {
     console.error("Erro ao atualizar livro:", error);
     return { success: false, error: "Falha ao atualizar o livro no banco." };
+  }
+}
+
+export async function deletarLivro(id: number): Promise<ActionResult<{ id: number }>> {
+  if (!id || Number.isNaN(id)) {
+    return { success: false, error: "ID inválido para exclusão." };
+  }
+
+  const atual = await getLivroById(id);
+
+  if (!atual) {
+    return { success: false, error: "Livro não encontrado." };
+  }
+
+  try {
+    const [deleted] = await db
+      .delete(livros)
+      .where(eq(livros.id, id))
+      .returning({ id: livros.id });
+
+    if (!deleted) {
+      return { success: false, error: "Livro não encontrado." };
+    }
+
+    await cleanupReplacedAssets({
+      previousCapaPublicId: getLegacySafeCapaPublicId(atual.capa),
+      previousPdfPublicId: getLegacySafePdfPublicId(atual.midia),
+    });
+
+    revalidatePath("/biblioteca");
+    revalidatePath("/admin/livros");
+
+    return { success: true, data: { id: deleted.id } };
+  } catch (error) {
+    console.error("Erro ao deletar livro:", error);
+    return { success: false, error: "Falha ao excluir livro." };
   }
 }
