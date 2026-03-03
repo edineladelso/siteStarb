@@ -30,6 +30,16 @@ function parseBytes(formData: FormData): number {
   return Number.isFinite(value) && value >= 0 ? Math.trunc(value) : 0;
 }
 
+function buildPdfAccessRoute(publicId: string, format = "pdf"): string {
+  const params = new URLSearchParams({
+    publicId,
+    resourceType: "raw",
+    format: format || "pdf",
+  });
+
+  return `/api/cloudinary/download?${params.toString()}`;
+}
+
 function getLegacySafeCapaPublicId(capa: unknown): string {
   if (!capa || typeof capa !== "object") return "";
   const publicId = (capa as { capaPublicId?: unknown }).capaPublicId;
@@ -48,6 +58,9 @@ function buildLivroPayload(formData: FormData, slug: string) {
   const macroAreas = toMacroAreas(areas);
 
   const pdfUrl = String(formData.get("pdf_url") ?? "").trim();
+  const pdfPublicId = String(formData.get("pdf_public_id") ?? "").trim();
+  const pdfFormat = String(formData.get("pdf_format") ?? "").trim() || "pdf";
+  const pdfRoute = pdfPublicId ? buildPdfAccessRoute(pdfPublicId, pdfFormat) : "";
   const epubUrl = String(formData.get("epub_url") ?? "").trim();
   const resumoUrl = String(formData.get("resumo_url") ?? "").trim();
   const capaUrl = String(formData.get("capa_url") ?? "").trim();
@@ -81,10 +94,10 @@ function buildLivroPayload(formData: FormData, slug: string) {
     },
 
     midia: {
-      pdf: pdfUrl || undefined,
-      pdfPublicId: String(formData.get("pdf_public_id") ?? "").trim() || undefined,
+      pdf: pdfRoute || pdfUrl || undefined,
+      pdfPublicId: pdfPublicId || undefined,
       byte: parseBytes(formData) || undefined,
-      format: String(formData.get("pdf_format") ?? "").trim() || undefined,
+      format: pdfFormat || undefined,
       epub: epubUrl,
       resumo: resumoUrl || undefined,
     },

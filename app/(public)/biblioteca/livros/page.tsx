@@ -45,7 +45,9 @@ import {
   getCategoriaNome,
   type CategoriaLivroInfo,
 } from "../../../../lib/domain/areasCategoriasPatern";
-import { fakeSelectLivros as livros } from "./dadosLivros";
+import { listarLivros } from "@/lib/actions/livros.actions";
+import type { Livro } from "@/lib/types";
+import { fakeSelectLivros as livrosLocais } from "./dadosLivros";
 import LivrosPageSkeleton from "./livros-page-skeleton";
 
 // Types
@@ -115,6 +117,34 @@ function LivrosPageInner() {
   const pathname = usePathname();
   const [popularesApi, setPopularesApi] = useState<CarouselApi | null>(null);
   const [novosApi, setNovosApi] = useState<CarouselApi | null>(null);
+  const [livrosData, setLivrosData] = useState<Livro[]>(livrosLocais);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function carregarLivros() {
+      try {
+        const livrosDb = await listarLivros();
+        if (!mounted) return;
+
+        if (Array.isArray(livrosDb) && livrosDb.length > 0) {
+          setLivrosData(livrosDb);
+          return;
+        }
+
+        setLivrosData(livrosLocais);
+      } catch {
+        if (!mounted) return;
+        setLivrosData(livrosLocais);
+      }
+    }
+
+    carregarLivros();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
   // Valores iniciais derivados da URL (sem efeito para evitar cascatas)
   const macroAreaFromParams = useMemo<MacroAreaLivro | null>(() => {
     const macroAreaParam = searchParams.get("macroArea");
@@ -198,7 +228,7 @@ function LivrosPageInner() {
   // Memoização de listas filtradas para performance
   // ✅ FILTRO CORRIGIDO - Usando .includes() para arrays
   const livrosFiltrados = useMemo(() => {
-    return livros
+    return livrosData
       .filter((livro) => {
         // Filtro por categoria
         if (!categoriaAtiva) return true;
@@ -235,10 +265,16 @@ function LivrosPageInner() {
             return 0;
         }
       });
-  }, [categoriaAtiva, areaAtiva, busca, ordenacao]);
+  }, [categoriaAtiva, areaAtiva, busca, ordenacao, livrosData]);
 
-  const populares = useMemo(() => livros.filter((l) => l.popular), []);
-  const novos = useMemo(() => livros.filter((l) => l.novo), []);
+  const populares = useMemo(
+    () => livrosData.filter((livro) => livro.popular),
+    [livrosData],
+  );
+  const novos = useMemo(
+    () => livrosData.filter((livro) => livro.novo),
+    [livrosData],
+  );
 
   // Autoplay contínuo usando requestAnimationFrame (sem timers bloqueantes)
   useEffect(() => {

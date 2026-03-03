@@ -28,7 +28,12 @@ const insertLivroBaseSchema = createInsertSchema(livros, {
 
   // JSONB: Midia
   midia: z.object({
-    pdf: z.string().url().optional(),
+    pdf: z
+      .union([
+        z.string().url(),
+        z.string().startsWith("/api/cloudinary/download?"),
+      ])
+      .optional(),
     pdfPublicId: z.string().min(1).optional(),
     byte: z.number().int().nonnegative().optional(),
     format: z.string().min(1).optional(),
