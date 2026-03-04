@@ -3,6 +3,7 @@
 
 import { db } from "@/lib/drizzle/db";
 import { profiles } from "@/lib/drizzle/db/schema/profile";
+import { getAuthCallbackUrl } from "@/lib/env/site-url";
 import {
   registerSchema,
   type RegisterInput,
@@ -21,7 +22,7 @@ export async function loginComProvider(
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      redirectTo: getAuthCallbackUrl(),
     },
   });
 

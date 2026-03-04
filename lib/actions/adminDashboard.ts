@@ -2,7 +2,25 @@
 "use server";
 
 import { artigos, db, livros, projetos, softwares } from "@/lib/drizzle/db";
-import { avg, count, desc, sum } from "drizzle-orm";
+import { avg, count, desc, inArray, sum } from "drizzle-orm";
+
+type ContentTipo = "livro" | "software" | "projeto" | "artigo";
+
+export type RecentContentItem = {
+  id: number;
+  titulo: string;
+  createdAt: Date;
+  tipo: ContentTipo;
+};
+
+export type AdminInternalNotification = {
+  id: string;
+  tipo: ContentTipo | "sistema";
+  titulo: string;
+  descricao: string;
+  createdAt: string;
+  href: string;
+};
 
 export async function getDashboardStats() {
   try {
@@ -91,7 +109,7 @@ export async function getDashboardStats() {
   }
 }
 
-export async function getRecentContent(limit: number = 10) {
+export async function getRecentContent(limit: number = 10): Promise<RecentContentItem[]> {
   try {
     // Buscar conteúdo recente de cada tipo com metadados normalizados
     const recentLivros = (await db
@@ -154,6 +172,106 @@ export async function getRecentContent(limit: number = 10) {
     return allContent;
   } catch (error) {
     console.error("Erro ao buscar conteúdo recente:", error);
+    return [];
+  }
+}
+
+function tipoToLabel(tipo: ContentTipo): string {
+  switch (tipo) {
+    case "livro":
+      return "livro";
+    case "software":
+      return "software";
+    case "projeto":
+      return "projeto";
+    case "artigo":
+    default:
+      return "artigo";
+  }
+}
+
+function tipoToAdminHref(tipo: ContentTipo, id: number): string {
+  switch (tipo) {
+    case "livro":
+      return `/admin/livros/${id}/editar`;
+    case "software":
+      return `/admin/softwares/${id}/editar`;
+    case "projeto":
+      return `/admin/projetos/${id}/editar`;
+    case "artigo":
+    default:
+      return `/admin/artigos/${id}/editar`;
+  }
+}
+
+async function getPendingContentCount(): Promise<number> {
+  const pendingStatuses = ["rascunho", "pendente"] as const;
+
+  const [livrosPending, softwaresPending, projetosPending, artigosPending] =
+    await Promise.all([
+      db
+        .select({ count: count() })
+        .from(livros)
+        .where(inArray(livros.status, pendingStatuses)),
+      db
+        .select({ count: count() })
+        .from(softwares)
+        .where(inArray(softwares.status, pendingStatuses)),
+      db
+        .select({ count: count() })
+        .from(projetos)
+        .where(inArray(projetos.status, pendingStatuses)),
+      db
+        .select({ count: count() })
+        .from(artigos)
+        .where(inArray(artigos.status, pendingStatuses)),
+    ]);
+
+  return (
+    Number(livrosPending[0]?.count || 0) +
+    Number(softwaresPending[0]?.count || 0) +
+    Number(projetosPending[0]?.count || 0) +
+    Number(artigosPending[0]?.count || 0)
+  );
+}
+
+export async function getInternalNotifications(
+  limit: number = 8,
+): Promise<AdminInternalNotification[]> {
+  try {
+    const [recentContent, pendingCount] = await Promise.all([
+      getRecentContent(Math.max(limit, 6)),
+      getPendingContentCount(),
+    ]);
+
+    const contentNotifications: AdminInternalNotification[] = recentContent.map(
+      (item) => ({
+        id: `${item.tipo}-${item.id}`,
+        tipo: item.tipo,
+        titulo: item.titulo,
+        descricao: `Novo ${tipoToLabel(item.tipo)} adicionado ao sistema.`,
+        createdAt: new Date(item.createdAt).toISOString(),
+        href: tipoToAdminHref(item.tipo, item.id),
+      }),
+    );
+
+    const systemNotification: AdminInternalNotification[] =
+      pendingCount > 0
+        ? [
+            {
+              id: "sistema-pendencias",
+              tipo: "sistema",
+              titulo: `${pendingCount} itens pendentes`,
+              descricao: "Existem conteúdos em rascunho ou pendentes de publicação.",
+              createdAt: new Date().toISOString(),
+              href: "/admin",
+            },
+          ]
+        : [];
+
+    return [...systemNotification, ...contentNotifications].slice(0, limit);
+  } catch (error) {
+    console.error("Erro ao buscar notificações internas:", error);
     return [];
   }
 }

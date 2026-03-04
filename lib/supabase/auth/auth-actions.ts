@@ -1,6 +1,7 @@
 "use server";
 
 import { createSSClient } from "@/lib/supabase/server";
+import { getAuthCallbackUrl } from "@/lib/env/site-url";
 import { redirect } from "next/navigation";
 
 // ─────────────────────────────────────────────
@@ -32,7 +33,7 @@ export async function registrarComEmail(formData: FormData) {
       password: senha,
       options: {
         data: { nome },
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+        emailRedirectTo: getAuthCallbackUrl(),
       },
     });
 
@@ -80,7 +81,7 @@ export async function reenviarConfirmacaoEmail(formData: FormData) {
       type: "signup",
       email,
       options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+        emailRedirectTo: getAuthCallbackUrl(),
       },
     });
 
@@ -165,7 +166,7 @@ export async function loginComGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+        redirectTo: getAuthCallbackUrl(),
       },
     });
 
@@ -197,7 +198,7 @@ export async function loginComGithub() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+        redirectTo: getAuthCallbackUrl(),
       },
     });
 

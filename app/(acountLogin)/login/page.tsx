@@ -5,6 +5,7 @@ import {
 } from "@/lib/supabase/auth/auth-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "../ui/passwordInput";
 import { Github, Mail } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -112,14 +113,13 @@ export default async function LoginPage() {
             >
               Senha
             </label>
-            <Input
+            <PasswordInput
               id="senha"
               name="senha"
-              type="password"
               placeholder="Sua senha"
               required
               autoComplete="current-password"
-              className="text-sidebar mt-1"
+              className="mt-1"
             />
           </div>
           <Button type="submit" className="w-full">
@@ -136,11 +136,6 @@ export default async function LoginPage() {
               className="font-semibold text-blue-600 hover:underline"
             >
               Criar conta
-            </Link>
-          </p>
-          <p className="text-sm text-gray-500">
-            <Link href="/admin-setup" className="hover:underline">
-              Promover esta conta a administrador
             </Link>
           </p>
         </div>

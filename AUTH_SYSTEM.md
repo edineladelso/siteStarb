@@ -224,9 +224,22 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 # Admin Setup Secret
 ADMIN_SETUP_SECRET=seu-codigo-secreto-para-promover-admin
 
-# Site URL (para callbacks)
-NEXT_PUBLIC_SITE_URL=http://localhost:3000 (dev) | https://seusite.com (prod)
+# URL base do site (prioridade para callbacks de auth)
+# Produção:
+SITE_URL=https://seu-dominio.com
+# Opcional (fallback legado):
+NEXT_PUBLIC_SITE_URL=https://seu-dominio.com
+
+# Desenvolvimento local:
+# SITE_URL=http://localhost:3000
 ```
+
+Ordem de prioridade usada pelo sistema para callback:
+`SITE_URL` -> `NEXT_PUBLIC_SITE_URL` -> `NEXT_PUBLIC_BASE_URL` -> `NEXTAUTH_URL` -> `VERCEL_PROJECT_PRODUCTION_URL` -> `VERCEL_URL` -> `http://localhost:3000`.
+
+No Supabase (`Authentication > URL Configuration`), confirme:
+- `Site URL`: `https://seu-dominio.com`
+- `Redirect URLs`: incluir `https://seu-dominio.com/auth/callback` e `http://localhost:3000/auth/callback`
 
 ---
 

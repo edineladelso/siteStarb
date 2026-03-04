@@ -1,7 +1,10 @@
 import { AdminHeader } from "@/components/admin/navigation/AdminHeader";
 import { AdminSidebar } from "@/components/admin/navigation/AdminSidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { getDashboardStats } from "@/lib/actions/adminDashboard";
+import {
+  getDashboardStats,
+  getInternalNotifications,
+} from "@/lib/actions/adminDashboard";
 import { getCurrentUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 
@@ -24,7 +27,10 @@ export default async function AdminLayout({
     redirect("/");
   }
 
-  const stats = await getDashboardStats();
+  const [stats, notifications] = await Promise.all([
+    getDashboardStats(),
+    getInternalNotifications(8),
+  ]);
 
   return (
     <SidebarProvider className="min-h-svh">
@@ -39,7 +45,15 @@ export default async function AdminLayout({
         />
         <SidebarInset>
           <div className="bg-sidebar flex min-h-svh flex-col">
-            <AdminHeader />
+            <AdminHeader
+              currentUser={{
+                id: user.id,
+                nome: user.nome,
+                email: user.email,
+                avatarUrl: user.avatarUrl,
+              }}
+              notifications={notifications}
+            />
             <main className="bg-sidebar my-10 flex flex-1 justify-center px-6 sm:px-10">
               {children}
             </main>
