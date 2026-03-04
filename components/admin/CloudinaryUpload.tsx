@@ -73,6 +73,20 @@ const UPLOAD_CONFIGS: Record<FileType, UploadConfig> = {
   },
 };
 
+type CloudinaryUploadProps = {
+  type?: FileType;
+  folder?: string;
+  onUploadComplete?: (files: UploadedFile[]) => void;
+  onUploadError?: (error: string) => void;
+  onFileRemove?: (file: UploadedFile) => void;
+  label?: string;
+  description?: string;
+  acceptedFormats?: string[];
+  maxSize?: number;
+  multiple?: boolean;
+  showInfoCards?: boolean;
+};
+
 // ==================== CLOUDINARY UPLOAD COMPONENT ====================
 export default function CloudinaryUpload({
   type = "image",
@@ -82,26 +96,25 @@ export default function CloudinaryUpload({
   onFileRemove,
   label,
   description,
-}: {
-  type?: FileType;
-  folder?: string;
-  onUploadComplete?: (files: UploadedFile[]) => void;
-  onUploadError?: (error: string) => void;
-  onFileRemove?: (file: UploadedFile) => void;
-  label?: string;
-  description?: string;
-}) {
+  acceptedFormats,
+  maxSize,
+  multiple,
+  showInfoCards = true,
+}: CloudinaryUploadProps) {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const config = UPLOAD_CONFIGS[type];
+  const baseConfig = UPLOAD_CONFIGS[type];
+  const resolvedAcceptedFormats = acceptedFormats ?? baseConfig.acceptedFormats;
+  const resolvedMaxSize = maxSize ?? baseConfig.maxSize;
+  const resolvedMultiple = multiple ?? baseConfig.multiple ?? false;
   const resourceType: UploadResourceType = type === "image" ? "image" : "raw";
 
   // Validar arquivo
   const validateFile = (file: File): { valid: boolean; error?: string } => {
     // Validar tamanho
-    if (file.size > config.maxSize) {
-      const maxSizeMB = config.maxSize / (1024 * 1024);
+    if (file.size > resolvedMaxSize) {
+      const maxSizeMB = resolvedMaxSize / (1024 * 1024);
       return {
         valid: false,
         error: `Arquivo muito grande. Tamanho máximo: ${maxSizeMB}MB`,
@@ -110,7 +123,7 @@ export default function CloudinaryUpload({
 
     // Validar formato
     const fileExtension = `.${file.name.split(".").pop()?.toLowerCase()}`;
-    const isValidFormat = config.acceptedFormats.some(
+    const isValidFormat = resolvedAcceptedFormats.some(
       (format) =>
         format === fileExtension ||
         format === file.type ||
@@ -120,7 +133,7 @@ export default function CloudinaryUpload({
     if (!isValidFormat) {
       return {
         valid: false,
-        error: `Formato não suportado. Formatos aceitos: ${config.acceptedFormats
+        error: `Formato não suportado. Formatos aceitos: ${resolvedAcceptedFormats
           .filter((f) => f.startsWith("."))
           .join(", ")}`,
       };
@@ -278,7 +291,7 @@ export default function CloudinaryUpload({
     const filesToUpload = Array.from(fileList);
 
     // Validar múltiplos arquivos
-    if (!config.multiple && filesToUpload.length > 1) {
+    if (!resolvedMultiple && filesToUpload.length > 1) {
       onUploadError?.("Apenas um arquivo pode ser enviado por vez");
       return;
     }
@@ -297,7 +310,7 @@ export default function CloudinaryUpload({
 
     // Upload de arquivos válidos
     try {
-      if (!config.multiple) {
+      if (!resolvedMultiple) {
         const uploadedFiles = files.filter((file) => file.status === "success");
         await Promise.all(uploadedFiles.map((file) => deleteRemoteFile(file)));
         uploadedFiles.forEach((file) => onFileRemove?.(file));
@@ -414,7 +427,7 @@ export default function CloudinaryUpload({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 overflow-hidden">
       {/* Label */}
       {label && (
         <div>
@@ -422,7 +435,7 @@ export default function CloudinaryUpload({
             {label}
           </label>
           {description && (
-            <p className="mt-1 text-xs text-slate-500">{description}</p>
+            <p className="mt-1 break-words text-xs text-slate-500">{description}</p>
           )}
         </div>
       )}
@@ -433,7 +446,7 @@ export default function CloudinaryUpload({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`relative cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition-all ${
+        className={`relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed p-6 text-center transition-all sm:p-8 ${
           isDragging
             ? "border-blue-500 bg-blue-50"
             : "border-slate-300 hover:border-blue-400 hover:bg-slate-50"
@@ -442,8 +455,8 @@ export default function CloudinaryUpload({
         <input
           ref={fileInputRef}
           type="file"
-          multiple={config.multiple}
-          accept={config.acceptedFormats.join(",")}
+          multiple={resolvedMultiple}
+          accept={resolvedAcceptedFormats.join(",")}
           onChange={handleFileSelect}
           className="hidden"
         />
@@ -461,13 +474,13 @@ export default function CloudinaryUpload({
                 ? "Solte os arquivos aqui"
                 : "Clique para fazer upload ou arraste arquivos"}
             </p>
-            <p className="text-sm text-slate-500">
-              {config.acceptedFormats
+            <p className="mx-auto max-w-full break-words text-sm text-slate-500">
+              {resolvedAcceptedFormats
                 .filter((f) => f.startsWith("."))
                 .join(", ")
                 .toUpperCase()}
               {" • "}
-              Máx. {formatFileSize(config.maxSize)}
+              Máx. {formatFileSize(resolvedMaxSize)}
             </p>
           </div>
 
@@ -485,7 +498,7 @@ export default function CloudinaryUpload({
                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
               />
             </svg>
-            Selecionar {config.multiple ? "Arquivos" : "Arquivo"}
+            Selecionar {resolvedMultiple ? "Arquivos" : "Arquivo"}
           </Button>
         </div>
       </div>
@@ -497,11 +510,11 @@ export default function CloudinaryUpload({
             Arquivos ({files.length})
           </p>
 
-          <div className="space-y-2">
+          <div className="space-y-2 overflow-hidden">
             {files.map((file) => (
               <div
                 key={file.id}
-                className="flex items-center gap-4 rounded-xl border-2 border-slate-200 bg-white p-4"
+                className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 overflow-hidden rounded-xl border border-slate-200 bg-white p-3 sm:p-4"
               >
                 {/* Thumbnail/Icon */}
                 <div className="shrink-0">
@@ -534,10 +547,13 @@ export default function CloudinaryUpload({
 
                 {/* Info */}
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-slate-900">
+                  <p
+                    className="break-all text-sm font-medium leading-snug text-slate-900"
+                    title={file.name}
+                  >
                     {file.name}
                   </p>
-                  <div className="mt-1 flex items-center gap-2">
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
                     <p className="text-xs text-slate-500">
                       {formatFileSize(file.size)}
                     </p>
@@ -575,7 +591,7 @@ export default function CloudinaryUpload({
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 items-center gap-2">
                   {file.status === "success" && (
                     <Button
                       variant="ghost"
@@ -584,7 +600,7 @@ export default function CloudinaryUpload({
                       onClick={(e) => {
                         e.stopPropagation();
                         const targetUrl =
-                          type === "pdf" && file.publicId
+                          type !== "image" && file.publicId
                             ? `/api/cloudinary/download?publicId=${encodeURIComponent(
                                 file.publicId,
                               )}&resourceType=raw&format=${encodeURIComponent(
@@ -649,62 +665,64 @@ export default function CloudinaryUpload({
       )}
 
       {/* Info Cards */}
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
-          <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600">
-              <svg
-                className="h-4 w-4 text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-blue-900">
-                Formatos Aceitos
-              </p>
-              <p className="mt-1 text-xs text-blue-700">
-                {config.acceptedFormats
-                  .filter((f) => f.startsWith("."))
-                  .join(", ")
-                  .toUpperCase()}
-              </p>
+      {showInfoCards && (
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600">
+                <svg
+                  className="h-4 w-4 text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-blue-900">
+                  Formatos Aceitos
+                </p>
+                <p className="mt-1 break-words text-xs text-blue-700">
+                  {resolvedAcceptedFormats
+                    .filter((f) => f.startsWith("."))
+                    .join(", ")
+                    .toUpperCase()}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="rounded-xl border border-indigo-100 bg-indigo-50 p-4">
-          <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600">
-              <svg
-                className="h-4 w-4 text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-indigo-900">
-                Tamanho Máximo
-              </p>
-              <p className="mt-1 text-xs text-indigo-700">
-                {formatFileSize(config.maxSize)} por arquivo
-              </p>
+          <div className="rounded-xl border border-indigo-100 bg-indigo-50 p-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600">
+                <svg
+                  className="h-4 w-4 text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-indigo-900">
+                  Tamanho Máximo
+                </p>
+                <p className="mt-1 text-xs text-indigo-700">
+                  {formatFileSize(resolvedMaxSize)} por arquivo
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

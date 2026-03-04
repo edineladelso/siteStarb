@@ -102,7 +102,8 @@ export default memo(function LivroCard({
   const formatosDisponiveis = useMemo(() => {
     const formatos = [] as Array<{ tipo: string; url: string }>;
     const pdfUrl = getLivroPdfAccessUrl(livro.midia);
-    if (pdfUrl) formatos.push({ tipo: "PDF", url: pdfUrl });
+    const formatoPrincipal = livro.midia?.format?.trim().toUpperCase() || "PDF";
+    if (pdfUrl) formatos.push({ tipo: formatoPrincipal, url: pdfUrl });
     if (livro.midia.epub)
       formatos.push({ tipo: "EPUB", url: livro.midia.epub });
     if (livro.midia.resumo)

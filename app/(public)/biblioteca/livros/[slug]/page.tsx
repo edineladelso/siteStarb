@@ -157,9 +157,11 @@ export default async function LivroDetalhesPage({ params }: PageProps) {
   const categoriaPrincipal = macroAreas[0] ?? livro.categoria;
   const capaUrl = getLivroCapaUrl(livro.capa);
   const pdfUrl = getLivroPdfAccessUrl(livro.midia);
+  const formatoPrincipalLabel =
+    livro.midia?.format?.trim().toUpperCase() || "PDF";
 
   const formatosDisponiveis = [
-    { label: "PDF", url: pdfUrl },
+    { label: formatoPrincipalLabel, url: pdfUrl },
     { label: "EPUB", url: livro.midia?.epub ?? "" },
     { label: "Resumo", url: livro.midia?.resumo ?? "" },
   ].filter(
@@ -326,7 +328,7 @@ export default async function LivroDetalhesPage({ params }: PageProps) {
                   <Button variant="outline" asChild className="rounded-full">
                     <a href={pdfUrl} target="_blank" rel="noreferrer">
                       <Download className="h-4 w-4" />
-                      Baixar PDF
+                      Baixar {formatoPrincipalLabel}
                     </a>
                   </Button>
                 )}
@@ -334,7 +336,7 @@ export default async function LivroDetalhesPage({ params }: PageProps) {
                 {typeof livro.midia?.byte === "number" &&
                   livro.midia.byte > 0 && (
                     <Badge variant="secondary" className="rounded-full">
-                      PDF: {formatBytes(livro.midia.byte)}
+                      {formatoPrincipalLabel}: {formatBytes(livro.midia.byte)}
                     </Badge>
                   )}
 

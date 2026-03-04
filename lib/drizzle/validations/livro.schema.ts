@@ -63,7 +63,7 @@ export const insertLivroSchema = insertLivroBaseSchema.superRefine((data, ctx) =
     ctx.addIssue({
       path: ["midia", "pdf"],
       code: "custom",
-      message: "Upload do PDF é obrigatório.",
+      message: "Upload do arquivo principal é obrigatório.",
     });
   }
 
@@ -71,7 +71,7 @@ export const insertLivroSchema = insertLivroBaseSchema.superRefine((data, ctx) =
     ctx.addIssue({
       path: ["midia", "pdfPublicId"],
       code: "custom",
-      message: "publicId do PDF é obrigatório.",
+      message: "publicId do arquivo principal é obrigatório.",
     });
   }
 
@@ -79,7 +79,7 @@ export const insertLivroSchema = insertLivroBaseSchema.superRefine((data, ctx) =
     ctx.addIssue({
       path: ["midia", "byte"],
       code: "custom",
-      message: "Tamanho do PDF inválido.",
+      message: "Tamanho do arquivo principal inválido.",
     });
   }
 
@@ -87,7 +87,7 @@ export const insertLivroSchema = insertLivroBaseSchema.superRefine((data, ctx) =
     ctx.addIssue({
       path: ["midia", "format"],
       code: "custom",
-      message: "Formato do PDF é obrigatório.",
+      message: "Formato do arquivo principal é obrigatório.",
     });
   }
 });

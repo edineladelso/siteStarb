@@ -107,6 +107,18 @@ const IDIOMA_OPTIONS = [
   "Alemão",
 ];
 
+const LIVRO_DOCUMENT_FORMATS = [
+  ".pdf",
+  ".epub",
+  ".txt",
+  ".md",
+  "application/pdf",
+  "application/epub+zip",
+  "text/plain",
+  "text/markdown",
+  "text/x-markdown",
+];
+
 function toAreaLabel(area: AreaLivro): string {
   return area
     .replaceAll("_", " ")
@@ -267,19 +279,19 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
     }
 
     if (!formData.pdfUrl.trim()) {
-      return "Faça upload do PDF do livro.";
+      return "Faça upload do arquivo principal do livro.";
     }
 
     if (!formData.pdfPublicId.trim()) {
-      return "O PDF precisa de um publicId válido no Cloudinary.";
+      return "O arquivo principal precisa de um publicId válido no Cloudinary.";
     }
 
     if (!formData.pdfByte.trim() || Number(formData.pdfByte) <= 0) {
-      return "O tamanho do PDF é inválido.";
+      return "O tamanho do arquivo principal é inválido.";
     }
 
     if (!formData.pdfFormat.trim()) {
-      return "Formato do PDF inválido.";
+      return "Formato do arquivo principal inválido.";
     }
 
     return null;
@@ -411,25 +423,6 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
                     {macroAreaLivroValues.map((macro) => (
                       <SelectItem key={macro} value={macro}>
                         {LABELS_CATEGORIAS[macro]}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-semibold">Status</Label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(value) => setField("status", value as Status)}
-                >
-                  <SelectTrigger className="shadow-sm">
-                    <SelectValue placeholder="Selecione o status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {STATUS_OPTIONS.map((status) => (
-                      <SelectItem key={status.value} value={status.value}>
-                        {status.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -678,7 +671,7 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
           <CardHeader className="m-0 p-0">
             <div className="flex w-full items-center gap-2 border-b py-2 pl-5">
               <Upload className="h-5 w-5 text-green-600" />
-              <CardTitle className="text-base">Arquivos e URLs</CardTitle>
+              <CardTitle className="text-base">Arquivos</CardTitle>
             </div>
           </CardHeader>
 
@@ -688,6 +681,7 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
               folder="starb/livros/capas"
               label="Capa do Livro *"
               description="PNG, WEBP ou AVIF — máx 3MB"
+              showInfoCards={false}
               onUploadComplete={(files: UploadedFile[]) => {
                 const uploaded = files[0];
                 if (uploaded?.url) setField("capaUrl", uploaded.url);
@@ -704,8 +698,10 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
             <CloudinaryUpload
               type="pdf"
               folder="starb/livros/arquivos"
-              label="Arquivo PDF *"
-              description="PDF — máx 400MB"
+              label="Arquivo Principal *"
+              description="PDF, EPUB, TXT ou MD — máx 400MB"
+              acceptedFormats={LIVRO_DOCUMENT_FORMATS}
+              showInfoCards={false}
               onUploadComplete={(files: UploadedFile[]) => {
                 const uploaded = files[0];
                 if (uploaded?.url) setField("pdfUrl", uploaded.url);
@@ -723,26 +719,38 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
               }}
             />
 
-            <div className="grid gap-6 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label className="text-sm font-semibold">URL EPUB (opcional)</Label>
-                <Input
-                  value={formData.epubUrl}
-                  onChange={(e) => setField("epubUrl", e.target.value)}
-                  placeholder="https://.../livro.epub"
-                  className="shadow-sm"
-                />
-              </div>
+            <div className="grid gap-6 lg:grid-cols-2">
+              <CloudinaryUpload
+                type="pdf"
+                folder="starb/livros/arquivos"
+                label="Arquivo EPUB (opcional)"
+                description="PDF, EPUB, TXT ou MD — máx 400MB"
+                acceptedFormats={LIVRO_DOCUMENT_FORMATS}
+                showInfoCards={false}
+                onUploadComplete={(files: UploadedFile[]) => {
+                  const uploaded = files[0];
+                  if (uploaded?.url) setField("epubUrl", uploaded.url);
+                }}
+                onFileRemove={() => {
+                  setField("epubUrl", "");
+                }}
+              />
 
-              <div className="space-y-2">
-                <Label className="text-sm font-semibold">URL Resumo (opcional)</Label>
-                <Input
-                  value={formData.resumoUrl}
-                  onChange={(e) => setField("resumoUrl", e.target.value)}
-                  placeholder="https://.../resumo.pdf"
-                  className="shadow-sm"
-                />
-              </div>
+              <CloudinaryUpload
+                type="pdf"
+                folder="starb/livros/arquivos"
+                label="Arquivo Resumo (opcional)"
+                description="PDF, EPUB, TXT ou MD — máx 400MB"
+                acceptedFormats={LIVRO_DOCUMENT_FORMATS}
+                showInfoCards={false}
+                onUploadComplete={(files: UploadedFile[]) => {
+                  const uploaded = files[0];
+                  if (uploaded?.url) setField("resumoUrl", uploaded.url);
+                }}
+                onFileRemove={() => {
+                  setField("resumoUrl", "");
+                }}
+              />
             </div>
           </CardContent>
         </Card>
@@ -802,7 +810,7 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
             ) : initialData ? (
               "Atualizar Livro"
             ) : (
-              "Criar Livro"
+              "Adicionar Livro"
             )}
           </Button>
         </div>
