@@ -1,6 +1,8 @@
 "use server";
 
+import { del } from "@vercel/blob";
 import cloudinary from "@/lib/cloudinary";
+import { isLivroBlobUrl } from "@/lib/blob/livros";
 import { toMacroAreas, type AreaLivro } from "@/lib/domain/areas";
 import { db } from "@/lib/drizzle/db";
 import { livros } from "@/lib/drizzle/db/schema/livro";
@@ -30,16 +32,6 @@ function parseBytes(formData: FormData): number {
   return Number.isFinite(value) && value >= 0 ? Math.trunc(value) : 0;
 }
 
-function buildPdfAccessRoute(publicId: string, format = "pdf"): string {
-  const params = new URLSearchParams({
-    publicId,
-    resourceType: "raw",
-    format: format || "pdf",
-  });
-
-  return `/api/cloudinary/download?${params.toString()}`;
-}
-
 function getLegacySafeCapaPublicId(capa: unknown): string {
   if (!capa || typeof capa !== "object") return "";
   const publicId = (capa as { capaPublicId?: unknown }).capaPublicId;
@@ -52,6 +44,15 @@ function getLegacySafePdfPublicId(midia: unknown): string {
   return typeof publicId === "string" ? publicId : "";
 }
 
+function getSafeMidiaUrl(
+  midia: unknown,
+  key: "pdf" | "epub" | "resumo",
+): string {
+  if (!midia || typeof midia !== "object") return "";
+  const value = (midia as Record<string, unknown>)[key];
+  return typeof value === "string" ? value.trim() : "";
+}
+
 function buildLivroPayload(formData: FormData, slug: string) {
   const areas = parseAreas(formData);
   const tags = parseTags(formData);
@@ -60,7 +61,6 @@ function buildLivroPayload(formData: FormData, slug: string) {
   const pdfUrl = String(formData.get("pdf_url") ?? "").trim();
   const pdfPublicId = String(formData.get("pdf_public_id") ?? "").trim();
   const pdfFormat = String(formData.get("pdf_format") ?? "").trim() || "pdf";
-  const pdfRoute = pdfPublicId ? buildPdfAccessRoute(pdfPublicId, pdfFormat) : "";
   const epubUrl = String(formData.get("epub_url") ?? "").trim();
   const resumoUrl = String(formData.get("resumo_url") ?? "").trim();
   const capaUrl = String(formData.get("capa_url") ?? "").trim();
@@ -94,7 +94,7 @@ function buildLivroPayload(formData: FormData, slug: string) {
     },
 
     midia: {
-      pdf: pdfRoute || pdfUrl || undefined,
+      pdf: pdfUrl || undefined,
       pdfPublicId: pdfPublicId || undefined,
       byte: parseBytes(formData) || undefined,
       format: pdfFormat || undefined,
@@ -113,8 +113,14 @@ function buildLivroPayload(formData: FormData, slug: string) {
 async function cleanupReplacedAssets(params: {
   previousCapaPublicId?: string;
   previousPdfPublicId?: string;
+  previousPdfUrl?: string;
+  previousEpubUrl?: string;
+  previousResumoUrl?: string;
   nextCapaPublicId?: string;
   nextPdfPublicId?: string;
+  nextPdfUrl?: string;
+  nextEpubUrl?: string;
+  nextResumoUrl?: string;
 }) {
   const deletions: Promise<unknown>[] = [];
 
@@ -141,6 +147,20 @@ async function cleanupReplacedAssets(params: {
       }),
     );
   }
+
+  const maybeDeleteBlob = (previousUrl?: string, nextUrl?: string) => {
+    const prev = (previousUrl || "").trim();
+    const next = (nextUrl || "").trim();
+
+    if (!prev || prev === next) return;
+    if (!isLivroBlobUrl(prev)) return;
+
+    deletions.push(del(prev));
+  };
+
+  maybeDeleteBlob(params.previousPdfUrl, params.nextPdfUrl);
+  maybeDeleteBlob(params.previousEpubUrl, params.nextEpubUrl);
+  maybeDeleteBlob(params.previousResumoUrl, params.nextResumoUrl);
 
   if (!deletions.length) return;
 
@@ -241,8 +261,14 @@ export async function atualizarLivro(
     await cleanupReplacedAssets({
       previousCapaPublicId: getLegacySafeCapaPublicId(atual.capa),
       previousPdfPublicId: getLegacySafePdfPublicId(atual.midia),
+      previousPdfUrl: getSafeMidiaUrl(atual.midia, "pdf"),
+      previousEpubUrl: getSafeMidiaUrl(atual.midia, "epub"),
+      previousResumoUrl: getSafeMidiaUrl(atual.midia, "resumo"),
       nextCapaPublicId: atualizado.capa?.capaPublicId,
       nextPdfPublicId: atualizado.midia?.pdfPublicId,
+      nextPdfUrl: getSafeMidiaUrl(atualizado.midia, "pdf"),
+      nextEpubUrl: getSafeMidiaUrl(atualizado.midia, "epub"),
+      nextResumoUrl: getSafeMidiaUrl(atualizado.midia, "resumo"),
     });
 
     revalidatePath("/biblioteca");
@@ -279,6 +305,9 @@ export async function deletarLivro(id: number): Promise<ActionResult<{ id: numbe
     await cleanupReplacedAssets({
       previousCapaPublicId: getLegacySafeCapaPublicId(atual.capa),
       previousPdfPublicId: getLegacySafePdfPublicId(atual.midia),
+      previousPdfUrl: getSafeMidiaUrl(atual.midia, "pdf"),
+      previousEpubUrl: getSafeMidiaUrl(atual.midia, "epub"),
+      previousResumoUrl: getSafeMidiaUrl(atual.midia, "resumo"),
     });
 
     revalidatePath("/biblioteca");

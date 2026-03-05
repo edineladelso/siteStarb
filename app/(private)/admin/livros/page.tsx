@@ -194,7 +194,7 @@ export default function LivrosPage() {
                       )}
                     </div>
                     <div className="min-w-0">
-                      <p className="truncate font-semibold text-slate-900">
+                      <p className="truncate font-semibold text-wrap text-slate-900">
                         {livro.titulo}
                       </p>
                       <p className="truncate text-sm text-slate-500">

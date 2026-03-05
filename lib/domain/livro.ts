@@ -3,7 +3,7 @@ import { ContentBase } from "./content";
 
 export interface MidiaFileType {
   pdf: string;
-  pdfPublicId: string;
+  pdfPublicId?: string;
   byte: number;
   format: string;
 }

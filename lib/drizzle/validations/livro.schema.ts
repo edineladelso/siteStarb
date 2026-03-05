@@ -67,14 +67,6 @@ export const insertLivroSchema = insertLivroBaseSchema.superRefine((data, ctx) =
     });
   }
 
-  if (!data.midia.pdfPublicId) {
-    ctx.addIssue({
-      path: ["midia", "pdfPublicId"],
-      code: "custom",
-      message: "publicId do arquivo principal é obrigatório.",
-    });
-  }
-
   if (!Number.isFinite(data.midia.byte) || (data.midia.byte ?? 0) <= 0) {
     ctx.addIssue({
       path: ["midia", "byte"],

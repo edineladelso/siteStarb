@@ -15,8 +15,14 @@ import {
   X,
 } from "lucide-react";
 
+import BlobDocumentUpload from "@/components/admin/BlobDocumentUpload";
+import type { UploadedBlobFile } from "@/components/admin/BlobDocumentUpload";
 import CloudinaryUpload from "@/components/admin/CloudinaryUpload";
 import type { UploadedFile } from "@/components/admin/CloudinaryUpload";
+import {
+  LIVRO_BLOB_MAX_SIZE_BYTES,
+  LIVRO_DOCUMENT_ACCEPTED_FORMATS,
+} from "@/lib/blob/livros";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -81,7 +87,6 @@ type LivroFormState = {
   capaUrl: string;
   capaPublicId: string;
   pdfUrl: string;
-  pdfPublicId: string;
   pdfByte: string;
   pdfFormat: string;
   epubUrl: string;
@@ -105,18 +110,6 @@ const IDIOMA_OPTIONS = [
   "Espanhol",
   "Francês",
   "Alemão",
-];
-
-const LIVRO_DOCUMENT_FORMATS = [
-  ".pdf",
-  ".epub",
-  ".txt",
-  ".md",
-  "application/pdf",
-  "application/epub+zip",
-  "text/plain",
-  "text/markdown",
-  "text/x-markdown",
 ];
 
 function toAreaLabel(area: AreaLivro): string {
@@ -176,7 +169,6 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
       capaUrl: getLivroCapaUrl(initialData?.capa),
       capaPublicId: getLivroCapaPublicId(initialData?.capa),
       pdfUrl: initialData?.midia?.pdf ?? "",
-      pdfPublicId: initialData?.midia?.pdfPublicId ?? "",
       pdfByte: String(initialData?.midia?.byte ?? ""),
       pdfFormat: initialData?.midia?.format ?? "",
       epubUrl: initialData?.midia?.epub ?? "",
@@ -282,10 +274,6 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
       return "Faça upload do arquivo principal do livro.";
     }
 
-    if (!formData.pdfPublicId.trim()) {
-      return "O arquivo principal precisa de um publicId válido no Cloudinary.";
-    }
-
     if (!formData.pdfByte.trim() || Number(formData.pdfByte) <= 0) {
       return "O tamanho do arquivo principal é inválido.";
     }
@@ -325,7 +313,6 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
       payload.set("capa_url", formData.capaUrl.trim());
       payload.set("capa_public_id", formData.capaPublicId.trim());
       payload.set("pdf_url", formData.pdfUrl.trim());
-      payload.set("pdf_public_id", formData.pdfPublicId.trim());
       payload.set("pdf_byte", formData.pdfByte.trim());
       payload.set("pdf_format", formData.pdfFormat.trim());
 
@@ -695,17 +682,16 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
               }}
             />
 
-            <CloudinaryUpload
-              type="pdf"
+            <BlobDocumentUpload
               folder="starb/livros/arquivos"
               label="Arquivo Principal *"
-              description="PDF, EPUB, TXT ou MD — máx 400MB"
-              acceptedFormats={LIVRO_DOCUMENT_FORMATS}
+              description="PDF, EPUB, DOC, DOCX, TXT ou MD — máx 400MB"
+              acceptedFormats={[...LIVRO_DOCUMENT_ACCEPTED_FORMATS]}
+              maxSize={LIVRO_BLOB_MAX_SIZE_BYTES}
               showInfoCards={false}
-              onUploadComplete={(files: UploadedFile[]) => {
+              onUploadComplete={(files: UploadedBlobFile[]) => {
                 const uploaded = files[0];
                 if (uploaded?.url) setField("pdfUrl", uploaded.url);
-                if (uploaded?.publicId) setField("pdfPublicId", uploaded.publicId);
                 if (typeof uploaded?.bytes === "number") {
                   setField("pdfByte", String(uploaded.bytes));
                 }
@@ -713,21 +699,20 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
               }}
               onFileRemove={() => {
                 setField("pdfUrl", "");
-                setField("pdfPublicId", "");
                 setField("pdfByte", "");
                 setField("pdfFormat", "");
               }}
             />
 
             <div className="grid gap-6 lg:grid-cols-2">
-              <CloudinaryUpload
-                type="pdf"
+              <BlobDocumentUpload
                 folder="starb/livros/arquivos"
                 label="Arquivo EPUB (opcional)"
-                description="PDF, EPUB, TXT ou MD — máx 400MB"
-                acceptedFormats={LIVRO_DOCUMENT_FORMATS}
+                description="PDF, EPUB, DOC, DOCX, TXT ou MD — máx 400MB"
+                acceptedFormats={[...LIVRO_DOCUMENT_ACCEPTED_FORMATS]}
+                maxSize={LIVRO_BLOB_MAX_SIZE_BYTES}
                 showInfoCards={false}
-                onUploadComplete={(files: UploadedFile[]) => {
+                onUploadComplete={(files: UploadedBlobFile[]) => {
                   const uploaded = files[0];
                   if (uploaded?.url) setField("epubUrl", uploaded.url);
                 }}
@@ -736,14 +721,14 @@ export function LivroForm({ initialData, onCancel }: LivroFormProps) {
                 }}
               />
 
-              <CloudinaryUpload
-                type="pdf"
+              <BlobDocumentUpload
                 folder="starb/livros/arquivos"
                 label="Arquivo Resumo (opcional)"
-                description="PDF, EPUB, TXT ou MD — máx 400MB"
-                acceptedFormats={LIVRO_DOCUMENT_FORMATS}
+                description="PDF, EPUB, DOC, DOCX, TXT ou MD — máx 400MB"
+                acceptedFormats={[...LIVRO_DOCUMENT_ACCEPTED_FORMATS]}
+                maxSize={LIVRO_BLOB_MAX_SIZE_BYTES}
                 showInfoCards={false}
-                onUploadComplete={(files: UploadedFile[]) => {
+                onUploadComplete={(files: UploadedBlobFile[]) => {
                   const uploaded = files[0];
                   if (uploaded?.url) setField("resumoUrl", uploaded.url);
                 }}
