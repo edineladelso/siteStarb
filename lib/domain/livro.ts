@@ -1,4 +1,5 @@
 import { AreaLivro, MacroAreaLivro } from "./areas";
+import { isLivroBlobUrl } from "@/lib/blob/livros";
 import { ContentBase } from "./content";
 
 export interface MidiaFileType {
@@ -94,6 +95,28 @@ export function getLivroPdfAccessUrl(midia: MidiaLivro | null | undefined): stri
   }
 
   return midia.pdf ?? "";
+}
+
+export function getLivroFileDownloadUrl(url: string): string {
+  const normalized = url.trim();
+  if (!normalized) return "";
+
+  if (isLivroBlobUrl(normalized)) {
+    return `/api/blob/download?url=${encodeURIComponent(normalized)}`;
+  }
+
+  if (normalized.startsWith("/api/cloudinary/download?")) {
+    const [base, queryString = ""] = normalized.split("?");
+    const params = new URLSearchParams(queryString);
+    params.set("attachment", "1");
+    return `${base}?${params.toString()}`;
+  }
+
+  return normalized;
+}
+
+export function getLivroPdfDownloadUrl(midia: MidiaLivro | null | undefined): string {
+  return getLivroFileDownloadUrl(getLivroPdfAccessUrl(midia));
 }
 
 export function formatBytes(bytes: number): string {

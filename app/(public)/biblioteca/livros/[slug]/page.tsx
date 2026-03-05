@@ -30,7 +30,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { getCategoriaNome } from "@/lib/domain/areasCategoriasPatern";
-import { formatBytes, getLivroCapaUrl, getLivroPdfAccessUrl } from "@/lib/domain/livro";
+import {
+  formatBytes,
+  getLivroCapaUrl,
+  getLivroFileDownloadUrl,
+  getLivroPdfAccessUrl,
+  getLivroPdfDownloadUrl,
+} from "@/lib/domain/livro";
 
 import { fakeSelectLivros } from "../dadosLivros";
 import { getLivroBySlug } from "@/lib/actions";
@@ -157,23 +163,43 @@ export default async function LivroDetalhesPage({ params }: PageProps) {
   const categoriaPrincipal = macroAreas[0] ?? livro.categoria;
   const capaUrl = getLivroCapaUrl(livro.capa);
   const pdfUrl = getLivroPdfAccessUrl(livro.midia);
+  const pdfDownloadUrl = getLivroPdfDownloadUrl(livro.midia);
   const formatoPrincipalLabel =
     livro.midia?.format?.trim().toUpperCase() || "PDF";
 
   const formatosDisponiveis = [
-    { label: formatoPrincipalLabel, url: pdfUrl },
-    { label: "EPUB", url: livro.midia?.epub ?? "" },
-    { label: "Resumo", url: livro.midia?.resumo ?? "" },
+    {
+      label: formatoPrincipalLabel,
+      previewUrl: pdfUrl,
+      downloadUrl: getLivroFileDownloadUrl(pdfUrl),
+    },
+    {
+      label: "EPUB",
+      previewUrl: livro.midia?.epub ?? "",
+      downloadUrl: getLivroFileDownloadUrl(livro.midia?.epub ?? ""),
+    },
+    {
+      label: "Resumo",
+      previewUrl: livro.midia?.resumo ?? "",
+      downloadUrl: getLivroFileDownloadUrl(livro.midia?.resumo ?? ""),
+    },
   ].filter(
     (
       item,
     ): item is {
       label: string;
-      url: string;
-    } => Boolean(item.url && item.url.trim()),
+      previewUrl: string;
+      downloadUrl: string;
+    } =>
+      Boolean(
+        item.previewUrl &&
+          item.previewUrl.trim() &&
+          item.downloadUrl &&
+          item.downloadUrl.trim(),
+      ),
   );
 
-  const leituraPrincipalUrl = formatosDisponiveis[0]?.url;
+  const leituraPrincipalUrl = formatosDisponiveis[0]?.previewUrl;
 
   return (
     <div className="min-h-screen mx-auto bg-linear-to-br from-stone-100 via-stone-50 to-neutral-100 py-8 sm:py-10 lg:py-14">
@@ -324,9 +350,9 @@ export default async function LivroDetalhesPage({ params }: PageProps) {
                   )}
                 </Button>
 
-                {pdfUrl && (
+                {pdfDownloadUrl && (
                   <Button variant="outline" asChild className="rounded-full">
-                    <a href={pdfUrl} target="_blank" rel="noreferrer">
+                    <a href={pdfDownloadUrl} download>
                       <Download className="h-4 w-4" />
                       Baixar {formatoPrincipalLabel}
                     </a>
@@ -378,24 +404,40 @@ export default async function LivroDetalhesPage({ params }: PageProps) {
                       Formatos disponíveis
                     </h3>
                     {formatosDisponiveis.length > 0 ? (
-                      <div className="flex flex-wrap gap-2">
+                      <div className="space-y-2">
                         {formatosDisponiveis.map((formato) => (
-                          <Button
+                          <div
                             key={formato.label}
-                            variant="outline"
-                            size="sm"
-                            asChild
-                            className="rounded-full"
+                            className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2"
                           >
-                            <a
-                              href={formato.url}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
+                            <Badge variant="outline" className="rounded-full">
                               <FileText className="h-3.5 w-3.5" />
                               {formato.label}
-                            </a>
-                          </Button>
+                            </Badge>
+
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              className="rounded-full"
+                            >
+                              <a
+                                href={formato.previewUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <Eye className="h-3.5 w-3.5" />
+                                Visualizar
+                              </a>
+                            </Button>
+
+                            <Button size="sm" asChild className="rounded-full">
+                              <a href={formato.downloadUrl} download>
+                                <Download className="h-3.5 w-3.5" />
+                                Baixar
+                              </a>
+                            </Button>
+                          </div>
                         ))}
                       </div>
                     ) : (

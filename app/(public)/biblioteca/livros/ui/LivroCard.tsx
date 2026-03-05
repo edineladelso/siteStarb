@@ -51,7 +51,11 @@ import {
   getCategoriaIcon,
   getCategoriaNome,
 } from "@/lib/domain/areasCategoriasPatern";
-import { getLivroCapaUrl, getLivroPdfAccessUrl } from "@/lib/domain/livro";
+import {
+  getLivroCapaUrl,
+  getLivroFileDownloadUrl,
+  getLivroPdfAccessUrl,
+} from "@/lib/domain/livro";
 import type { Livro } from "@/lib/types";
 
 // Mapeamento de cores por MacroArea para gradientes
@@ -117,8 +121,16 @@ export default memo(function LivroCard({
   };
 
   const handleDownload = (url: string, tipo: string) => {
-    window.open(url, "_blank", "noopener,noreferrer");
-    console.log(`Baixando ${tipo}:`, url);
+    const targetUrl = getLivroFileDownloadUrl(url);
+    if (!targetUrl) return;
+    const anchor = document.createElement("a");
+    anchor.href = targetUrl;
+    anchor.download = "";
+    anchor.rel = "noreferrer";
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    console.log(`Baixando ${tipo}:`, targetUrl);
   };
 
   return (
